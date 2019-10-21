@@ -7,5 +7,5 @@
     <color name="toolbarIconColor">@color/textColorPrimary</color>
     <color name="textInputBackgroundColor">#65815771</color>
 
-    <color name="colorBackground">#FFFBFA</color>
+    <color name="colorBackground">#FFFAFD</color>
 </resources>
