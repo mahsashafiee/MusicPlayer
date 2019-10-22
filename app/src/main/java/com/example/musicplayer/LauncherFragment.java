@@ -6,11 +6,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 
@@ -22,6 +27,8 @@ public class LauncherFragment extends Fragment {
     private BottomSheetBehavior sheetBehavior;
     private boolean backdropShown;
     private Integer openIcon, closeIcon;
+    private RecyclerView songRecycler;
+    private SongRepository mRepository;
 
 
     public LauncherFragment() {
@@ -45,8 +52,6 @@ public class LauncherFragment extends Fragment {
 
         openIcon = R.drawable.ic_queue_music_black_36dp;
         closeIcon = R.drawable.ic_clear_black_36dp;
-
-
     }
 
     @Override
@@ -54,6 +59,8 @@ public class LauncherFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_luncher, container, false);
+
+        mRepository = SongRepository.getInstance(getActivity());
 
         initUI(view);
 
@@ -69,6 +76,11 @@ public class LauncherFragment extends Fragment {
         sheetBehavior.setFitToContents(false);
         sheetBehavior.setHideable(false);
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        songRecycler = view.findViewById(R.id.recycler_view);
+        RecyclerInit();
+
+
     }
 
     private void setUpToolbar(View view) {
@@ -106,6 +118,11 @@ public class LauncherFragment extends Fragment {
                 ((ImageView) view).setImageResource(openIcon);
             }
         }
+    }
+
+    private void RecyclerInit(){
+        songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        songRecycler.setAdapter(new MusicRecyclerAdapter(mRepository.getSongList(),getActivity()));
     }
 
 }

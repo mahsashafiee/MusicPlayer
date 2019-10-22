@@ -8,7 +8,7 @@
     android:background="@drawable/music_item_background"
     android:padding="12dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/item_music_cover"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="4:32" />
 
-    <view
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="12dp"
