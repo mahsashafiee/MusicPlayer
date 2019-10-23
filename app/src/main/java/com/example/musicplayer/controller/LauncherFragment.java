@@ -1,6 +1,7 @@
-package com.example.musicplayer;
+package com.example.musicplayer.controller;
 
 
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,13 +9,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
+import com.example.musicplayer.R;
 import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -29,6 +31,7 @@ public class LauncherFragment extends Fragment {
     private Integer openIcon, closeIcon;
     private RecyclerView songRecycler;
     private SongRepository mRepository;
+    private SwipeRefreshLayout mRefreshLayout;
 
 
     public LauncherFragment() {
@@ -69,17 +72,15 @@ public class LauncherFragment extends Fragment {
 
     private void initUI(View view) {
         setUpToolbar(view);
-
-        LinearLayout contentLayout = view.findViewById(R.id.contentLayout);
-
-        sheetBehavior = BottomSheetBehavior.from(contentLayout);
-        sheetBehavior.setFitToContents(false);
-        sheetBehavior.setHideable(false);
-        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
         songRecycler = view.findViewById(R.id.recycler_view);
-        RecyclerInit();
+        songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        songRecycler.setAdapter(new MusicRecyclerAdapter(mRepository.getSongList(),getActivity()));
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            view.findViewById(R.id.product_grid)
+                    .setBackgroundResource(R.drawable.backdrop_background_v23);
+        }else view.findViewById(R.id.product_grid)
+                .setBackgroundResource(R.drawable.backdrop_background);
 
     }
 
@@ -90,39 +91,13 @@ public class LauncherFragment extends Fragment {
             activity.setSupportActionBar(toolbar);
         }
 
-        toolbar.setNavigationOnClickListener(v -> {
-            toggleFilters();
-            updateIcon(v);
-        });
+        toolbar.setNavigationOnClickListener(new NavigationIconClickListener(
+                getContext(),
+                view.findViewById(R.id.product_grid),
+                new AccelerateDecelerateInterpolator(),
+                getContext().getResources().getDrawable(R.drawable.ic_queue_music_black_36dp), // Menu open icon
+                getContext().getResources().getDrawable(R.drawable.ic_clear_black_36dp))); // Menu close icon
     }
 
-    private void toggleFilters(){
-        if(sheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
-            backdropShown = !backdropShown;
-            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-        else {
-            backdropShown = !backdropShown;
-            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
-    }
-
-    private void updateIcon(View view) {
-        if (openIcon != null && closeIcon != null) {
-            if (!(view instanceof ImageView)) {
-                throw new IllegalArgumentException("updateIcon() must be called on an ImageView");
-            }
-            if (backdropShown) {
-                ((ImageView) view).setImageResource(closeIcon);
-            } else {
-                ((ImageView) view).setImageResource(openIcon);
-            }
-        }
-    }
-
-    private void RecyclerInit(){
-        songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        songRecycler.setAdapter(new MusicRecyclerAdapter(mRepository.getSongList(),getActivity()));
-    }
 
 }

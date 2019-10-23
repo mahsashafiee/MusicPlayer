@@ -1,4 +1,4 @@
-package com.example.musicplayer;
+package com.example.musicplayer.controller;
 
 import android.content.Context;
 import android.media.AudioManager;

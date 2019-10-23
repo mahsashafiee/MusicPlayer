@@ -67,7 +67,7 @@ public class SongRepository {
                     song.setArtist(artist);
                     song.setAlbum(album);
                     song.setDuration(duration);
-                    song.setArtwork(BitmapFactory.decodeFile(AlbumsInfo.get(album)));
+                    /*song.setArtwork(BitmapFactory.decodeFile(AlbumsInfo.get(album)));*/
 
                     mSongs.add(song);
 

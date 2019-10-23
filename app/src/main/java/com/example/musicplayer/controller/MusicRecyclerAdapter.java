@@ -1,4 +1,4 @@
-package com.example.musicplayer;
+package com.example.musicplayer.controller;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.musicplayer.R;
 import com.example.musicplayer.model.Song;
 
 import java.util.List;

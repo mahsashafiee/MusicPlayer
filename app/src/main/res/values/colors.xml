@@ -8,4 +8,5 @@
     <color name="textInputBackgroundColor">#65815771</color>
 
     <color name="colorBackground">#FFFAFD</color>
+    <color name="colorItemBackground">#F1F1F1</color>
 </resources>
