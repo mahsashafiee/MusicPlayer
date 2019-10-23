@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
 
 import java.util.List;
@@ -19,10 +20,14 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
 
     private List<Song> mList ;
     private Context mContext;
+    private PlayerManager playerManager;
+    private CallBacks callBacks;
 
     public MusicRecyclerAdapter(List<Song> list, Context context) {
         mList = list;
-        mContext = context;
+        //mContext = context;
+        callBacks = (CallBacks) context;
+        playerManager = new PlayerManager(context);
     }
 
     public void setList(List<Song> list) {
@@ -55,6 +60,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
         private ConstraintLayout parentLayout;
         private TextView mTVMusicName, mTVMusicArtist, mTVMusicDuration;
         private CircleImageView mIVMusicCover;
+        private View itemView;
 
         public MusicHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,6 +70,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
             mTVMusicArtist = itemView.findViewById(R.id.item_artist_name);
             mTVMusicDuration = itemView.findViewById(R.id.item_music_duration);
             mTVMusicName = itemView.findViewById(R.id.item_music_name);
+            this.itemView = itemView;
 
         }
         public void bindHolder(Song song){
@@ -71,7 +78,12 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
             mTVMusicArtist.setText(song.getArtist());
             mTVMusicName.setText(song.getTitle());
             mTVMusicDuration.setText(song.getDuration());
-            mIVMusicCover.setImageBitmap(song.getArtwork());
+            mIVMusicCover.setImageBitmap(PictureUtils.getScaledBitmap(song.getArtworkPath(),mIVMusicCover));
+
+            itemView.setOnClickListener(view -> {
+                playerManager.Play(song.getPath().toString());
+                callBacks.SingleSong(song);
+            });
         }
     }
 }

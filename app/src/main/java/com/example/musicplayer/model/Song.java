@@ -1,17 +1,18 @@
 package com.example.musicplayer.model;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
+
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Song implements Comparable<Song> {
+public class Song implements Comparable<Song> , Serializable {
 
     private String mTitle;
     private String mArtist;
     private String mAlbum;
     private String mDuration;
     private Uri mPath;
-    private Bitmap mArtwork;
+    private String mArtworkPath;
     private UUID mSongId;
 
     public Song(Uri path) {
@@ -69,12 +70,12 @@ public class Song implements Comparable<Song> {
             this.mDuration = String.format("%02d:%02d:%02d", hrs, mns, scs);
     }
 
-    public Bitmap getArtwork() {
-        return mArtwork;
+    public String getArtworkPath() {
+        return mArtworkPath;
     }
 
-    public void setArtwork(Bitmap Artwork) {
-        this.mArtwork = Artwork;
+    public void setArtworkPath(String  Artwork) {
+        this.mArtworkPath = Artwork;
     }
 
 

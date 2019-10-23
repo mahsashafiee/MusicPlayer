@@ -36,6 +36,7 @@ public class PlayerManager {
 
     public void Stop(){
         songPlayer.stop();
+        songPlayer.reset();
     }
 
     public void Seek(int msec){

@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -67,7 +66,7 @@ public class SongRepository {
                     song.setArtist(artist);
                     song.setAlbum(album);
                     song.setDuration(duration);
-                    /*song.setArtwork(BitmapFactory.decodeFile(AlbumsInfo.get(album)));*/
+                    song.setArtworkPath(AlbumsInfo.get(album));
 
                     mSongs.add(song);
 
