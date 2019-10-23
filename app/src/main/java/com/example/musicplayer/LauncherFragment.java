@@ -52,6 +52,8 @@ public class LauncherFragment extends Fragment {
 
         openIcon = R.drawable.ic_queue_music_black_36dp;
         closeIcon = R.drawable.ic_clear_black_36dp;
+
+        mRepository = SongRepository.getInstance(getActivity());
     }
 
     @Override
@@ -59,8 +61,6 @@ public class LauncherFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_luncher, container, false);
-
-        mRepository = SongRepository.getInstance(getActivity());
 
         initUI(view);
 

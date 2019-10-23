@@ -10,10 +10,10 @@ import java.io.IOException;
 public class PlayerManager {
 
     private MediaPlayer songPlayer;
-    private Context mContex;
+    private Context mContext;
 
     public PlayerManager(Context context){
-        mContex = context;
+        mContext = context;
         songPlayer = new MediaPlayer();
         songPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     }
@@ -21,7 +21,7 @@ public class PlayerManager {
     public void Play(String songPath){
         try{
             songPlayer.reset();
-            songPlayer.setDataSource(mContex, Uri.parse(songPath));
+            songPlayer.setDataSource(mContext, Uri.parse(songPath));
             songPlayer.prepare();
             songPlayer.start();
 

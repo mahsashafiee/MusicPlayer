@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musicplayer.model.Song;
 
-import java.util.ArrayList;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -71,6 +70,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
             mTVMusicArtist.setText(song.getArtist());
             mTVMusicName.setText(song.getTitle());
             mTVMusicDuration.setText(song.getDuration());
+            mIVMusicCover.setImageBitmap(song.getArtwork());
         }
     }
 }

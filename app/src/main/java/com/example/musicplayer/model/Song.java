@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import java.util.UUID;
 
-public class Song {
+public class Song implements Comparable<Song> {
 
     private String mTitle;
     private String mArtist;
@@ -75,5 +75,11 @@ public class Song {
 
     public void setArtwork(Bitmap Artwork) {
         this.mArtwork = Artwork;
+    }
+
+
+    @Override
+    public int compareTo(Song song) {
+        return this.getTitle().compareTo( song.getTitle());
     }
 }
