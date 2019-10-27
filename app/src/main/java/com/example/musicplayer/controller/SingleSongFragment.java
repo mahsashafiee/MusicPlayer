@@ -12,9 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
+import com.masoudss.lib.WaveformSeekBar;
 
 import java.io.Serializable;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import rm.com.audiowave.AudioWaveView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +28,8 @@ public class SingleSongFragment extends Fragment {
 
     private static String ARG_SONG = "song";
     private Song mSong;
+    private CircleImageView mCover;
+    private View mView;
 
 
     public SingleSongFragment() {
@@ -49,7 +56,15 @@ public class SingleSongFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_single_song, container, false);
+        mView = inflater.inflate(R.layout.fragment_single_song, container, false);
+        initView();
+        return mView;
     }
+    private void initView(){
+        mCover = mView.findViewById(R.id.album_cover);
+        mCover.setImageBitmap(PictureUtils.getScaledBitmap(mSong.getArtworkPath(),mCover));
+    }
+
+
 
 }

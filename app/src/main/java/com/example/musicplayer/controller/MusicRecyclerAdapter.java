@@ -4,30 +4,31 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musicplayer.R;
-import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
 
 import java.util.List;
-import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdapter.MusicHolder> {
+public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Song> mList ;
+    private ViewHolders viewHolders;
+    private BindCallBack bindCallBack;
     private Context mContext;
-    private PlayerManager playerManager;
-    private CallBacks callBacks;
+    private String flag;
 
-    public MusicRecyclerAdapter(List<Song> list, Context context) {
+    public static String MUSIC_ITEM = "music_item";
+    public static String ALBUM_ITEM = "album_item";
+    public static String ARTIST_ITEM = "artist_item";
+
+    public MusicRecyclerAdapter(List<Song> list,@NonNull Context context ,@NonNull String view_flag) {
         mList = list;
-        //mContext = context;
-        callBacks = (CallBacks) context;
-        playerManager = new PlayerManager(context);
+        viewHolders = new ViewHolders(context);
+        flag = view_flag;
+        mContext = context;
     }
 
     public void setList(List<Song> list) {
@@ -36,18 +37,29 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
 
     @NonNull
     @Override
-    public MusicHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.music_list_item,parent,false);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View view;
 
-        return new MusicHolder(view);
+        if(flag.equals(MUSIC_ITEM)) {
+            view = inflater.inflate(R.layout.music_list_item, parent, false);
+            bindCallBack = viewHolders.new MusicItems(view);
+        }else if(flag.equals(ALBUM_ITEM)){
+            view = inflater.inflate(0, parent,false);
+            bindCallBack = viewHolders.new AlbumItems(view);
+
+        }else if(flag.equals(ARTIST_ITEM)) {
+            view = inflater.inflate(0, parent, false);
+            bindCallBack = viewHolders.new ArtistItems(view);
+        }
+
+        return (RecyclerView.ViewHolder) bindCallBack;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MusicHolder holder, int position) {
-        holder.bindHolder(mList.get(position));
-
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        bindCallBack.bindHolder(mList.get(position));
     }
 
     @Override
@@ -55,35 +67,11 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<MusicRecyclerAdap
         return mList.size();
     }
 
-    public class MusicHolder extends RecyclerView.ViewHolder {
+    public interface BindCallBack{
+        void bindHolder(Song song);
+    }
 
-        private ConstraintLayout parentLayout;
-        private TextView mTVMusicName, mTVMusicArtist, mTVMusicDuration;
-        private CircleImageView mIVMusicCover;
-        private View itemView;
-
-        public MusicHolder(@NonNull View itemView) {
-            super(itemView);
-
-            parentLayout = itemView.findViewById(R.id.parent_layout);
-            mIVMusicCover = itemView.findViewById(R.id.item_music_cover);
-            mTVMusicArtist = itemView.findViewById(R.id.item_artist_name);
-            mTVMusicDuration = itemView.findViewById(R.id.item_music_duration);
-            mTVMusicName = itemView.findViewById(R.id.item_music_name);
-            this.itemView = itemView;
-
-        }
-        public void bindHolder(Song song){
-
-            mTVMusicArtist.setText(song.getArtist());
-            mTVMusicName.setText(song.getTitle());
-            mTVMusicDuration.setText(song.getDuration());
-            mIVMusicCover.setImageBitmap(PictureUtils.getScaledBitmap(song.getArtworkPath(),mIVMusicCover));
-
-            itemView.setOnClickListener(view -> {
-                playerManager.Play(song.getPath().toString());
-                callBacks.SingleSong(song);
-            });
-        }
+    public void Releaser(){
+        viewHolders.Releaser();
     }
 }

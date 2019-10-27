@@ -1,6 +1,7 @@
 package com.example.musicplayer.controller;
 
 
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -17,8 +18,11 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
+import java.util.List;
 
 
 /**
@@ -32,6 +36,8 @@ public class LauncherFragment extends Fragment {
     private RecyclerView songRecycler;
     private SongRepository mRepository;
     private SwipeRefreshLayout mRefreshLayout;
+    private List<Song> mSongList;
+    private MusicRecyclerAdapter mAdapter;
 
 
     public LauncherFragment() {
@@ -47,7 +53,6 @@ public class LauncherFragment extends Fragment {
         return fragment;
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +62,8 @@ public class LauncherFragment extends Fragment {
         closeIcon = R.drawable.ic_clear_black_36dp;
 
         mRepository = SongRepository.getInstance(getActivity());
+        MusicPlayerList musicPlayerList = new MusicPlayerList();
+        musicPlayerList.execute();
     }
 
     @Override
@@ -72,9 +79,10 @@ public class LauncherFragment extends Fragment {
 
     private void initUI(View view) {
         setUpToolbar(view);
+        mAdapter = new MusicRecyclerAdapter(mSongList,getActivity(), MusicRecyclerAdapter.MUSIC_ITEM);
         songRecycler = view.findViewById(R.id.recycler_view);
         songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        songRecycler.setAdapter(new MusicRecyclerAdapter(mRepository.getSongList(),getActivity()));
+        songRecycler.setAdapter(mAdapter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             view.findViewById(R.id.product_grid)
@@ -99,5 +107,23 @@ public class LauncherFragment extends Fragment {
                 getContext().getResources().getDrawable(R.drawable.ic_clear_black_36dp))); // Menu close icon
     }
 
+    /**
+     * Background Thread
+     */
+    private class MusicPlayerList extends AsyncTask<Void,Void,Void>{
 
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mSongList = mRepository.getSongList();
+            return null;
+        }
+    }
+
+    /**
+     * MediaPlayer Resource Release
+     */
+
+    public void Release(){
+        mAdapter.Releaser();
+    }
 }

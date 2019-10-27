@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -19,15 +20,18 @@ public class SongRepository {
     private List<Song> mSongs = new ArrayList<>();
     private HashMap<String, String> AlbumsInfo = new HashMap<>();
     private Context mContext;
-    private static SongRepository instance = new SongRepository();
+    private static SongRepository instance;
 
-    private SongRepository() {
+    private SongRepository(Context context) {
+        mContext = context;
+        setAlbumInfo();
+        findSongs();
     }
 
     public static SongRepository getInstance(Context context) {
-        instance.mContext = context;
-        instance.setAlbumInfo();
-        instance.findSongs();
+        if(instance == null) {
+            instance = new SongRepository(context);
+        }
         return instance;
     }
 
@@ -41,39 +45,22 @@ public class SongRepository {
 
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
+        SongCursorWrapper songWrapper = new SongCursorWrapper(musicResolver.query(musicUri, null, null, null, null));
 
-        if (musicCursor != null && musicCursor.moveToFirst()) {
-
-            int idColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media._ID);
-            int TitleColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-            int ArtistColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-            int AlbumColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-            int DurationColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.DURATION);
+        if (songWrapper != null && songWrapper.moveToFirst()) {
+            int idColumn = songWrapper.getColumnIndex(MediaStore.Audio.Media._ID);
 
             try {
-                do {
-                    long id = musicCursor.getLong(idColumn);
-                    String title = musicCursor.getString(TitleColumn);
-                    String artist = musicCursor.getString(ArtistColumn);
-                    String album = musicCursor.getString(AlbumColumn);
-                    int duration = musicCursor.getInt(DurationColumn);
 
+                while (!songWrapper.isAfterLast()){
+                    long id = songWrapper.getLong(idColumn);
                     Uri contentUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
-                    Song song = new Song(contentUri);
-
-                    song.setTitle(title);
-                    song.setArtist(artist);
-                    song.setAlbum(album);
-                    song.setDuration(duration);
-                    song.setArtworkPath(AlbumsInfo.get(album));
-
-                    mSongs.add(song);
-
-                } while (musicCursor.moveToNext());
+                    mSongs.add(songWrapper.getSong(contentUri));
+                    songWrapper.moveToNext();
+                }
 
             } finally {
-                musicCursor.close();
+                songWrapper.close();
             }
         }
     }

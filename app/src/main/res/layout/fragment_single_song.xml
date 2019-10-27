@@ -26,6 +26,7 @@
             app:layout_constraintVertical_chainStyle="spread">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/album_cover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:foregroundGravity="center"
@@ -38,7 +39,7 @@
         <com.masoudss.lib.WaveformSeekBar
             android:id="@+id/seek_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             app:layout_constraintBottom_toTopOf="@id/controller_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -11,7 +11,9 @@ import android.os.Bundle;
 import com.example.musicplayer.R;
 import com.example.musicplayer.model.Song;
 
-public class MainActivity extends AppCompatActivity implements CallBacks {
+public class MainActivity extends AppCompatActivity implements ViewHolders.CallBacks {
+
+    private LauncherFragment mLunchFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +46,13 @@ public class MainActivity extends AppCompatActivity implements CallBacks {
         }
 
         if (savedInstanceState == null) {
+            mLunchFrag = LauncherFragment.newInstance();
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.container, LauncherFragment.newInstance())
+                    .add(R.id.container, mLunchFrag)
                     .commit();
         }
     }
-
 
     @Override
     public void SingleSong(Song song) {
@@ -58,5 +60,11 @@ public class MainActivity extends AppCompatActivity implements CallBacks {
                 .beginTransaction()
                 .add(R.id.container, SingleSongFragment.newInstance(song))
                 .commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mLunchFrag.Release();
+        super.onDestroy();
     }
 }
