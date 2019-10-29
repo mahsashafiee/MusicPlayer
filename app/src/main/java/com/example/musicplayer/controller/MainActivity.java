@@ -14,7 +14,7 @@ import com.example.musicplayer.model.Song;
 
 public class MainActivity extends AppCompatActivity implements ViewHolders.CallBacks {
 
-    private LauncherFragment mLunchFrag;
+    private CategoryFragment mLunchFrag;
     private static int STORAGE_PERMISSION_REQCODE = 1;
     private Bundle savedInstanceState;
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements ViewHolders.CallB
 
     private void RunActivity() {
         if (savedInstanceState == null) {
-            mLunchFrag = LauncherFragment.newInstance();
+            mLunchFrag = CategoryFragment.newInstance();
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.container, mLunchFrag)
@@ -54,12 +54,12 @@ public class MainActivity extends AppCompatActivity implements ViewHolders.CallB
                 .commit();
     }
 
-    @Override
+/*    @Override
     protected void onDestroy() {
         if (mLunchFrag != null)
             mLunchFrag.Release();
         super.onDestroy();
-    }
+    }*/
 
 
     /**
