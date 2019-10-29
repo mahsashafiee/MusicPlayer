@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#F3CFE9</color>
-    <color name="colorPrimaryDark">#BD94A5</color>
-    <color name="colorAccent">#933469</color>
-    <color name="textColorPrimary">#573F4C</color>
+    <color name="colorPrimary">#7B0194</color>
+    <color name="colorPrimaryDark">#4E1857</color>
+    <color name="colorAccent">#FF8045</color>
+    <color name="textColorPrimary">#FFFFFF</color>
     <color name="toolbarIconColor">@color/textColorPrimary</color>
-    <color name="textInputBackgroundColor">#65815771</color>
+    <color name="textInputBackgroundColor">#65A75286</color>
 
-    <color name="colorBackground">#FFFAFD</color>
-    <color name="colorItemBackground">#F1F1F1</color>
 </resources>
