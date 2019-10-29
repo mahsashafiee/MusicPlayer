@@ -46,11 +46,9 @@ public class ViewHolders {
         public MusicItems(@NonNull View itemView) {
             super(itemView);
 
-            parentLayout = itemView.findViewById(R.id.parent_layout);
-            mIVMusicCover = itemView.findViewById(R.id.item_music_cover);
-            mTVMusicArtist = itemView.findViewById(R.id.item_artist_name);
-            mTVMusicDuration = itemView.findViewById(R.id.item_music_duration);
-            mTVMusicName = itemView.findViewById(R.id.item_music_name);
+            mIVMusicCover = itemView.findViewById(R.id.item_song_art);
+            mTVMusicArtist = itemView.findViewById(R.id.item_song_artist);
+            mTVMusicName = itemView.findViewById(R.id.item_song_title);
             this.itemView = itemView;
 
         }
@@ -59,7 +57,6 @@ public class ViewHolders {
 
             mTVMusicArtist.setText(song.getArtist());
             mTVMusicName.setText(song.getTitle());
-            mTVMusicDuration.setText(song.getDuration());
             mIVMusicCover.setImageBitmap(PictureUtils.getScaledBitmap(song.getArtworkPath(),mIVMusicCover));
 
             itemView.setOnClickListener(view -> {

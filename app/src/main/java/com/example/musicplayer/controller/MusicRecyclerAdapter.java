@@ -43,7 +43,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         View view;
 
         if(flag.equals(MUSIC_ITEM)) {
-            view = inflater.inflate(R.layout.music_list_item, parent, false);
+            view = inflater.inflate(R.layout.song_list_item, parent, false);
             bindCallBack = viewHolders.new MusicItems(view);
         }else if(flag.equals(ALBUM_ITEM)){
             view = inflater.inflate(0, parent,false);
