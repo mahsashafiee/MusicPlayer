@@ -3,24 +3,25 @@ package com.example.musicplayer.model;
 import android.net.Uri;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 public class Song implements Comparable<Song> , Serializable {
 
+    private Long mSongId;
     private String mTitle;
     private String mArtist;
     private String mAlbum;
     private String mDuration;
     private Uri mPath;
     private String mArtworkPath;
-    private UUID mSongId;
+    private String mLyrics;
+    private String mFilePath;
 
-    public Song(Uri path) {
+    public Song(Uri path , Long id) {
         mPath = path;
-        mSongId = UUID.randomUUID();
+        mSongId = id;
     }
 
-    public UUID getSongId() {
+    public Long getSongId() {
         return mSongId;
     }
 
@@ -28,36 +29,42 @@ public class Song implements Comparable<Song> , Serializable {
         return mTitle;
     }
 
-    public void setTitle(String Title) {
-        this.mTitle = Title;
-    }
-
     public String getArtist() {
         return mArtist;
-    }
-
-    public Uri getPath() {
-        return mPath;
-    }
-
-    public void setPath(Uri Path) {
-        this.mPath = Path;
-    }
-
-    public void setArtist(String Artist) {
-        this.mArtist = Artist;
     }
 
     public String getAlbum() {
         return mAlbum;
     }
 
-    public void setAlbum(String Album) {
-        this.mAlbum = Album;
-    }
-
     public String getDuration() {
         return mDuration;
+    }
+
+    public Uri getPath() {
+        return mPath;
+    }
+
+    public String getArtworkPath() {
+        return mArtworkPath;
+    }
+
+    public String getLyrics(){ return mLyrics; }
+
+    public String getFilePath(){ return mFilePath; }
+
+    public void setTitle(String Title) {
+        this.mTitle = Title;
+    }
+
+    public void setPath(Uri Path) { this.mPath = Path; }
+
+    public void setArtist(String Artist) {
+        this.mArtist = Artist;
+    }
+
+    public void setAlbum(String Album) {
+        this.mAlbum = Album;
     }
 
     public void setDuration(int Duration) {
@@ -70,13 +77,13 @@ public class Song implements Comparable<Song> , Serializable {
             this.mDuration = String.format("%02d:%02d:%02d", hrs, mns, scs);
     }
 
-    public String getArtworkPath() {
-        return mArtworkPath;
-    }
-
     public void setArtworkPath(String  Artwork) {
         this.mArtworkPath = Artwork;
     }
+
+    public void setLyrics(String lyrics) {this.mLyrics = lyrics; }
+
+    public void setFilePath(String FilePath) {this.mFilePath = FilePath; }
 
 
     @Override

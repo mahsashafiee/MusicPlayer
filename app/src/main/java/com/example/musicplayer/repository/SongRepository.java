@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -48,18 +47,23 @@ public class SongRepository {
         SongCursorWrapper songWrapper = new SongCursorWrapper(musicResolver.query(musicUri, null, null, null, null));
 
         if (songWrapper != null && songWrapper.moveToFirst()) {
-            int idColumn = songWrapper.getColumnIndex(MediaStore.Audio.Media._ID);
-
             try {
 
                 while (!songWrapper.isAfterLast()){
-                    long id = songWrapper.getLong(idColumn);
+                    long id = songWrapper.getLong(songWrapper.getColumnIndex(MediaStore.Audio.Media._ID));
                     Uri contentUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
-                    mSongs.add(songWrapper.getSong(contentUri));
+
+                    Song song = songWrapper.getSong(contentUri);
+                    song.setArtworkPath(AlbumsInfo.get(song.getAlbum()));
+
+                    mSongs.add(song);
                     songWrapper.moveToNext();
                 }
 
-            } finally {
+            }catch (Exception e){
+                return;
+            }
+            finally {
                 songWrapper.close();
             }
         }

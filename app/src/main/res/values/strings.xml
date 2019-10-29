@@ -12,6 +12,11 @@
     <string name="mp_playlist_label">Playlists</string>
     <string name="mp_search_form">Search…</string>
 
+    <plurals name="item_number">
+        <item quantity="one">%1$d item</item>
+        <item quantity="other">%1$d items</item>
+    </plurals>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

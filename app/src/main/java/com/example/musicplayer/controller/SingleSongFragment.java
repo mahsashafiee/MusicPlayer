@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,8 @@ import android.view.ViewGroup;
 import com.example.musicplayer.R;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
-import com.masoudss.lib.WaveformSeekBar;
-
-import java.io.Serializable;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import rm.com.audiowave.AudioWaveView;
 
 /**
  * A simple {@link Fragment} subclass.

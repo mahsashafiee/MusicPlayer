@@ -12,18 +12,20 @@ import com.example.musicplayer.R;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
 
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewHolders {
 
     private PlayerManager playerManager;
     private CallBacks callBacks;
+    private List<Song> mPlayList;
 
-    private ViewHolders(){}
-
-    public ViewHolders(Context context){
+    public ViewHolders(Context context , List<Song> playList){
         callBacks = (CallBacks) context;
         playerManager = new PlayerManager(context);
+        mPlayList = playList;
     }
 
     public interface CallBacks {
@@ -61,7 +63,8 @@ public class ViewHolders {
             mIVMusicCover.setImageBitmap(PictureUtils.getScaledBitmap(song.getArtworkPath(),mIVMusicCover));
 
             itemView.setOnClickListener(view -> {
-                playerManager.Play(song.getPath().toString());
+                playerManager.Play(mPlayList,mPlayList.indexOf(song));
+                //playerManager.Play(song.getPath());
                 //callBacks.SingleSong(song);
             });
         }

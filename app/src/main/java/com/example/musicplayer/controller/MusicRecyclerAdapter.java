@@ -26,7 +26,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public MusicRecyclerAdapter(List<Song> list,@NonNull Context context ,@NonNull String view_flag) {
         mList = list;
-        viewHolders = new ViewHolders(context);
+        viewHolders = new ViewHolders(context,mList);
         flag = view_flag;
         mContext = context;
     }

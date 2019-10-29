@@ -1,5 +1,6 @@
 package com.example.musicplayer.controller;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -14,37 +15,28 @@ import com.example.musicplayer.model.Song;
 public class MainActivity extends AppCompatActivity implements ViewHolders.CallBacks {
 
     private LauncherFragment mLunchFrag;
+    private static int STORAGE_PERMISSION_REQCODE = 1;
+    private Bundle savedInstanceState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.savedInstanceState = savedInstanceState;
 
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            // Permission is not granted
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        1);
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    STORAGE_PERMISSION_REQCODE);
 
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            // Permission has already been granted
-        }
+        } else RunActivity();
 
+    }
+
+    private void RunActivity() {
         if (savedInstanceState == null) {
             mLunchFrag = LauncherFragment.newInstance();
             getSupportFragmentManager()
@@ -64,7 +56,27 @@ public class MainActivity extends AppCompatActivity implements ViewHolders.CallB
 
     @Override
     protected void onDestroy() {
-        mLunchFrag.Release();
+        if (mLunchFrag != null)
+            mLunchFrag.Release();
         super.onDestroy();
+    }
+
+
+    /**
+     * Handle the permissions request response
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == STORAGE_PERMISSION_REQCODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                RunActivity();
+            } else {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+        }
     }
 }
