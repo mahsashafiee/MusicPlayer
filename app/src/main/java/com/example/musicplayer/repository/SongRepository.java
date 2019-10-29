@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.model.Song;
 
 import java.util.ArrayList;

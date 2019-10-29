@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements ViewHolders.CallB
                 != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE , Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     STORAGE_PERMISSION_REQCODE);
 
         } else RunActivity();
@@ -74,8 +74,12 @@ public class MainActivity extends AppCompatActivity implements ViewHolders.CallB
         if (requestCode == STORAGE_PERMISSION_REQCODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 RunActivity();
-            } else {
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            } else if(grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                RunActivity();
+            }else {
+                this.onPause();
+                this.onStop();
+                this.onDestroy();
             }
         }
     }
