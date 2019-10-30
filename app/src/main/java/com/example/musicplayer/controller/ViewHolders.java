@@ -2,14 +2,17 @@ package com.example.musicplayer.controller;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.Utils.PictureUtils;
+import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Song;
 
 import java.util.List;
@@ -37,7 +40,7 @@ public class ViewHolders {
     }
 
 
-    public class MusicItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack {
+    public class MusicItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Song> {
         private ConstraintLayout parentLayout;
         private TextView mTVMusicName, mTVMusicArtist, mTVMusicDuration;
         private CircleImageView mIVMusicCover;
@@ -70,25 +73,35 @@ public class ViewHolders {
         }
     }
 
-    public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack {
+    public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Album> {
 
         private View itemView;
+        private ImageView mAlbumArt;
+        private TextView mAlbum;
+        private TextView mArtist;
+
 
         public AlbumItems(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
 
+            mAlbumArt = itemView.findViewById(R.id.item_album_art);
+            mAlbum = itemView.findViewById(R.id.item_album_title);
+            mArtist = itemView.findViewById(R.id.item_album_artist);
+
         }
 
         @Override
-        public void bindHolder(Song song){
-
+        public void bindHolder(Album album) {
+            mAlbumArt.setImageBitmap(PictureUtils.getScaledBitmap(album.getArtworkPath(),mAlbumArt));
+            mAlbum.setText(album.getTitle());
+            mArtist.setText(album.getAlbumArtist());
             itemView.setOnClickListener(view -> {
             });
         }
     }
 
-    public class ArtistItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack {
+    public class ArtistItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Song> {
 
         private View itemView;
 

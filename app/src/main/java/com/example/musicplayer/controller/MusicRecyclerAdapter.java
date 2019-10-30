@@ -14,7 +14,7 @@ import java.util.List;
 
 public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Song> mList ;
+    private List mList ;
     private ViewHolders viewHolders;
     private BindCallBack bindCallBack;
     private Context mContext;
@@ -24,14 +24,14 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public static String ALBUM_ITEM = "album_item";
     public static String ARTIST_ITEM = "artist_item";
 
-    public MusicRecyclerAdapter(List<Song> list,@NonNull Context context ,@NonNull String view_flag) {
+    public MusicRecyclerAdapter(List list,@NonNull Context context ,@NonNull String view_flag) {
         mList = list;
         viewHolders = new ViewHolders(context,mList);
         flag = view_flag;
         mContext = context;
     }
 
-    public void setList(List<Song> list) {
+    public void setList(List list) {
         mList = list;
     }
 
@@ -46,7 +46,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             view = inflater.inflate(R.layout.music_list_item, parent, false);
             bindCallBack = viewHolders.new MusicItems(view);
         }else if(flag.equals(ALBUM_ITEM)){
-            view = inflater.inflate(0, parent,false);
+            view = inflater.inflate(R.layout.mi_album_item, parent,false);
             bindCallBack = viewHolders.new AlbumItems(view);
 
         }else if(flag.equals(ARTIST_ITEM)) {
@@ -67,8 +67,8 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         return mList.size();
     }
 
-    public interface BindCallBack{
-        void bindHolder(Song song);
+    public interface BindCallBack<O>{
+        void bindHolder(O model);
     }
 
     public void Releaser(){

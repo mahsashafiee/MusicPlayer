@@ -96,4 +96,37 @@ public class SongRepository {
         }
     }
 
+    public List<Song> getAlbumSongs(String albumName){
+
+        List<Song> songs = new ArrayList<>();
+
+        ContentResolver musicResolver = mContext.getContentResolver();
+        Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        SongCursorWrapper songWrapper = new SongCursorWrapper(musicResolver.query(musicUri,
+                null, MediaStore.Audio.Media.ALBUM , new String[]{albumName}, null));
+
+        if (songWrapper != null && songWrapper.moveToFirst()) {
+            try {
+
+                while (!songWrapper.isAfterLast()){
+                    long id = songWrapper.getLong(songWrapper.getColumnIndex(MediaStore.Audio.Media._ID));
+                    Uri contentUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+
+                    Song song = songWrapper.getSong(contentUri);
+                    song.setArtworkPath(AlbumsInfo.get(song.getAlbum()));
+
+                    songs.add(song);
+                    songWrapper.moveToNext();
+                }
+
+            }catch (Exception e){
+                return songs;
+            }
+            finally {
+                songWrapper.close();
+            }
+        }
+        return songs;
+    }
+
 }
