@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
@@ -24,7 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LauncherFragment extends Fragment {
+public class SongListFragment extends Fragment {
 
     private BottomSheetBehavior sheetBehavior;
     private boolean backdropShown;
@@ -33,17 +34,21 @@ public class LauncherFragment extends Fragment {
     private SongRepository mRepository;
     private SwipeRefreshLayout mRefreshLayout;
     private MusicRecyclerAdapter mAdapter;
+    private String mAlbumName;
+
+    private static final String ARG_KEY = "albumName";
 
 
-    public LauncherFragment() {
+    public SongListFragment() {
         // Required empty public constructor
     }
 
-    public static LauncherFragment newInstance() {
+    public static SongListFragment newInstance(String albumName) {
         
         Bundle args = new Bundle();
+        args.putString(ARG_KEY,albumName);
         
-        LauncherFragment fragment = new LauncherFragment();
+        SongListFragment fragment = new SongListFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,7 +61,9 @@ public class LauncherFragment extends Fragment {
         openIcon = R.drawable.ic_queue_music_black_36dp;
         closeIcon = R.drawable.ic_clear_black_36dp;
 
-        mRepository = SongRepository.getInstance(getActivity());
+        mAlbumName = getArguments().getString(ARG_KEY);
+
+        PlayList.setSongList(SongRepository.getInstance(getActivity()).getAlbumSongList(mAlbumName));
 
     }
 
@@ -75,8 +82,12 @@ public class LauncherFragment extends Fragment {
      */
     private void initUI(View view) {
         setUpToolbar(view);
-        mAdapter = new MusicRecyclerAdapter(mRepository.getSongList(),getActivity(), MusicRecyclerAdapter.MUSIC_ITEM);
+
+        mAdapter = new MusicRecyclerAdapter(getActivity(), MusicRecyclerAdapter.MUSIC_ITEM);
+        mAdapter.setList(PlayList.getSongList());
+
         songRecycler = view.findViewById(R.id.recycler_view);
+
         songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         songRecycler.setAdapter(mAdapter);
 
@@ -106,14 +117,5 @@ public class LauncherFragment extends Fragment {
                 new AccelerateDecelerateInterpolator(),
                 getContext().getResources().getDrawable(R.drawable.ic_queue_music_black_36dp), // Menu open icon
                 getContext().getResources().getDrawable(R.drawable.ic_clear_black_36dp))); // Menu close icon
-    }
-
-
-    /**
-     * MediaPlayer Resource Release
-     */
-
-    public void Release(){
-        mAdapter.Releaser();
     }
 }

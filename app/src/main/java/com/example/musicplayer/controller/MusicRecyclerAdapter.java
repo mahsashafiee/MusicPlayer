@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musicplayer.R;
-import com.example.musicplayer.model.Song;
 
 import java.util.List;
 
@@ -24,9 +23,8 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public static String ALBUM_ITEM = "album_item";
     public static String ARTIST_ITEM = "artist_item";
 
-    public MusicRecyclerAdapter(List list,@NonNull Context context ,@NonNull String view_flag) {
-        mList = list;
-        viewHolders = new ViewHolders(context,mList);
+    public MusicRecyclerAdapter(@NonNull Context context ,@NonNull String view_flag) {
+        viewHolders = new ViewHolders(context);
         flag = view_flag;
         mContext = context;
     }
@@ -69,9 +67,5 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public interface BindCallBack<O>{
         void bindHolder(O model);
-    }
-
-    public void Releaser(){
-        viewHolders.Releaser();
     }
 }

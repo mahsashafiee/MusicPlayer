@@ -6,37 +6,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Song;
 
-import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewHolders {
 
-    private PlayerManager playerManager;
     private CallBacks callBacks;
-    private List<Song> mPlayList;
+    private Context mContext;
 
-    public ViewHolders(Context context , List<Song> playList){
+    public ViewHolders(Context context){
         callBacks = (CallBacks) context;
-        playerManager = new PlayerManager(context);
-        mPlayList = playList;
+        mContext = context;
     }
 
     public interface CallBacks {
         void SingleSong(Song song);
-    }
-
-    public void Releaser(){
-        playerManager.Release();
+        void SongList(String albumName);
     }
 
 
@@ -45,6 +38,7 @@ public class ViewHolders {
         private TextView mTVMusicName, mTVMusicArtist, mTVMusicDuration;
         private CircleImageView mIVMusicCover;
         private View itemView;
+        private Song mSong;
 
         public MusicItems(@NonNull View itemView) {
             super(itemView);
@@ -56,20 +50,22 @@ public class ViewHolders {
             mTVMusicName = itemView.findViewById(R.id.item_music_name);
             this.itemView = itemView;
 
+            itemView.setOnClickListener(view -> {
+                callBacks.SingleSong(mSong);
+            });
+
         }
         @Override
         public void bindHolder(Song song){
 
+            mSong = song;
             mTVMusicArtist.setText(song.getArtist());
             mTVMusicName.setText(song.getTitle());
             mTVMusicDuration.setText(song.getDuration());
-            mIVMusicCover.setImageBitmap(PictureUtils.getScaledBitmap(song.getArtworkPath(),mIVMusicCover));
+            if(song.getArtworkPath() != null) {
+                Glide.with(mContext).asDrawable().load(song.getArtworkPath()).into(PictureUtils.getTarget(mIVMusicCover));
+            }
 
-            itemView.setOnClickListener(view -> {
-                playerManager.Play(mPlayList,mPlayList.indexOf(song));
-                //playerManager.Play(song.getPath());
-                //callBacks.SingleSong(song);
-            });
         }
     }
 
@@ -77,8 +73,9 @@ public class ViewHolders {
 
         private View itemView;
         private ImageView mAlbumArt;
-        private TextView mAlbum;
+        private TextView mTitle;
         private TextView mArtist;
+        private Album mAlbum;
 
 
         public AlbumItems(@NonNull View itemView) {
@@ -86,18 +83,22 @@ public class ViewHolders {
             this.itemView = itemView;
 
             mAlbumArt = itemView.findViewById(R.id.item_album_art);
-            mAlbum = itemView.findViewById(R.id.item_album_title);
+            mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
+            itemView.setOnClickListener(view -> {
+                callBacks.SongList(mAlbum.getTitle());
+            });
 
         }
 
         @Override
         public void bindHolder(Album album) {
-            mAlbumArt.setImageBitmap(PictureUtils.getScaledBitmap(album.getArtworkPath(),mAlbumArt));
-            mAlbum.setText(album.getTitle());
+            mAlbum = album;
+            if(album.getArtworkPath() != null) {
+                Glide.with(mContext).asDrawable().load(album.getArtworkPath()).into(PictureUtils.getTarget(mAlbumArt));
+            }
+            mTitle.setText(album.getTitle());
             mArtist.setText(album.getAlbumArtist());
-            itemView.setOnClickListener(view -> {
-            });
         }
     }
 
@@ -108,14 +109,13 @@ public class ViewHolders {
         public ArtistItems(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
+            itemView.setOnClickListener(view -> {
+            });
 
         }
 
         @Override
         public void bindHolder(Song song){
-
-            itemView.setOnClickListener(view -> {
-            });
         }
     }
 

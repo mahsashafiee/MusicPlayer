@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.repository.AlbumRepository;
-import com.example.musicplayer.repository.SongRepository;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +22,7 @@ public class CategoryFragment extends Fragment {
     private View mView;
     private RecyclerView mRecycler;
     private AlbumRepository mRepository;
+    private MusicRecyclerAdapter mAdapter;
 
 
     public CategoryFragment() {
@@ -50,8 +50,13 @@ public class CategoryFragment extends Fragment {
     }
     private void initUI(){
         mRecycler = mView.findViewById(R.id.album_recycler_view);
-        mRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecycler.setAdapter(new MusicRecyclerAdapter(mRepository.getAlbums(),getActivity(),MusicRecyclerAdapter.ALBUM_ITEM));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        mRecycler.setLayoutManager(layoutManager);
+        mAdapter = new MusicRecyclerAdapter(getActivity(),MusicRecyclerAdapter.ALBUM_ITEM);
+        mAdapter.setList(mRepository.getAlbums());
+        mRecycler.setAdapter(mAdapter);
+
     }
 
 }

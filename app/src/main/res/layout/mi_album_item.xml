@@ -23,7 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:outlineProvider="bounds"
-            tools:background="@tools:sample/avatars"/>
+            android:src="@drawable/disc"
+            android:background="@android:color/darker_gray"/>
     </androidx.cardview.widget.CardView>
     <TextView
         android:id="@+id/item_album_title"

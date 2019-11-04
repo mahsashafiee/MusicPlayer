@@ -1,10 +1,11 @@
 package com.example.musicplayer.model;
 
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.io.Serializable;
 
-public class Song implements Comparable<Song> , Serializable {
+public class Song implements Comparable<Song> , Parcelable {
 
     private Long mSongId;
     private String mTitle;
@@ -90,4 +91,56 @@ public class Song implements Comparable<Song> , Serializable {
     public int compareTo(Song song) {
         return this.getTitle().compareTo( song.getTitle());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Song song = (Song) o;
+        return mSongId.equals(song.mSongId) &&
+                mFilePath.equals(song.mFilePath);
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.mSongId);
+        dest.writeString(this.mTitle);
+        dest.writeString(this.mArtist);
+        dest.writeString(this.mAlbum);
+        dest.writeString(this.mDuration);
+        dest.writeString(this.mArtworkPath);
+        dest.writeParcelable(this.mPath, flags);
+        dest.writeString(this.mLyrics);
+        dest.writeString(this.mFilePath);
+    }
+
+    protected Song(Parcel in) {
+        this.mSongId = (Long) in.readValue(Long.class.getClassLoader());
+        this.mTitle = in.readString();
+        this.mArtist = in.readString();
+        this.mAlbum = in.readString();
+        this.mDuration = in.readString();
+        this.mArtworkPath = in.readString();
+        this.mPath = in.readParcelable(Uri.class.getClassLoader());
+        this.mLyrics = in.readString();
+        this.mFilePath = in.readString();
+    }
+
+    public static final Creator<Song> CREATOR = new Creator<Song>() {
+        @Override
+        public Song createFromParcel(Parcel source) {
+            return new Song(source);
+        }
+
+        @Override
+        public Song[] newArray(int size) {
+            return new Song[size];
+        }
+    };
 }

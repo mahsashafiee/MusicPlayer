@@ -6,8 +6,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
-import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.model.Song;
 
 import java.util.ArrayList;
@@ -18,14 +18,15 @@ import java.util.List;
 public class SongRepository {
 
     private List<Song> mSongs = new ArrayList<>();
+    private List<Song> mAlbumSongs ;
     private HashMap<String, String> AlbumsInfo = new HashMap<>();
     private Context mContext;
     private static SongRepository instance;
+    private String TAG = "Album exception";
 
     private SongRepository(Context context) {
         mContext = context;
         setAlbumInfo();
-        findSongs();
     }
 
     public static SongRepository getInstance(Context context) {
@@ -35,9 +36,16 @@ public class SongRepository {
         return instance;
     }
 
-    public List<Song> getSongList() {
+    public List<Song> getSongs() {
+        findSongs();
         Collections.sort(mSongs);
         return mSongs;
+    }
+
+    public List<Song> getAlbumSongList(String albumName){
+        getAlbumSongs(albumName);
+        Collections.sort(mAlbumSongs);
+        return mAlbumSongs;
     }
 
 
@@ -96,14 +104,13 @@ public class SongRepository {
         }
     }
 
-    public List<Song> getAlbumSongs(String albumName){
-
-        List<Song> songs = new ArrayList<>();
+    private void getAlbumSongs(String albumName){
+        mAlbumSongs = new ArrayList<>();
 
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         SongCursorWrapper songWrapper = new SongCursorWrapper(musicResolver.query(musicUri,
-                null, MediaStore.Audio.Media.ALBUM , new String[]{albumName}, null));
+                null, MediaStore.Audio.Media.ALBUM + " = ? " , new String[]{albumName}, null));
 
         if (songWrapper != null && songWrapper.moveToFirst()) {
             try {
@@ -115,18 +122,42 @@ public class SongRepository {
                     Song song = songWrapper.getSong(contentUri);
                     song.setArtworkPath(AlbumsInfo.get(song.getAlbum()));
 
-                    songs.add(song);
+                    mAlbumSongs.add(song);
                     songWrapper.moveToNext();
                 }
 
             }catch (Exception e){
-                return songs;
+                Log.d(TAG, "getAlbumSongs: "+ e.getMessage());
             }
             finally {
                 songWrapper.close();
             }
         }
-        return songs;
+    }
+
+    public Song getSong(long id) {
+
+        Song song = null;
+
+        ContentResolver musicResolver = mContext.getContentResolver();
+        Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        SongCursorWrapper songWrapper = new SongCursorWrapper(musicResolver.query(musicUri, null,
+                MediaStore.Audio.Media._ID + " = ?", new String[]{String.valueOf(id)}, null));
+
+        if (songWrapper != null && songWrapper.moveToFirst()) {
+            try {
+                Uri contentUri = ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+                song = songWrapper.getSong(contentUri);
+                song.setArtworkPath(AlbumsInfo.get(song.getAlbum()));
+
+            }catch (Exception e){
+                return song;
+            }
+            finally {
+                songWrapper.close();
+            }
+        }
+        return song;
     }
 
 }
