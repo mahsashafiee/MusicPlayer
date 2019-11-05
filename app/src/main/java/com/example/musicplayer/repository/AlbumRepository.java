@@ -6,6 +6,7 @@ import android.provider.MediaStore;
 import com.example.musicplayer.model.Album;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AlbumRepository {
@@ -26,6 +27,7 @@ public class AlbumRepository {
     }
 
     public List<Album> getAlbums(){
+        Collections.sort(mAlbums);
         return mAlbums;
     }
 

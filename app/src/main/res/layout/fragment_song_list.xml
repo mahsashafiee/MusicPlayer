@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/coordinatorLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--This the interface sitting behind the backdrop and shown when it is collapsed-->
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/app_bar"
+            style="@style/Widget.MusicPlayer.Toolbar"
+            android:layout_width="match_parent"
+            app:titleTextColor="@color/textColorPrimary"
+            android:layout_height="?attr/actionBarSize"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            app:contentInsetStart="0dp"
+            app:navigationIcon="@drawable/ic_piano"
+            app:title="@string/mp_app_name" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/item_count"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:textSize="16sp"
+            android:elevation="8dp"
+            android:textStyle="bold|italic"
+            android:gravity="start|center_vertical"
+            android:background="@drawable/backdrop_background"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            tools:text="85 items"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:paddingTop="2dp"
+            android:background="@color/textColorPrimary"
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/song_list_item"/>
+
+    </LinearLayout>
+
+
+
+</FrameLayout>

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Song;
 
 

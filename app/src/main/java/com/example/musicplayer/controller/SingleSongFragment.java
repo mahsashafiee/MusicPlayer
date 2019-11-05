@@ -37,6 +37,8 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
     private ImageView mPlayPause;
     private ImageView mForward;
     private ImageView mBackward;
+    private ImageView mShuffle;
+    private ImageView mRepeat;
     private View mView;
     private CircularSeekBar mSeekBar;
     private TextView mTitle;
@@ -65,7 +67,8 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
         super.onCreate(savedInstanceState);
 
         mSong = getArguments().getParcelable(ARG_SONG);
-        mPlayer = PlayerManager.getPlayer(getContext(), SingleSongFragment.this);
+        mPlayer = PlayerManager.getPlayer(getContext());
+        mPlayer.setUIobj(SingleSongFragment.this);
         mPlayer.Play(mSong);
     }
 
@@ -90,6 +93,8 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
         mPlayPause = mView.findViewById(R.id.play_pause);
         mForward = mView.findViewById(R.id.forward);
         mBackward = mView.findViewById(R.id.backward);
+        mShuffle = mView.findViewById(R.id.shuffle);
+        mRepeat = mView.findViewById(R.id.repeat);
 
     }
 
@@ -101,6 +106,10 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
         mTitle.setText(mSong.getTitle());
         mArtist.setText(mSong.getArtist());
         mSeekBar.setMax(mPlayer.getDuration());
+        if (mPlayer.isPlaying())
+            mPlayPause.setImageResource(R.drawable.ic_pause_grey_600_24dp);
+        else
+            mPlayPause.setImageResource(R.drawable.ic_play_arrow_grey_600_24dp);
     }
 
     private void SeekBar() {
@@ -108,7 +117,7 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
             @Override
             public void run() {
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
-                mHandler.postDelayed(this, 150);
+                mHandler.postDelayed(this, 130);
             }
         };
         getActivity().runOnUiThread(mSeekToRun);
@@ -119,9 +128,17 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
 
         mPlayPause.setOnClickListener(view -> {
             mPlayer.Pause();
+            if (!mPlayer.isPlaying())
+                mPlayPause.setImageResource(R.drawable.ic_play_arrow_grey_600_24dp);
+            else
+                mPlayPause.setImageResource(R.drawable.ic_pause_grey_600_24dp);
         });
         mForward.setOnClickListener(view -> mPlayer.goForward());
         mBackward.setOnClickListener(view -> mPlayer.goBackward());
+
+        mShuffle.setOnClickListener(view -> mPlayer.Shuffle(!mPlayer.isShuffle()));
+
+        mRepeat.setOnClickListener(view -> mPlayer.ListLoop(!mPlayer.isListLoop()));
 
         mSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override

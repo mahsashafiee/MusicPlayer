@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:padding="2dp"
+        android:elevation="16dp"
         app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +26,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/item_song_art"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
@@ -36,9 +37,8 @@
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:elevation="8dp"
-                android:outlineProvider="bounds"
-                tools:src="@tools:sample/avatars"
+                android:src="@drawable/disc"
+                android:background="@android:color/darker_gray"
                 android:layout_marginRight="8dp"
                 android:layout_marginLeft="2dp" />
 
@@ -48,11 +48,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="10dp"
-                android:layout_toStartOf="@id/more"
-                android:layout_toLeftOf="@id/more"
+                android:layout_toStartOf="@id/item_song_duration"
+                android:layout_toLeftOf="@id/item_song_duration"
                 android:layout_toEndOf="@id/item_song_art"
                 android:layout_toRightOf="@id/item_song_art"
                 android:padding="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 tools:text="@tools:sample/full_names" />
@@ -63,10 +65,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/item_song_title"
                 android:layout_marginBottom="4dp"
-                android:layout_toStartOf="@id/more"
-                android:layout_toLeftOf="@id/more"
+                android:layout_toStartOf="@id/item_song_duration"
+                android:layout_toLeftOf="@id/item_song_duration"
                 android:layout_toEndOf="@id/item_song_art"
                 android:layout_toRightOf="@id/item_song_art"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:padding="4dp"
                 android:textSize="12sp"
                 tools:text="@tools:sample/first_names" />
@@ -83,6 +87,19 @@
                 android:foregroundGravity="center_vertical"
                 android:padding="2dp"
                 android:src="@drawable/ic_more_vert_black_24dp" />
+
+            <TextView
+                android:id="@+id/item_song_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/item_song_title"
+                android:layout_alignBottom="@id/item_song_artist"
+                android:layout_toLeftOf="@id/more"
+                android:layout_marginTop="0dp"
+                android:foregroundGravity="center_vertical"
+                android:padding="2dp"
+                android:gravity="center"
+                tools:text="04:32"/>
 
         </RelativeLayout>
 

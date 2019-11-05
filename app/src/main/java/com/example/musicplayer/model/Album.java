@@ -1,7 +1,7 @@
 package com.example.musicplayer.model;
 
 
-public class Album {
+public class Album implements Comparable<Album> {
 
     private String  mId;
     private String mTitle = "Unknown";
@@ -48,4 +48,7 @@ public class Album {
     public void setReleaseDate(String ReleaseDate) {
         this.mReleaseDate = ReleaseDate;
     }
+
+    @Override
+    public int compareTo(Album album) { return this.getTitle().compareTo(album.getTitle()); }
 }

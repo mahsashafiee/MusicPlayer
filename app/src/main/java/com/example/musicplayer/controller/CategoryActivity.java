@@ -10,9 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.telecom.Call;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Song;
 
 public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks {

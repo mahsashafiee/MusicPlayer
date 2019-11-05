@@ -37,7 +37,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
     //id3v2 tags
-    implementation 'com.mpatric:mp3agic:0.9.1'
+    implementation 'org.jaudiotagger:jaudiotagger:2.0.1'
 
     //glide
     implementation 'com.github.bumptech.glide:glide:4.10.0'

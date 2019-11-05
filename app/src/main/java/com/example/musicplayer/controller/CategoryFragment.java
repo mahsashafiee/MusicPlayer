@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.controller.adapter.MusicRecyclerAdapter;
 import com.example.musicplayer.repository.AlbumRepository;
 
 /**

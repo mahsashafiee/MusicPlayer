@@ -15,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.TextView;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.controller.adapter.MusicRecyclerAdapter;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -27,14 +29,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
  */
 public class SongListFragment extends Fragment {
 
-    private BottomSheetBehavior sheetBehavior;
-    private boolean backdropShown;
-    private Integer openIcon, closeIcon;
     private RecyclerView songRecycler;
-    private SongRepository mRepository;
-    private SwipeRefreshLayout mRefreshLayout;
     private MusicRecyclerAdapter mAdapter;
     private String mAlbumName;
+    private TextView mItemCount;
 
     private static final String ARG_KEY = "albumName";
 
@@ -58,9 +56,6 @@ public class SongListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        openIcon = R.drawable.ic_queue_music_black_36dp;
-        closeIcon = R.drawable.ic_clear_black_36dp;
-
         mAlbumName = getArguments().getString(ARG_KEY);
 
         PlayList.setSongList(SongRepository.getInstance(getActivity()).getAlbumSongList(mAlbumName));
@@ -70,7 +65,7 @@ public class SongListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_luncher, container, false);
+        View view = inflater.inflate(R.layout.fragment_song_list, container, false);
         initUI(view);
         return view;
     }
@@ -82,6 +77,11 @@ public class SongListFragment extends Fragment {
      */
     private void initUI(View view) {
         setUpToolbar(view);
+        mItemCount = view.findViewById(R.id.item_count);
+        String items = getResources()
+                .getQuantityString(R.plurals.item_number, PlayList.getSongList().size(), PlayList.getSongList().size());
+        mItemCount.setText(items);
+
 
         mAdapter = new MusicRecyclerAdapter(getActivity(), MusicRecyclerAdapter.MUSIC_ITEM);
         mAdapter.setList(PlayList.getSongList());
@@ -92,9 +92,9 @@ public class SongListFragment extends Fragment {
         songRecycler.setAdapter(mAdapter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            view.findViewById(R.id.product_grid)
+            view.findViewById(R.id.item_count)
                     .setBackgroundResource(R.drawable.backdrop_background_v23);
-        }else view.findViewById(R.id.product_grid)
+        }else view.findViewById(R.id.item_count)
                 .setBackgroundResource(R.drawable.backdrop_background);
 
     }
@@ -110,12 +110,5 @@ public class SongListFragment extends Fragment {
         if (activity != null) {
             activity.setSupportActionBar(toolbar);
         }
-
-        toolbar.setNavigationOnClickListener(new NavigationIconClickListener(
-                getContext(),
-                view.findViewById(R.id.product_grid),
-                new AccelerateDecelerateInterpolator(),
-                getContext().getResources().getDrawable(R.drawable.ic_queue_music_black_36dp), // Menu open icon
-                getContext().getResources().getDrawable(R.drawable.ic_clear_black_36dp))); // Menu close icon
     }
 }
