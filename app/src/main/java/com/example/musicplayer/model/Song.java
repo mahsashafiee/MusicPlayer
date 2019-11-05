@@ -13,7 +13,6 @@ public class Song implements Comparable<Song> , Parcelable {
     private String mAlbum;
     private String mDuration;
     private Uri mPath;
-    private String mArtworkPath;
     private String mLyrics;
     private String mFilePath;
 
@@ -46,10 +45,6 @@ public class Song implements Comparable<Song> , Parcelable {
         return mPath;
     }
 
-    public String getArtworkPath() {
-        return mArtworkPath;
-    }
-
     public String getLyrics(){ return mLyrics; }
 
     public String getFilePath(){ return mFilePath; }
@@ -76,10 +71,6 @@ public class Song implements Comparable<Song> , Parcelable {
             this.mDuration = String.format("%02d:%02d", mns, scs);
         } else
             this.mDuration = String.format("%02d:%02d:%02d", hrs, mns, scs);
-    }
-
-    public void setArtworkPath(String  Artwork) {
-        this.mArtworkPath = Artwork;
     }
 
     public void setLyrics(String lyrics) {this.mLyrics = lyrics; }
@@ -115,7 +106,6 @@ public class Song implements Comparable<Song> , Parcelable {
         dest.writeString(this.mArtist);
         dest.writeString(this.mAlbum);
         dest.writeString(this.mDuration);
-        dest.writeString(this.mArtworkPath);
         dest.writeParcelable(this.mPath, flags);
         dest.writeString(this.mLyrics);
         dest.writeString(this.mFilePath);
@@ -127,7 +117,6 @@ public class Song implements Comparable<Song> , Parcelable {
         this.mArtist = in.readString();
         this.mAlbum = in.readString();
         this.mDuration = in.readString();
-        this.mArtworkPath = in.readString();
         this.mPath = in.readParcelable(Uri.class.getClassLoader());
         this.mLyrics = in.readString();
         this.mFilePath = in.readString();

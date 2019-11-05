@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
 
@@ -100,12 +101,14 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
 
     private void initView() {
 
-        if (mSong.getArtworkPath() != null) {
-            Glide.with(mView).asDrawable().load(mSong.getArtworkPath()).into(PictureUtils.getTarget(mCover));
-        }
+        Glide.with(mView).asDrawable()
+                .load(ID3Tags.getBinaryArtwork(mSong.getFilePath()))
+                .into(PictureUtils.getTarget(mCover));
+
         mTitle.setText(mSong.getTitle());
         mArtist.setText(mSong.getArtist());
         mSeekBar.setMax(mPlayer.getDuration());
+
         if (mPlayer.isPlaying())
             mPlayPause.setImageResource(R.drawable.ic_pause_grey_600_24dp);
         else

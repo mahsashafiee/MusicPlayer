@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.controller.adapter.ViewHolders;
+import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
 
 public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks {
@@ -79,7 +80,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     @Override
-    public void SongList(String albumName) {
-        startActivity(SongListActivity.newIntent(CategoryActivity.this,albumName));
+    public void SongList(String albumOrArtist, Qualifier qualifier) {
+        startActivity(SongListActivity.newIntent(CategoryActivity.this,albumOrArtist,qualifier));
     }
 }

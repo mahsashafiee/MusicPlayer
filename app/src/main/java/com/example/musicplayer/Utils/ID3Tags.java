@@ -8,6 +8,7 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
+import org.jaudiotagger.tag.datatype.Artwork;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,11 +35,18 @@ public class ID3Tags {
         return null;
     }
 
-    public static String getLyrics(String FilePath) {
+    public static String getLyrics(String filePath) {
         String Lyrics = "";
-        Tag mp3Tag = findTag(FilePath);
+        Tag mp3Tag = findTag(filePath);
         if (mp3Tag != null)
             Lyrics = mp3Tag.getFirst(FieldKey.LYRICS);
         return Lyrics;
+    }
+
+    public static byte[] getBinaryArtwork(String filePath) {
+        Tag mp3Tag = findTag(filePath);
+        if (mp3Tag.getFirstArtwork() != null)
+            return mp3Tag.getFirstArtwork().getBinaryData();
+        return new byte[]{0};
     }
 }

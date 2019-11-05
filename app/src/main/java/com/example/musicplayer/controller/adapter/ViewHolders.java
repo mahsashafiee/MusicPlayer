@@ -1,6 +1,8 @@
 package com.example.musicplayer.controller.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Album;
+import com.example.musicplayer.model.Artist;
+import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -27,11 +32,15 @@ public class ViewHolders {
         mContext = context;
     }
 
+    //Handle SingleSong and SongList fragment invoker;
     public interface CallBacks {
         void SingleSong(Song song);
-        void SongList(String albumName);
+        void SongList(String albumOrArtist, Qualifier qualifier);
     }
 
+    /**
+     * SONG VIEW HOLDER CLASS
+      */
 
     public class MusicItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Song> {
 
@@ -53,21 +62,43 @@ public class ViewHolders {
                 callBacks.SingleSong(mSong);
             });
 
+            FindFilesArt art = new FindFilesArt();
+            art.execute();
+
         }
         @Override
         public void bindHolder(Song song){
 
             mSong = song;
+
             mTVMusicArtist.setText(song.getArtist());
             mTVMusicName.setText(song.getTitle());
             mDuration.setText(song.getDuration());
-            if(song.getArtworkPath() != null) {
-                Glide.with(mContext).asDrawable().load(song.getArtworkPath()).into(PictureUtils.getTarget(mIVMusicCover));
-            }
 
         }
+
+        private class FindFilesArt extends AsyncTask<Void, Void , byte[]> {
+
+
+            @Override
+            protected byte[] doInBackground(Void... voids) {
+                return ID3Tags.getBinaryArtwork(mSong.getFilePath());
+            }
+
+            @Override
+            protected void onPostExecute(byte[] bytes) {
+                Glide.with(mContext).asDrawable()
+                        .load(bytes)
+                        .into(PictureUtils.getTarget(mIVMusicCover));
+            }
+        }
+
     }
 
+
+    /**
+     * ALBUM VIEW HOLDER CLASS
+     */
     public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Album> {
 
         private View itemView;
@@ -84,7 +115,7 @@ public class ViewHolders {
             mAlbumArt = itemView.findViewById(R.id.item_album_art);
             mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
-            itemView.setOnClickListener(view -> callBacks.SongList(mAlbum.getTitle()));
+            itemView.setOnClickListener(view -> callBacks.SongList(mAlbum.getTitle(),Qualifier.ALBUM));
 
         }
 
@@ -99,20 +130,33 @@ public class ViewHolders {
         }
     }
 
-    public class ArtistItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Song> {
+
+    /**
+     * ARTIST VIEW HOLDER CLASS
+     */
+
+    public class ArtistItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Artist> {
 
         private View itemView;
+        private CircleImageView mImage;
+        private TextView mName;
+        private Artist mArtist;
 
         public ArtistItems(@NonNull View itemView) {
             super(itemView);
             this.itemView = itemView;
+            mName = itemView.findViewById(R.id.item_song_artist);
+            mImage = itemView.findViewById(R.id.item_artist_art);
             itemView.setOnClickListener(view -> {
+                callBacks.SongList(mArtist.getName(),Qualifier.ARTIST);
             });
 
         }
 
         @Override
-        public void bindHolder(Song song){
+        public void bindHolder(Artist artist){
+            mArtist = artist;
+            mName.setText(artist.getName());
         }
     }
 

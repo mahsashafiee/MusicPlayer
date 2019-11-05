@@ -8,18 +8,22 @@ import android.os.Bundle;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.controller.adapter.ViewHolders;
+import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
 
 
 public class SongListActivity extends AppCompatActivity implements ViewHolders.CallBacks {
 
     private SongListFragment mFragment;
+
     private static final String EXTRA_STRING = "albumName";
+    private static final String EXTRA_QUALIFIER = "albumName";
 
 
-    public static Intent newIntent(Context target , String albumName){
+    public static Intent newIntent(Context target , String albumName, Qualifier qualifier){
         Intent intent = new Intent(target,SongListActivity.class);
         intent.putExtra(EXTRA_STRING,albumName);
+        intent.putExtra(EXTRA_QUALIFIER,qualifier);
         return intent;
     }
 
@@ -29,7 +33,9 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            mFragment = SongListFragment.newInstance(getIntent().getStringExtra(EXTRA_STRING));
+            mFragment = SongListFragment.newInstance(
+                    getIntent().getStringExtra(EXTRA_STRING), (Qualifier) getIntent().getSerializableExtra(EXTRA_QUALIFIER));
+
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.container, mFragment)
@@ -44,7 +50,8 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     @Override
-    public void SongList(String albumName) {
+    public void SongList(String albumOrArtist, Qualifier qualifier) {
 
     }
+
 }
