@@ -16,8 +16,8 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
 
     private SongListFragment mFragment;
 
-    private static final String EXTRA_STRING = "albumName";
-    private static final String EXTRA_QUALIFIER = "albumName";
+    private static final String EXTRA_STRING = "albumArtist";
+    private static final String EXTRA_QUALIFIER = "qualifier";
 
 
     public static Intent newIntent(Context target , String albumName, Qualifier qualifier){

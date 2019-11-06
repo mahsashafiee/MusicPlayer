@@ -33,8 +33,8 @@ public class SongListFragment extends Fragment {
     private String mAlbumArtist;
     private TextView mItemCount;
 
-    private static final String ARG_KEY = "albumName";
-    private static final String ARG_QUALIFIER = "albumArtist";
+    private static final String ARG_KEY = "albumArtist";
+    private static final String ARG_QUALIFIER = "qualifier";
 
 
     public SongListFragment() {
