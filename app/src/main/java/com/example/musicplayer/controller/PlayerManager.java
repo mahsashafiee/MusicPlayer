@@ -20,13 +20,14 @@ public class PlayerManager {
     private MediaPlayer mMediaPlayer;
     private Context mContext;
     private List<Song> mPlayList;
-    private int currentSong;
     private Song mSong;
+    private int currentSong;
     private boolean mListLoop;
     private boolean mShuffle;
-    private static PlayerManager Instance;
-    private updateUI update;
     private boolean isPaused;
+    private boolean isStop;
+    private updateUI update;
+    private static PlayerManager Instance;
 
     public PlayerManager(Context context) {
         mContext = context;
@@ -92,6 +93,7 @@ public class PlayerManager {
         mMediaPlayer.setOnCompletionListener(mediaPlayer -> {
             if (currentSong == mPlayList.size() - 1 && !mListLoop) {
                 Stop();
+                isStop = true;
                 update.Handler();
                 update.Update();
                 return;
@@ -131,6 +133,7 @@ public class PlayerManager {
             mMediaPlayer.setDataSource(mContext, songPath);
             mMediaPlayer.prepare();
             mMediaPlayer.start();
+            isStop = false;
         } catch (IOException e) {
             return;
         }
@@ -140,10 +143,16 @@ public class PlayerManager {
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
             isPaused = true;
-        } else {
+        } else if(!mMediaPlayer.isPlaying()) {
+            if(isStop){
+                goForward();
+                isPaused = false;
+                return;
+            }
             mMediaPlayer.start();
             isPaused = false;
         }
+
     }
 
     public void Stop() {

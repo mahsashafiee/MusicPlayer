@@ -1,9 +1,13 @@
 package com.example.musicplayer.controller;
 
 
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -47,6 +51,9 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
     private TextView mTime;
     private Runnable UpdateSongTime;
 
+    private Drawable playingState;
+    private Drawable pauseState;
+
 
     public SingleSongFragment() {
         // Required empty public constructor
@@ -85,6 +92,30 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
         return mView;
     }
 
+    /**
+     * Animation handler
+     */
+    private void setDrawable(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            playingState = getActivity().getDrawable(R.drawable.avd_anim);
+            pauseState = getActivity().getDrawable(R.drawable.avd_anim_reverse);
+            startAnimation(mPlayer.isPlaying());
+        }
+        else {
+            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp);
+            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow_grey_600_24dp);
+        }
+    }
+
+    private void startAnimation(boolean isPlaying){
+        if(pauseState instanceof Animatable && playingState instanceof Animatable) {
+            if (isPlaying) {
+                ((Animatable) playingState).start();
+            } else
+                ((Animatable) pauseState).start();
+        }
+    }
+
     private void findViews() {
 
         mCover = mView.findViewById(R.id.album_cover);
@@ -109,10 +140,14 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
         mArtist.setText(mSong.getArtist());
         mSeekBar.setMax(mPlayer.getDuration());
 
+        setDrawable();
+
         if (mPlayer.isPlaying())
-            mPlayPause.setImageResource(R.drawable.ic_pause_grey_600_24dp);
+            mPlayPause.setImageDrawable(playingState);
         else
-            mPlayPause.setImageResource(R.drawable.ic_play_arrow_grey_600_24dp);
+            mPlayPause.setImageDrawable(pauseState);
+
+        startAnimation(mPlayer.isPlaying());
     }
 
     private void SeekBar() {
@@ -131,35 +166,39 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
 
         mPlayPause.setOnClickListener(view -> {
             mPlayer.Pause();
-            if (!mPlayer.isPlaying())
-                mPlayPause.setImageResource(R.drawable.ic_play_arrow_grey_600_24dp);
-            else
-                mPlayPause.setImageResource(R.drawable.ic_pause_grey_600_24dp);
-        });
-        mForward.setOnClickListener(view -> mPlayer.goForward());
-        mBackward.setOnClickListener(view -> mPlayer.goBackward());
+        if (!mPlayer.isPlaying())
+            mPlayPause.setImageDrawable(pauseState);
+        else
+            mPlayPause.setImageDrawable(playingState);
+        startAnimation(mPlayer.isPlaying());
+    });
+        mForward.setOnClickListener(view ->mPlayer.goForward());
+        mBackward.setOnClickListener(view ->mPlayer.goBackward());
 
-        mShuffle.setOnClickListener(view -> mPlayer.Shuffle(!mPlayer.isShuffle()));
+        mShuffle.setOnClickListener(view ->mPlayer.Shuffle(!mPlayer.isShuffle()));
 
-        mRepeat.setOnClickListener(view -> mPlayer.ListLoop(!mPlayer.isListLoop()));
+        mRepeat.setOnClickListener(view ->mPlayer.ListLoop(!mPlayer.isListLoop()));
 
-        mSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(CircularSeekBar circularSeekBar, float progress, boolean fromUser) {
-                if (fromUser) {
-                    mPlayer.Seek(((int) progress));
-                }
-            }
+        mSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener()
 
-            @Override
-            public void onStopTrackingTouch(CircularSeekBar seekBar) {
-            }
-
-            @Override
-            public void onStartTrackingTouch(CircularSeekBar seekBar) {
-            }
-        });
+    {
+        @Override
+        public void onProgressChanged (CircularSeekBar circularSeekBar,float progress,
+        boolean fromUser){
+        if (fromUser) {
+            mPlayer.Seek(((int) progress));
+        }
     }
+
+        @Override
+        public void onStopTrackingTouch (CircularSeekBar seekBar){
+    }
+
+        @Override
+        public void onStartTrackingTouch (CircularSeekBar seekBar){
+    }
+    });
+}
 
     private void UpdateSongTime() {
         UpdateSongTime = new Runnable() {
@@ -184,7 +223,7 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
     @Override
     public void Handler() {
         if (isAdded()) {
-            mHandler.removeCallbacks(mSeekToRun);
+//            mHandler.removeCallbacks(mSeekToRun);
 //            mHandler.removeCallbacks(UpdateSongTime);
         }
     }
