@@ -7,14 +7,21 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.Utils.ChangeStatusBar;
 import com.example.musicplayer.controller.adapter.PagerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
@@ -60,6 +67,8 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     private void RunActivity(){
 
         initUI();
+
+        ChangeStatusBar.setStatusBarGradiant(this);
 
         mTabLayout.post(() -> {
             mIndicatorWidth = mTabLayout.getWidth()/ mTabLayout.getTabCount();

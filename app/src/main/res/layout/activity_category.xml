@@ -13,25 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="96dp"
         android:background="@drawable/launcher_top_bar" >
-        <androidx.cardview.widget.CardView
+        <EditText
+            style="@style/TextAppearance.AppCompat.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:padding="9dp"
+            android:layout_marginTop="18dp"
+            android:elevation="8dp"
             android:layout_marginStart="32dp"
-            app:cardCornerRadius="20dp"
-            android:elevation="@dimen/activity_spacing"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="8dp">
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:hint="@string/search"
-                android:background="@drawable/tab_container"
-                android:drawableStart="@drawable/ic_search_black_24dp"
-                android:drawableLeft="@drawable/ic_search_black_24dp" />
+            android:hint="@string/search"
+            android:background="@drawable/tab_container"
+            android:drawableStart="@drawable/ic_search_black_24dp"
+            android:drawableLeft="@drawable/ic_search_black_24dp" />
 
-        </androidx.cardview.widget.CardView>
     </FrameLayout>
 
 
@@ -41,6 +36,7 @@
         android:layout_alignTop="@id/tab_container"
         android:layout_marginTop="30dp"
         android:background="@drawable/launcher_bottom_bar">
+
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"
@@ -58,10 +54,10 @@
         android:layout_marginTop="80dp"
         android:clipToPadding="false"
         android:background="@drawable/tab_container"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="36dp"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:layout_marginEnd="32dp">
+        android:layout_marginEnd="36dp">
 
         <View
             android:id="@+id/indicator"
@@ -74,13 +70,13 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            style="@style/TextAppearance.AppCompat.Small"
+            app:tabTextAppearance="@style/TextAppearance.AppCompat.Small"
             android:background="@drawable/tab_bg"
             app:tabGravity="fill"
             app:tabIndicatorColor="@android:color/transparent"
             app:tabMode="fixed"
             app:tabRippleColor="@android:color/transparent"
-            app:tabSelectedTextColor="@android:color/holo_blue_dark" />
+            app:tabSelectedTextColor="@android:color/holo_blue_bright" />
 
     </FrameLayout>
 

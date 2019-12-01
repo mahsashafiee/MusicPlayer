@@ -139,6 +139,7 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
                 .into(PictureUtils.getTarget(mCover));
 
         mTitle.setText(mSong.getTitle());
+        mTitle.setSelected(true);
         mArtist.setText(mSong.getArtist());
         mSeekBar.setMax(mPlayer.getDuration());
 

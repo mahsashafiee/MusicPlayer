@@ -16,7 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:elevation="12dp"
-        app:cardCornerRadius="85dp">
+        app:cardCornerRadius="52dp">
 
         <com.example.musicplayer.Utils.SquareImage
             android:id="@+id/item_artist_art"
@@ -40,6 +40,8 @@
         android:layout_alignEnd="@id/card_artist_art"
         tools:text="@tools:sample/lorem"
         android:singleLine="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_alignLeft="@id/card_artist_art"
         android:layout_alignRight="@id/card_artist_art" />
 

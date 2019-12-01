@@ -62,6 +62,7 @@ public class ViewHolders {
 
             itemView.setOnClickListener(view -> {
                 callBacks.SingleSong(mSong);
+                mTVMusicName.setSelected(true);
             });
 
             FindFilesArt art = new FindFilesArt();
@@ -121,7 +122,9 @@ public class ViewHolders {
             mAlbumArt = itemView.findViewById(R.id.item_album_art);
             mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
-            itemView.setOnClickListener(view -> callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM));
+            itemView.setOnClickListener(view -> {callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
+            mTitle.setSelected(true);
+            });
 
         }
 
@@ -155,6 +158,7 @@ public class ViewHolders {
             mImage = itemView.findViewById(R.id.item_artist_art);
             itemView.setOnClickListener(view -> {
                 callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
+                mName.setSelected(true);
             });
 
         }
