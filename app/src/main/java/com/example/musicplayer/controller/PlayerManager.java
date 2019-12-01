@@ -5,6 +5,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.PowerManager;
+import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 
@@ -17,6 +18,8 @@ import java.util.List;
 
 public class PlayerManager {
 
+    private String TAG = "PlayerManager";
+
     private MediaPlayer mMediaPlayer;
     private Context mContext;
     private List<Song> mPlayList;
@@ -26,10 +29,10 @@ public class PlayerManager {
     private boolean mShuffle;
     private boolean isPaused;
     private boolean isStop;
-    private updateUI update;
+    private UIController mUIObj;
     private static PlayerManager Instance;
 
-    public PlayerManager(Context context) {
+    private PlayerManager(Context context) {
         mContext = context;
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
@@ -46,8 +49,8 @@ public class PlayerManager {
         return Instance;
     }
 
-    public void setUIobj(Fragment fragment){
-        update = (updateUI) fragment;
+    public void setUIobj(Fragment fragment) {
+        mUIObj = (UIController) fragment;
     }
 
     public void setPlayList(List<Song> songs) {
@@ -86,7 +89,7 @@ public class PlayerManager {
         //clicked song will be played
         Play(song.getPath());
 
-        update.Update();
+        mUIObj.ViewUpdater();
     }
 
     private void OnCompletionListener() {
@@ -94,16 +97,9 @@ public class PlayerManager {
             if (currentSong == mPlayList.size() - 1 && !mListLoop) {
                 Stop();
                 isStop = true;
-                update.Handler();
-                update.Update();
+                mUIObj.Handler();
+                mUIObj.ViewUpdater();
                 return;
-            }
-
-            //Shuffle List handler
-            if (mShuffle) {
-                Collections.shuffle(mPlayList);
-            } else {
-                mPlayList = PlayList.getSongList();
             }
 
             //List loop handler
@@ -113,17 +109,14 @@ public class PlayerManager {
                 currentSong = (currentSong + 1) % mPlayList.size();
             }
 
-            mSong = mPlayList.get(currentSong);
-
             //plays the song that is referred by "currentSong"
-            Play(mSong.getPath());
+            songPlayer(mPlayList.get(currentSong));
 
-            update.Update();
+            mUIObj.ViewUpdater();
         });
     }
 
     public Song getCurrentSong() {
-//        mSong = mPlayList.get(currentSong);
         return mSong;
     }
 
@@ -135,7 +128,7 @@ public class PlayerManager {
             mMediaPlayer.start();
             isStop = false;
         } catch (IOException e) {
-            return;
+            Log.d(TAG, "Play: "+e.getMessage());
         }
     }
 
@@ -143,8 +136,8 @@ public class PlayerManager {
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
             isPaused = true;
-        } else if(!mMediaPlayer.isPlaying()) {
-            if(isStop){
+        } else if (!mMediaPlayer.isPlaying()) {
+            if (isStop) {
                 goForward();
                 isPaused = false;
                 return;
@@ -175,12 +168,18 @@ public class PlayerManager {
         mMediaPlayer.setLooping(loop);
     }
 
-    public void ListLoop(boolean loop) {
-        mListLoop = loop;
+    public void ListLoop() {
+        mListLoop = !mListLoop;
     }
 
-    public void Shuffle(boolean shuffle) {
-        mShuffle = shuffle;
+    public void Shuffle() {
+        mShuffle = !mShuffle;
+
+        if (mShuffle)
+            Collections.shuffle(mPlayList);
+        else
+            mPlayList = PlayList.getSongList();
+
     }
 
     public int getCurrentPosition() {
@@ -196,13 +195,11 @@ public class PlayerManager {
     }
 
     public void goForward() {
-        int after = (currentSong + 1) % mPlayList.size();
-        Play(mPlayList.get(after));
+        songPlayer(mPlayList.get((currentSong + 1) % mPlayList.size()));
     }
 
     public void goBackward() {
-        int before = (currentSong - 1 + mPlayList.size()) % mPlayList.size();
-        Play(mPlayList.get(before));
+        songPlayer(mPlayList.get((currentSong - 1 + mPlayList.size()) % mPlayList.size()));
     }
 
     public boolean isShuffle() {
@@ -213,8 +210,8 @@ public class PlayerManager {
         return mListLoop;
     }
 
-    interface updateUI {
-        void Update();
+    interface UIController {
+        void ViewUpdater();
         void Handler();
     }
 
