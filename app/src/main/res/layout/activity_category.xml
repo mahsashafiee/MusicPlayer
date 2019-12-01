@@ -1,42 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/category_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@android:color/white"
+    android:orientation="vertical"
     tools:context=".controller.CategoryActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:background="@drawable/launcher_top_bar" >
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="32dp"
+            app:cardCornerRadius="20dp"
+            android:elevation="@dimen/activity_spacing"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="8dp">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:hint="@string/search"
+                android:background="@drawable/tab_container"
+                android:drawableStart="@drawable/ic_search_black_24dp"
+                android:drawableLeft="@drawable/ic_search_black_24dp" />
+
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@id/tab_container"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/launcher_bottom_bar">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_marginTop="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/tab_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="80dp"
         android:clipToPadding="false"
-        android:padding="4dp">
+        android:background="@drawable/tab_container"
+        android:layout_marginStart="32dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:layout_marginEnd="32dp">
 
         <View
             android:id="@+id/indicator"
             android:layout_width="0dp"
-            android:layout_height="44dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/tab_indicator" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="42dp"
+            style="@style/TextAppearance.AppCompat.Small"
             android:background="@drawable/tab_bg"
             app:tabGravity="fill"
             app:tabIndicatorColor="@android:color/transparent"
             app:tabMode="fixed"
-            app:tabRippleColor="@null"
-            app:tabSelectedTextColor="#ffffff" />
+            app:tabRippleColor="@android:color/transparent"
+            app:tabSelectedTextColor="@android:color/holo_blue_dark" />
 
     </FrameLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/view_pager"/>
-
-</LinearLayout>
+</RelativeLayout>

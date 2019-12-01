@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:padding="6dp"
     android:layout_margin="2dp"
-    android:background="@color/textColorPrimary">
+    android:background="@android:color/transparent">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_album_art"
@@ -29,7 +29,7 @@
         android:id="@+id/item_album_title"
         android:layout_below="@id/card_album_art"
         android:layout_alignParentStart="true"
-        android:layout_width="120dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="@tools:sample/lorem"
         android:padding="6dp"
@@ -40,7 +40,7 @@
         android:layout_alignParentLeft="true" />
     <TextView
         android:id="@+id/item_album_artist"
-        android:layout_width="120dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/item_album_title"
         android:layout_alignParentStart="true"
