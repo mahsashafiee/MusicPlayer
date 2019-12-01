@@ -16,19 +16,22 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:elevation="12dp"
-        app:cardCornerRadius="60dp">
+        app:cardCornerRadius="85dp">
 
         <com.example.musicplayer.Utils.SquareImage
             android:id="@+id/item_artist_art"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/song_placeholder"
             android:outlineProvider="bounds"
             tools:src="@tools:sample/avatars" />
     </androidx.cardview.widget.CardView>
     <TextView
         android:id="@+id/item_song_artist"
-        android:layout_width="120dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textStyle="bold"
         style="@style/TextAppearance.AppCompat.Small"
         android:ellipsize="marquee"
         android:padding="6dp"

@@ -133,6 +133,7 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
     private void initView() {
 
         Glide.with(mView).asDrawable()
+                .placeholder(R.drawable.song_placeholder)
                 .load(ID3Tags.getBinaryArtwork(mSong.getFilePath()))
                 .into(PictureUtils.getTarget(mCover));
 

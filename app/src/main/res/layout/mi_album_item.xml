@@ -20,6 +20,7 @@
         android:layout_alignParentLeft="true">
         <com.example.musicplayer.Utils.SquareImage
             android:id="@+id/item_album_art"
+            android:background="@drawable/song_placeholder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:outlineProvider="bounds"/>

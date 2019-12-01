@@ -94,6 +94,7 @@ public class ViewHolders {
             protected void onPostExecute(byte[] bytes) {
                 Glide.with(mContext).asDrawable()
                         .load(bytes)
+                        .placeholder(R.drawable.song_placeholder)
                         .into(PictureUtils.getTarget(mIVMusicCover));
             }
         }

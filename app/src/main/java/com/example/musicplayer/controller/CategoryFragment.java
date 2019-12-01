@@ -79,11 +79,9 @@ public class CategoryFragment extends Fragment {
             if (mQualifier.equals(Qualifier.ALLSONG)) {
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 mAdapter.setList(mSongRepository.getSongs());
-
             }
-
             else {
-                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
                 if (mQualifier.equals(Qualifier.ALBUM))
                     mAdapter.setList(mAlbumRepository.getAlbums());
                 else
