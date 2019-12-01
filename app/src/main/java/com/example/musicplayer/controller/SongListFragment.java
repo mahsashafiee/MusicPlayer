@@ -96,7 +96,7 @@ public class SongListFragment extends Fragment {
                 .getQuantityString(R.plurals.item_number, PlayList.getSongList().size(), PlayList.getSongList().size());
         mItemCount.setText(items);
 
-        mAdapter = new MusicRecyclerAdapter(getActivity(), MusicRecyclerAdapter.MUSIC_ITEM);
+        mAdapter = new MusicRecyclerAdapter(getActivity(), Qualifier.ALLSONG);
         mAdapter.setList(PlayList.getSongList());
         songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         songRecycler.setAdapter(mAdapter);

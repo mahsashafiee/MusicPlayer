@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
 import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
+import com.example.musicplayer.Utils.SquareImage;
 import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
@@ -27,7 +28,7 @@ public class ViewHolders {
     private CallBacks callBacks;
     private Context mContext;
 
-    public ViewHolders(Context context){
+    public ViewHolders(Context context) {
         callBacks = (CallBacks) context;
         mContext = context;
     }
@@ -35,12 +36,13 @@ public class ViewHolders {
     //Handle SingleSong and SongList fragment invoker;
     public interface CallBacks {
         void SingleSong(Song song);
+
         void SongList(String albumOrArtist, Qualifier qualifier);
     }
 
     /**
      * SONG VIEW HOLDER CLASS
-      */
+     */
 
     public class MusicItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Song> {
 
@@ -66,8 +68,9 @@ public class ViewHolders {
             art.execute();
 
         }
+
         @Override
-        public void bindHolder(Song song){
+        public void bindHolder(Song song) {
 
             mSong = song;
 
@@ -77,12 +80,14 @@ public class ViewHolders {
 
         }
 
-        private class FindFilesArt extends AsyncTask<Void, Void , byte[]> {
+        private class FindFilesArt extends AsyncTask<Void, Void, byte[]> {
 
 
             @Override
             protected byte[] doInBackground(Void... voids) {
-                return ID3Tags.getBinaryArtwork(mSong.getFilePath());
+                if (mSong != null)
+                    return ID3Tags.getBinaryArtwork(mSong.getFilePath());
+                else return null;
             }
 
             @Override
@@ -102,7 +107,7 @@ public class ViewHolders {
     public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Album> {
 
         private View itemView;
-        private ImageView mAlbumArt;
+        private SquareImage mAlbumArt;
         private TextView mTitle;
         private TextView mArtist;
         private Album mAlbum;
@@ -115,14 +120,14 @@ public class ViewHolders {
             mAlbumArt = itemView.findViewById(R.id.item_album_art);
             mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
-            itemView.setOnClickListener(view -> callBacks.SongList(mAlbum.getTitle(),Qualifier.ALBUM));
+            itemView.setOnClickListener(view -> callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM));
 
         }
 
         @Override
         public void bindHolder(Album album) {
             mAlbum = album;
-            if(album.getArtworkPath() != null) {
+            if (album.getArtworkPath() != null) {
                 Glide.with(mContext).asDrawable().load(album.getArtworkPath()).into(PictureUtils.getTarget(mAlbumArt));
             }
             mTitle.setText(album.getTitle());
@@ -138,7 +143,7 @@ public class ViewHolders {
     public class ArtistItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Artist> {
 
         private View itemView;
-        private CircleImageView mImage;
+        private SquareImage mImage;
         private TextView mName;
         private Artist mArtist;
 
@@ -148,13 +153,13 @@ public class ViewHolders {
             mName = itemView.findViewById(R.id.item_song_artist);
             mImage = itemView.findViewById(R.id.item_artist_art);
             itemView.setOnClickListener(view -> {
-                callBacks.SongList(mArtist.getName(),Qualifier.ARTIST);
+                callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
             });
 
         }
 
         @Override
-        public void bindHolder(Artist artist){
+        public void bindHolder(Artist artist) {
             mArtist = artist;
             mName.setText(artist.getName());
         }

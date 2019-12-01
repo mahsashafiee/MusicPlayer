@@ -3,7 +3,9 @@ package com.example.musicplayer.controller;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,66 +15,84 @@ import android.view.ViewGroup;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.controller.adapter.MusicRecyclerAdapter;
+import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.repository.AlbumRepository;
 import com.example.musicplayer.repository.ArtistRepository;
+import com.example.musicplayer.repository.SongRepository;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class CategoryFragment extends Fragment {
 
+    public static final String SONG_QUALIFIER = "song_qualifier";
     private View mView;
-    private RecyclerView mRecycler;
-    private RecyclerView mRecyclerArtist;
-    private AlbumRepository mRepository;
-    private ArtistRepository mRepositoryArtist;
+    private RecyclerView mRecyclerView;
+    private AlbumRepository mAlbumRepository;
+    private Qualifier mQualifier;
+    private ArtistRepository mArtistRepository;
+    private SongRepository mSongRepository;
     private MusicRecyclerAdapter mAdapter;
-    private MusicRecyclerAdapter mAdapterArtist;
 
 
     public CategoryFragment() {
         // Required empty public constructor
     }
 
-    public static CategoryFragment newInstance() {
+    public static CategoryFragment newInstance(Qualifier qualifier) {
         
         Bundle args = new Bundle();
+        args.putSerializable(SONG_QUALIFIER, qualifier);
+
         CategoryFragment fragment = new CategoryFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mQualifier = (Qualifier) getArguments().getSerializable(SONG_QUALIFIER);
+        mAlbumRepository = AlbumRepository.getInstance(getContext());
+        mArtistRepository = ArtistRepository.getInstance(getContext());
+        mSongRepository = SongRepository.getInstance(getContext());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_category, container, false);
-        mRepository = AlbumRepository.getInstance(getContext());
-        mRepositoryArtist = ArtistRepository.getInstance(getContext());
-        initUI();
+
+        setupRecyclerView();
+
         return mView;
     }
-    private void initUI(){
 
-        mRecycler = mView.findViewById(R.id.album_recycler_view);
-        mRecyclerArtist = mView.findViewById(R.id.artist_recycler_view);
+    private void setupRecyclerView(){
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        mRecyclerView = mView.findViewById(R.id.category_recyclerView);
+        mAdapter = new MusicRecyclerAdapter(getActivity(), mQualifier);
 
-        mRecycler.setLayoutManager(layoutManager);
-        mAdapter = new MusicRecyclerAdapter(getActivity(),MusicRecyclerAdapter.ALBUM_ITEM);
-        mAdapter.setList(mRepository.getAlbums());
-        mRecycler.setAdapter(mAdapter);
+        if (isAdded()){
+            if (mQualifier.equals(Qualifier.ALLSONG)) {
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                mAdapter.setList(mSongRepository.getSongs());
 
-        LinearLayoutManager layoutManagerArtist = new LinearLayoutManager(getActivity());
-        layoutManagerArtist.setOrientation(RecyclerView.HORIZONTAL);
-        mRecyclerArtist.setLayoutManager(layoutManagerArtist);
-        mAdapterArtist = new MusicRecyclerAdapter(getActivity(),MusicRecyclerAdapter.ARTIST_ITEM);
-        mAdapterArtist.setList(mRepositoryArtist.getArtists());
-        mRecyclerArtist.setAdapter(mAdapterArtist);
+            }
 
+            else {
+                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+                if (mQualifier.equals(Qualifier.ALBUM))
+                    mAdapter.setList(mAlbumRepository.getAlbums());
+                else
+                    mAdapter.setList(mArtistRepository.getArtists());
+            }
+
+            mRecyclerView.setAdapter(mAdapter);
+
+        }
     }
 
 }
