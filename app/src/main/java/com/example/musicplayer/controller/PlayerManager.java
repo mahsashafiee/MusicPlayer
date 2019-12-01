@@ -6,7 +6,10 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.PowerManager;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.musicplayer.model.Song;
+import com.example.musicplayer.repository.PlayList;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -14,32 +17,85 @@ import java.util.List;
 
 public class PlayerManager {
 
-    private MediaPlayer songPlayer;
+    private MediaPlayer mMediaPlayer;
     private Context mContext;
     private List<Song> mPlayList;
+    private Song mSong;
     private int currentSong;
     private boolean mListLoop;
     private boolean mShuffle;
+    private boolean isPaused;
+    private boolean isStop;
+    private updateUI update;
+    private static PlayerManager Instance;
 
     public PlayerManager(Context context) {
         mContext = context;
-        songPlayer = new MediaPlayer();
-        songPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
-        songPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mMediaPlayer = new MediaPlayer();
+        mMediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
+        mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        //what should happen after
+        OnCompletionListener();
+        setPlayList();
     }
 
-    public void Play(List<Song> songs, int position) {
+    public static PlayerManager getPlayer(Context context) {
+        if (Instance == null) {
+            Instance = new PlayerManager(context);
+        }
+        return Instance;
+    }
 
+    public void setUIobj(Fragment fragment){
+        update = (updateUI) fragment;
+    }
+
+    public void setPlayList(List<Song> songs) {
         mPlayList = songs;
-        currentSong = position;
+    }
+
+    private void setPlayList() {
+        mPlayList = PlayList.getSongList();
+    }
+
+
+    public void Play(Song song) {
+
+        if (!mMediaPlayer.isPlaying() && mPlayList.get(currentSong).equals(song)) {
+            if (isPaused)
+                Pause();
+            else
+                songPlayer(song);
+        } else if (!mPlayList.get(currentSong).equals(song)) {
+
+            if (mPlayList.equals(PlayList.getSongList()))
+                songPlayer(song);
+            else {
+                setPlayList();
+                songPlayer(song);
+            }
+        }
+    }
+
+    private void songPlayer(Song song) {
+
+        mSong = song;
+
+        currentSong = mPlayList.indexOf(song);
 
         //clicked song will be played
-        Play(songs.get(position).getPath());
+        Play(song.getPath());
 
-        //what should happen after that
-        songPlayer.setOnCompletionListener(mediaPlayer -> {
-            if (currentSong == mPlayList.size()-1) {
+        update.Update();
+    }
+
+    private void OnCompletionListener() {
+        mMediaPlayer.setOnCompletionListener(mediaPlayer -> {
+            if (currentSong == mPlayList.size() - 1 && !mListLoop) {
                 Stop();
+                isStop = true;
+                update.Handler();
+                update.Update();
                 return;
             }
 
@@ -47,59 +103,76 @@ public class PlayerManager {
             if (mShuffle) {
                 Collections.shuffle(mPlayList);
             } else {
-                mPlayList = songs;
+                mPlayList = PlayList.getSongList();
             }
 
             //List loop handler
             if (!mListLoop) {
                 currentSong++;
             } else {
-                currentSong = (currentSong + 1) % songs.size();
+                currentSong = (currentSong + 1) % mPlayList.size();
             }
 
-            //plays the song that is referred by "currentSong"
-            Play(mPlayList.get(currentSong).getPath());
-        });
+            mSong = mPlayList.get(currentSong);
 
+            //plays the song that is referred by "currentSong"
+            Play(mSong.getPath());
+
+            update.Update();
+        });
     }
 
-    public void Play(Uri songPath) {
-        try {
-            songPlayer.reset();
-            songPlayer.setDataSource(mContext, songPath);
-            songPlayer.prepare();
-            songPlayer.start();
+    public Song getCurrentSong() {
+//        mSong = mPlayList.get(currentSong);
+        return mSong;
+    }
 
+    private void Play(Uri songPath) {
+        try {
+            mMediaPlayer.reset();
+            mMediaPlayer.setDataSource(mContext, songPath);
+            mMediaPlayer.prepare();
+            mMediaPlayer.start();
+            isStop = false;
         } catch (IOException e) {
             return;
         }
     }
 
     public void Pause() {
-        if (songPlayer.isPlaying())
-            songPlayer.pause();
-        else
-            songPlayer.start();
+        if (mMediaPlayer.isPlaying()) {
+            mMediaPlayer.pause();
+            isPaused = true;
+        } else if(!mMediaPlayer.isPlaying()) {
+            if(isStop){
+                goForward();
+                isPaused = false;
+                return;
+            }
+            mMediaPlayer.start();
+            isPaused = false;
+        }
+
     }
 
     public void Stop() {
-        songPlayer.stop();
-        songPlayer.reset();
+        mMediaPlayer.stop();
+        mMediaPlayer.reset();
     }
 
     public void Seek(int msec) {
-        songPlayer.seekTo(msec);
+        mMediaPlayer.seekTo(msec);
     }
 
     public void Release() {
-        if (songPlayer == null)
+        if (mMediaPlayer == null)
             return;
-        songPlayer.release();
-        songPlayer = null;
+        mMediaPlayer.release();
+        mMediaPlayer = null;
     }
 
     public void SingleLoop(boolean loop) {
-        songPlayer.setLooping(loop);
+        mMediaPlayer.setLooping(loop);
     }
 
     public void ListLoop(boolean loop) {
@@ -109,4 +182,40 @@ public class PlayerManager {
     public void Shuffle(boolean shuffle) {
         mShuffle = shuffle;
     }
+
+    public int getCurrentPosition() {
+        return mMediaPlayer.getCurrentPosition();
+    }
+
+    public int getDuration() {
+        return mMediaPlayer.getDuration();
+    }
+
+    public boolean isPlaying() {
+        return mMediaPlayer.isPlaying();
+    }
+
+    public void goForward() {
+        int after = (currentSong + 1) % mPlayList.size();
+        Play(mPlayList.get(after));
+    }
+
+    public void goBackward() {
+        int before = (currentSong - 1 + mPlayList.size()) % mPlayList.size();
+        Play(mPlayList.get(before));
+    }
+
+    public boolean isShuffle() {
+        return mShuffle;
+    }
+
+    public boolean isListLoop() {
+        return mListLoop;
+    }
+
+    interface updateUI {
+        void Update();
+        void Handler();
+    }
+
 }

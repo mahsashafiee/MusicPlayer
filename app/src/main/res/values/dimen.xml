@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="activity_spacing">12dp</dimen>
-    <dimen name="shr_product_grid_reveal_height">200dp</dimen>
 </resources>

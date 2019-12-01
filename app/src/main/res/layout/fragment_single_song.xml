@@ -4,88 +4,199 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controller.SingleSongFragment"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    tools:context=".controller.SingleSongFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="@dimen/activity_spacing">
-
         <androidx.cardview.widget.CardView
             android:id="@+id/card_view"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center|top"
-            app:cardCornerRadius="120dp"
-            app:layout_constraintBottom_toTopOf="@id/seek_bar"
+            android:adjustViewBounds="true"
+            android:elevation="16dp"
+            android:fitsSystemWindows="true"
+            app:cardCornerRadius="100dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/seekBar"
+            app:layout_constraintBottom_toBottomOf="@id/seekBar"
             app:layout_constraintVertical_chainStyle="spread">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/album_cover"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center|top"
+                android:layout_margin="-24dp"
                 android:foregroundGravity="center"
-                app:civ_border_color="@color/cardview_shadow_start_color"
-                app:civ_border_width="2dp"
-                tools:src="@drawable/ic_launcher_background" />
+                android:src="@drawable/circular_disc_form"
+                android:background="@drawable/song_placeholder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread"
+                tools:background="@drawable/ic_launcher_background" />
+
 
         </androidx.cardview.widget.CardView>
 
-        <com.masoudss.lib.WaveformSeekBar
-            android:id="@+id/seek_bar"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            app:layout_constraintBottom_toTopOf="@id/controller_item"
+        <me.tankery.lib.circularseekbar.CircularSeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            app:cs_circle_color="#DCE2E2E2"
+            app:cs_circle_progress_color="@android:color/holo_blue_bright"
+            app:cs_circle_stroke_width="3dp"
+            app:cs_pointer_color="@android:color/holo_blue_bright"
+            app:cs_pointer_stroke_width="14dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_view" />
+            app:layout_constraintTop_toTopOf="parent">
+
+        </me.tankery.lib.circularseekbar.CircularSeekBar>
+
+        <TextView
+            android:id="@+id/song_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ellipsize="marquee"
+            android:padding="16dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/seekBar"
+            tools:text="In My Remains" />
+
+        <TextView
+            android:id="@+id/song_artist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/song_title"
+            tools:text="Linkin Park" />
 
         <LinearLayout
             android:id="@+id/controller_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
             android:gravity="center"
+            android:padding="8dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/media_controller"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/seek_bar">
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="16dp"
+                android:id="@+id/backward"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_margin="8dp"
+                android:background="@drawable/ciculare_button"
+                android:elevation="6dp"
                 android:foregroundGravity="center_vertical"
-                android:background="@drawable/cicular_button"
-                android:elevation="16dp"
-                android:src="@drawable/ic_play"/>
+                android:padding="8dp"
+                app:srcCompat="@drawable/ic_skip_previous_grey_600_24dp" />
 
             <ImageView
+                android:id="@+id/play_pause"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:padding="16dp"
                 android:layout_margin="8dp"
+                android:background="@drawable/ciculare_button"
+                android:elevation="6dp"
                 android:foregroundGravity="center_vertical"
-                android:background="@drawable/cicular_button"
-                android:elevation="16dp"
-                android:src="@drawable/ic_play"/>
+                android:padding="8dp"
+                app:srcCompat="@drawable/ic_pause_grey_600_24dp" />
+
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="16dp"
+                android:id="@+id/forward"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_margin="8dp"
+                android:background="@drawable/ciculare_button"
+                android:elevation="6dp"
                 android:foregroundGravity="center_vertical"
-                android:background="@drawable/cicular_button"
-                android:elevation="16dp"
-                android:src="@drawable/ic_play"/>
+                android:padding="8dp"
+                app:srcCompat="@drawable/ic_skip_next_grey_600_24dp" />
 
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/media_controller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:elevation="4dp"
+                android:id="@+id/shuffle"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/repeat"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:srcCompat="@drawable/ic_shuffle_grey_600_24dp" />
+
+            <ImageView
+                android:id="@+id/repeat"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/favorite"
+                app:layout_constraintStart_toEndOf="@id/shuffle"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_repeat_grey_600_24dp" />
+
+            <ImageView
+                android:id="@+id/favorite"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/playlist_add"
+                app:layout_constraintStart_toEndOf="@id/repeat"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_favorite_border_grey_600_24dp" />
+
+            <ImageView
+                android:id="@+id/playlist_add"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/favorite"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_playlist_add_grey_600_24dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

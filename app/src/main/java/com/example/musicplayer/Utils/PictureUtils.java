@@ -1,28 +1,28 @@
 package com.example.musicplayer.Utils;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.view.View;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 public class PictureUtils {
 
-    private static Bitmap getScaledBitmap(String path, int desWidth, int desHeight) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, options);
+    public static CustomTarget<Drawable> getTarget(ImageView view) {
+        return new CustomTarget<Drawable>() {
+            @Override
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                view.setBackground(resource);
+            }
 
-        int srcWidth = options.outWidth;
-        int srcHeight = options.outHeight;
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
 
-        int inSampleSize = Math.min(srcWidth/desWidth, srcHeight/desHeight);
-
-        options = new BitmapFactory.Options();
-        options.inSampleSize = inSampleSize;
-        return BitmapFactory.decodeFile(path, options);
+            }
+        };
     }
 
-    public static Bitmap getScaledBitmap(String path, View view) {
-
-        return getScaledBitmap(path, view.getLayoutParams().width, view.getLayoutParams().height);
-    }
 }

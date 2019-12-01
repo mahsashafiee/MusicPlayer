@@ -4,6 +4,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "com.example.musicplayer"
         minSdkVersion 16
         targetSdkVersion 29
@@ -35,14 +36,15 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0-alpha01'
     implementation 'com.github.kishan2612:Material-Backdrop-Android:v1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
+
     //id3v2 tags
-    implementation 'com.mpatric:mp3agic:0.9.1'
+    implementation 'org.jaudiotagger:jaudiotagger:2.0.1'
 
     //glide
     implementation 'com.github.bumptech.glide:glide:4.10.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
 
-    //waveform seekBar
-    implementation 'com.github.massoudss:waveformSeekBar:1.1.4'
+    //circular seek bar
+    implementation 'me.tankery.lib:circularSeekBar:1.2.0'
     // Or compile in older versions
 }
