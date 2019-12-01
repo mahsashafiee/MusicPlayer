@@ -77,7 +77,7 @@ public class SongListFragment extends Fragment {
     }
 
     /**
-     * UI Initialization
+     * ChangeStatusBar Initialization
      *
      * @param view
      */

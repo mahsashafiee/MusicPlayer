@@ -24,6 +24,7 @@ import com.example.musicplayer.model.Song;
 
 import java.util.concurrent.TimeUnit;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 /**
@@ -132,10 +133,12 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
     private void initView() {
 
         Glide.with(mView).asDrawable()
+                .placeholder(R.drawable.song_placeholder)
                 .load(ID3Tags.getBinaryArtwork(mSong.getFilePath()))
                 .into(PictureUtils.getTarget(mCover));
 
         mTitle.setText(mSong.getTitle());
+        mTitle.setSelected(true);
         mArtist.setText(mSong.getArtist());
         mSeekBar.setMax(mPlayer.getDuration());
 

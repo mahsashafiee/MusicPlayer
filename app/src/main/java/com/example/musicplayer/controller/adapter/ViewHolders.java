@@ -59,6 +59,7 @@ public class ViewHolders {
 
             itemView.setOnClickListener(view -> {
                 callBacks.SingleSong(mSong);
+                mTVMusicName.setSelected(true);
             });
 
         }
@@ -96,7 +97,8 @@ public class ViewHolders {
                 else
                     Glide.with(mContext).asDrawable()
                             .load(bytes)
-                            .into(PictureUtils.getTarget(mIVMusicCover));
+                            .placeholder(R.drawable.song_placeholder)
+                        .into(PictureUtils.getTarget(mIVMusicCover));
             }
         }
 
@@ -122,7 +124,9 @@ public class ViewHolders {
             mAlbumArt = itemView.findViewById(R.id.item_album_art);
             mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
-            itemView.setOnClickListener(view -> callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM));
+            itemView.setOnClickListener(view -> {callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
+            mTitle.setSelected(true);
+            });
 
         }
 
@@ -172,6 +176,7 @@ public class ViewHolders {
 
             itemView.setOnClickListener(view -> {
                 callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
+                mName.setSelected(true);
             });
 
         }

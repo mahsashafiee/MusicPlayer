@@ -18,6 +18,7 @@
     <string name="category_artist">Artists</string>
     <string name="category_all">All Songs</string>
 
+    <string name="search">Search…</string>
 
     <plurals name="item_number">
         <item quantity="one">%1$d item</item>

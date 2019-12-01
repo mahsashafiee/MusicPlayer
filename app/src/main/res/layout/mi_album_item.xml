@@ -2,59 +2,63 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="6dp"
     android:layout_margin="2dp"
-    android:background="@color/textColorPrimary">
+    android:background="@android:color/transparent"
+    android:orientation="vertical"
+    android:padding="6dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_album_art"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        app:cardCornerRadius="8dp"
         android:elevation="12dp"
-        android:layout_alignParentLeft="true">
+        app:cardCornerRadius="8dp">
+
         <com.example.musicplayer.Utils.SquareImage
             android:id="@+id/item_album_art"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:outlineProvider="bounds"/>
+            android:background="@drawable/song_placeholder"
+            android:outlineProvider="bounds" />
     </androidx.cardview.widget.CardView>
+
     <TextView
         android:id="@+id/item_album_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/card_album_art"
         android:layout_alignParentStart="true"
-        android:layout_width="120dp"
-        android:layout_height="wrap_content"
-        tools:text="@tools:sample/lorem"
-        android:padding="6dp"
+        android:layout_alignParentLeft="true"
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:padding="4dp"
+        android:singleLine="true"
+        android:textSize="16sp"
         android:textStyle="bold"
-        style="@style/TextAppearance.AppCompat.Medium"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:layout_alignParentLeft="true" />
+        tools:text="@tools:sample/lorem" />
+
     <TextView
         android:id="@+id/item_album_artist"
-        android:layout_width="120dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/item_album_title"
         android:layout_alignParentStart="true"
-        android:paddingStart="6dp"
-        android:ellipsize="marquee"
-        android:paddingEnd="6dp"
-        android:paddingBottom="4dp"
-        android:textSize="12sp"
-        tools:text="@tools:sample/lorem"
         android:layout_alignParentLeft="true"
-        android:singleLine="true" />
-
-
-
-
+        android:ellipsize="marquee"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="4dp"
+        android:singleLine="true"
+        android:textSize="12sp"
+        tools:text="@tools:sample/lorem" />
 
 
 </RelativeLayout>
