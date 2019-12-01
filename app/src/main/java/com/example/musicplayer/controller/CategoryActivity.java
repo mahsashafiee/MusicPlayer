@@ -19,7 +19,12 @@ import com.example.musicplayer.controller.adapter.PagerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
+import com.example.musicplayer.repository.PlayList;
+import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.Collections;
+import java.util.List;
 
 public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks {
 
@@ -128,7 +133,8 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
     @Override
     public void SingleSong(Song song) {
-
+        PlayList.setSongList(SongRepository.getInstance(CategoryActivity.this).getSongs());
+        startActivity(SingleSongActivity.newIntent(CategoryActivity.this,song));
     }
 
     @Override

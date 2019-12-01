@@ -6,16 +6,27 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.example.musicplayer.Utils.ID3Tags;
+import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Song;
 
-public class SongCursorWrapper extends CursorWrapper {
-    /**
-     * Creates a cursor wrapper.
-     *
-     * @param cursor The underlying cursor to wrap.
-     */
-    public SongCursorWrapper(Cursor cursor) {
+public class ModelCursorWrapper extends CursorWrapper {
+    public ModelCursorWrapper(Cursor cursor) {
         super(cursor);
+    }
+
+    public Album getAlbum(){
+
+        String title = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM));
+        String albumArtPath = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART));
+        String  Id = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_KEY));
+        String artist = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ARTIST));
+
+        Album album = new Album(Id);
+        album.setArtworkPath(albumArtPath);
+        album.setTitle(title);
+        album.setAlbumArtist(artist);
+
+        return album;
     }
 
     public Song getSong(Uri path){
@@ -37,5 +48,4 @@ public class SongCursorWrapper extends CursorWrapper {
 
         return song;
     }
-
 }
