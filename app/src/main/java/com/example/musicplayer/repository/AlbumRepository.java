@@ -32,7 +32,7 @@ public class AlbumRepository {
     }
 
     private void findAlbum(){
-        AlbumCursorWrapper cursor = new AlbumCursorWrapper(mContext.getContentResolver()
+        ModelCursorWrapper cursor = new ModelCursorWrapper(mContext.getContentResolver()
                 .query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                         null, null, null, null));
 

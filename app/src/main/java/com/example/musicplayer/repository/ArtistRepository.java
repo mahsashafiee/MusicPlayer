@@ -17,6 +17,7 @@ public class ArtistRepository {
 
     private ArtistRepository(Context context){
         mContext = context;
+        findArtist();
     }
 
     public static ArtistRepository getInstance(Context context){
@@ -48,7 +49,6 @@ public class ArtistRepository {
     }
 
     public List<Artist> getArtists(){
-        findArtist();
         return mArtists;
     }
 }

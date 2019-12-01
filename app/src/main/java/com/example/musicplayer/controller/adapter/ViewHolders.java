@@ -1,14 +1,14 @@
 package com.example.musicplayer.controller.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,7 +21,6 @@ import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewHolders {
 
@@ -48,7 +47,6 @@ public class ViewHolders {
 
         private TextView mTVMusicName, mTVMusicArtist, mDuration;
         private ImageView mIVMusicCover;
-        private View itemView;
         private Song mSong;
 
         public MusicItems(@NonNull View itemView) {
@@ -58,15 +56,10 @@ public class ViewHolders {
             mTVMusicArtist = itemView.findViewById(R.id.item_song_artist);
             mTVMusicName = itemView.findViewById(R.id.item_song_title);
             mDuration = itemView.findViewById(R.id.item_song_duration);
-            this.itemView = itemView;
 
             itemView.setOnClickListener(view -> {
                 callBacks.SingleSong(mSong);
-                mTVMusicName.setSelected(true);
             });
-
-            FindFilesArt art = new FindFilesArt();
-            art.execute();
 
         }
 
@@ -75,13 +68,16 @@ public class ViewHolders {
 
             mSong = song;
 
-            mTVMusicArtist.setText(song.getArtist());
-            mTVMusicName.setText(song.getTitle());
-            mDuration.setText(song.getDuration());
+            mTVMusicArtist.setText(mSong.getArtist());
+            mTVMusicName.setText(mSong.getTitle());
+            mDuration.setText(mSong.getDuration());
+
+            SetArt art = new SetArt();
+            art.execute();
 
         }
 
-        private class FindFilesArt extends AsyncTask<Void, Void, byte[]> {
+        private class SetArt extends AsyncTask<Void, Void, byte[]> {
 
 
             @Override
@@ -93,10 +89,14 @@ public class ViewHolders {
 
             @Override
             protected void onPostExecute(byte[] bytes) {
-                Glide.with(mContext).asDrawable()
-                        .load(bytes)
-                        .placeholder(R.drawable.song_placeholder)
-                        .into(PictureUtils.getTarget(mIVMusicCover));
+                if (bytes.length < 2)
+                    Glide.with(mContext).asDrawable()
+                            .load(new ColorDrawable(Color.GRAY))
+                            .into(PictureUtils.getTarget(mIVMusicCover));
+                else
+                    Glide.with(mContext).asDrawable()
+                            .load(bytes)
+                            .into(PictureUtils.getTarget(mIVMusicCover));
             }
         }
 
@@ -122,20 +122,34 @@ public class ViewHolders {
             mAlbumArt = itemView.findViewById(R.id.item_album_art);
             mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
-            itemView.setOnClickListener(view -> {callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
-            mTitle.setSelected(true);
-            });
+            itemView.setOnClickListener(view -> callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM));
 
         }
 
         @Override
         public void bindHolder(Album album) {
             mAlbum = album;
-            if (album.getArtworkPath() != null) {
-                Glide.with(mContext).asDrawable().load(album.getArtworkPath()).into(PictureUtils.getTarget(mAlbumArt));
-            }
             mTitle.setText(album.getTitle());
             mArtist.setText(album.getAlbumArtist());
+
+            SetArt art = new SetArt();
+            art.execute();
+        }
+
+        private class SetArt extends AsyncTask<Void, Void, String> {
+
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                return mAlbum.getArtworkPath();
+            }
+
+            @Override
+            protected void onPostExecute(String artFile) {
+                Glide.with(mContext).asDrawable()
+                        .load(artFile)
+                        .into(PictureUtils.getTarget(mAlbumArt));
+            }
         }
     }
 
@@ -146,19 +160,18 @@ public class ViewHolders {
 
     public class ArtistItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Artist> {
 
-        private View itemView;
         private SquareImage mImage;
         private TextView mName;
         private Artist mArtist;
 
         public ArtistItems(@NonNull View itemView) {
             super(itemView);
-            this.itemView = itemView;
+
             mName = itemView.findViewById(R.id.item_song_artist);
             mImage = itemView.findViewById(R.id.item_artist_art);
+
             itemView.setOnClickListener(view -> {
                 callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
-                mName.setSelected(true);
             });
 
         }

@@ -15,7 +15,7 @@ import java.util.List;
 
 public class SongRepository {
 
-    private List<Song> mSongs = new ArrayList<>();
+    private List<Song> mSongs;
     private List<Song> mBasedSongs;
     private Context mContext;
     private static SongRepository instance;
@@ -33,7 +33,8 @@ public class SongRepository {
     }
 
     public List<Song> getSongs() {
-        findSongs();
+        if (mSongs == null)
+            findSongs();
         Collections.sort(mSongs);
         return mSongs;
     }
@@ -52,10 +53,11 @@ public class SongRepository {
 
 
     private void findSongs() {
+        mSongs = new ArrayList<>();
 
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        SongCursorWrapper songWrapper = new SongCursorWrapper(musicResolver.query(musicUri, null, null, null, null));
+        ModelCursorWrapper songWrapper = new ModelCursorWrapper(musicResolver.query(musicUri, null, null, null, null));
 
         if (songWrapper != null && songWrapper.moveToFirst()) {
             try {
@@ -83,7 +85,7 @@ public class SongRepository {
 
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        SongCursorWrapper songWrapper = new SongCursorWrapper(musicResolver.query(musicUri,
+        ModelCursorWrapper songWrapper = new ModelCursorWrapper(musicResolver.query(musicUri,
                 null, MediaStore.Audio.Media.ALBUM + " = ? ", new String[]{albumName}, null));
 
         if (songWrapper != null && songWrapper.moveToFirst()) {
@@ -112,7 +114,7 @@ public class SongRepository {
 
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        SongCursorWrapper songWrapper = new SongCursorWrapper(musicResolver.query(musicUri,
+        ModelCursorWrapper songWrapper = new ModelCursorWrapper(musicResolver.query(musicUri,
                 null, MediaStore.Audio.Media.ARTIST + " = ? ", new String[]{artistName}, null));
 
         if (songWrapper != null && songWrapper.moveToFirst()) {

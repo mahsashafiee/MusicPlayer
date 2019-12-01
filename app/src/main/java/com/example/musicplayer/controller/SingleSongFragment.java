@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -31,7 +30,7 @@ import me.tankery.lib.circularseekbar.CircularSeekBar;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SingleSongFragment extends Fragment implements PlayerManager.updateUI {
+public class SingleSongFragment extends Fragment implements PlayerManager.UIController {
 
     private static String ARG_SONG = "song";
     private Song mSong;
@@ -178,9 +177,9 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
         mForward.setOnClickListener(view ->mPlayer.goForward());
         mBackward.setOnClickListener(view ->mPlayer.goBackward());
 
-        mShuffle.setOnClickListener(view ->mPlayer.Shuffle(!mPlayer.isShuffle()));
+        mShuffle.setOnClickListener(view ->mPlayer.Shuffle());
 
-        mRepeat.setOnClickListener(view ->mPlayer.ListLoop(!mPlayer.isListLoop()));
+        mRepeat.setOnClickListener(view ->mPlayer.ListLoop());
 
         mSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener()
 
@@ -216,7 +215,7 @@ public class SingleSongFragment extends Fragment implements PlayerManager.update
     }
 
     @Override
-    public void Update() {
+    public void ViewUpdater() {
         if (isAdded()) {
             mSong = mPlayer.getCurrentSong();
             initView();
