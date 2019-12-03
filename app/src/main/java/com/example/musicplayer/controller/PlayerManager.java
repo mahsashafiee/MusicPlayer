@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.View;
 
 import androidx.fragment.app.Fragment;
 
@@ -49,8 +50,8 @@ public class PlayerManager {
         return Instance;
     }
 
-    public void setUIobj(Fragment fragment) {
-        mUIObj = (UIController) fragment;
+    public void setUIobj(Object view) {
+        mUIObj = (UIController) view;
     }
 
     public void setPlayList(List<Song> songs) {
@@ -97,7 +98,6 @@ public class PlayerManager {
             if (currentSong == mPlayList.size() - 1 && !mListLoop) {
                 Stop();
                 isStop = true;
-                mUIObj.Handler();
                 mUIObj.ViewUpdater();
                 return;
             }
@@ -212,7 +212,6 @@ public class PlayerManager {
 
     interface UIController {
         void ViewUpdater();
-        void Handler();
     }
 
 }

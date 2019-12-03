@@ -1,8 +1,6 @@
 package com.example.musicplayer.controller.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +19,8 @@ import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
 
+import es.claucookie.miniequalizerlibrary.EqualizerView;
+
 
 public class ViewHolders {
 
@@ -32,9 +32,9 @@ public class ViewHolders {
         mContext = context;
     }
 
-    //Handle SingleSong and SongList fragment invoker;
+    //Handle PlaySong and SongList fragment invoker;
     public interface CallBacks {
-        void SingleSong(Song song);
+        void PlaySong(Song song);
 
         void SongList(String albumOrArtist, Qualifier qualifier);
     }
@@ -58,7 +58,7 @@ public class ViewHolders {
             mDuration = itemView.findViewById(R.id.item_song_duration);
 
             itemView.setOnClickListener(view -> {
-                callBacks.SingleSong(mSong);
+                callBacks.PlaySong(mSong);
                 mTVMusicName.setSelected(true);
             });
 
@@ -72,6 +72,7 @@ public class ViewHolders {
             mTVMusicArtist.setText(mSong.getArtist());
             mTVMusicName.setText(mSong.getTitle());
             mDuration.setText(mSong.getDuration());
+            mIVMusicCover.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
 
             SetArt art = new SetArt();
             art.execute();
@@ -79,7 +80,6 @@ public class ViewHolders {
         }
 
         private class SetArt extends AsyncTask<Void, Void, byte[]> {
-
 
             @Override
             protected byte[] doInBackground(Void... voids) {
@@ -90,18 +90,12 @@ public class ViewHolders {
 
             @Override
             protected void onPostExecute(byte[] bytes) {
-                if (bytes.length < 2)
-                    Glide.with(mContext).asDrawable()
-                            .load(new ColorDrawable(Color.GRAY))
-                            .into(PictureUtils.getTarget(mIVMusicCover));
-                else
-                    Glide.with(mContext).asDrawable()
-                            .load(bytes)
-                            .placeholder(R.drawable.song_placeholder)
+                Glide.with(mContext).asDrawable()
+                        .load(bytes)
+                        .placeholder(R.drawable.song_placeholder)
                         .into(PictureUtils.getTarget(mIVMusicCover));
             }
         }
-
     }
 
 
@@ -110,7 +104,6 @@ public class ViewHolders {
      */
     public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Album> {
 
-        private View itemView;
         private SquareImage mAlbumArt;
         private TextView mTitle;
         private TextView mArtist;
@@ -119,13 +112,13 @@ public class ViewHolders {
 
         public AlbumItems(@NonNull View itemView) {
             super(itemView);
-            this.itemView = itemView;
 
             mAlbumArt = itemView.findViewById(R.id.item_album_art);
             mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
-            itemView.setOnClickListener(view -> {callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
-            mTitle.setSelected(true);
+            itemView.setOnClickListener(view -> {
+                callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
+                mTitle.setSelected(true);
             });
 
         }
@@ -135,13 +128,13 @@ public class ViewHolders {
             mAlbum = album;
             mTitle.setText(album.getTitle());
             mArtist.setText(album.getAlbumArtist());
+            mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
 
             SetArt art = new SetArt();
             art.execute();
         }
 
         private class SetArt extends AsyncTask<Void, Void, String> {
-
 
             @Override
             protected String doInBackground(Void... voids) {

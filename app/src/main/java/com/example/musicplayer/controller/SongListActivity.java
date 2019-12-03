@@ -45,7 +45,7 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     @Override
-    public void SingleSong(Song song) {
+    public void PlaySong(Song song) {
         startActivity(SingleSongActivity.newIntent(SongListActivity.this, song));
     }
 
