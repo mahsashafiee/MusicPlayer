@@ -57,10 +57,8 @@ public class ViewHolders {
             mTVMusicName = itemView.findViewById(R.id.item_song_title);
             mDuration = itemView.findViewById(R.id.item_song_duration);
 
-            itemView.setOnClickListener(view -> {
-                callBacks.SingleSong(mSong);
-                mTVMusicName.setSelected(true);
-            });
+            itemView.setOnClickListener(view ->
+                callBacks.SingleSong(mSong));
 
         }
 
@@ -104,7 +102,7 @@ public class ViewHolders {
     /**
      * ALBUM VIEW HOLDER CLASS
      */
-    public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Album> {
+    public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Album>{
 
         private SquareImage mAlbumArt;
         private TextView mTitle;
@@ -118,10 +116,8 @@ public class ViewHolders {
             mAlbumArt = itemView.findViewById(R.id.item_album_art);
             mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
-            itemView.setOnClickListener(view -> {
-                callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
-                mTitle.setSelected(true);
-            });
+            itemView.setOnClickListener(view ->
+                callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM));
 
         }
 
@@ -170,10 +166,8 @@ public class ViewHolders {
             mName = itemView.findViewById(R.id.item_song_artist);
             mImage = itemView.findViewById(R.id.item_artist_art);
 
-            itemView.setOnClickListener(view -> {
-                callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
-                mName.setSelected(true);
-            });
+            itemView.setOnClickListener(view ->
+                callBacks.SongList(mArtist.getName(), Qualifier.ARTIST));
 
         }
 

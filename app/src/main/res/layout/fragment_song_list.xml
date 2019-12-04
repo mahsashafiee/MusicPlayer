@@ -7,8 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--This the interface sitting behind the backdrop and shown when it is collapsed-->
-
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +27,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="56dp"
         android:background="@color/colorPrimary"
         android:orientation="vertical"
@@ -46,7 +44,8 @@
             android:background="@drawable/backdrop_background"
             android:paddingStart="32dp"
             android:paddingEnd="32dp"
-            tools:text="85 items"/>
+            tools:text="85 items"
+            tools:targetApi="lollipop" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:paddingTop="2dp"
@@ -57,7 +56,5 @@
             tools:listitem="@layout/song_list_item"/>
 
     </LinearLayout>
-
-
 
 </FrameLayout>

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#E3E5F7</color>
-    <color name="colorPrimaryDark">#E3E5F7</color>
+    <color name="colorPrimary">#E3F0FD</color>
+    <color name="colorPrimaryDark">#E3F0FD</color>
     <color name="colorAccent">#FF8045</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="toolbarIconColor">@color/textColorPrimary</color>
     <color name="textInputBackgroundColor">#65A75286</color>
     <color name="light_pink">#F8E2E2</color>
+
+    <color name="tab_indicator_end">#74E3F0FD</color>
+    <color name="tab_indicator_start">#74F8E2E2</color>
 
 </resources>

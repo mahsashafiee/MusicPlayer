@@ -19,6 +19,7 @@
         </item>
     </style>
 
+
     <style name="Widget.MusicPlayer.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="hintTextAppearance">@style/TextAppearance.MusicPlayer.TextInputLayout.HintText</item>
         <item name="hintTextColor">@color/textColorPrimary</item>
@@ -28,6 +29,10 @@
 
     <style name="TextAppearance.MusicPlayer.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="MyTabLayout" parent="TextAppearance.AppCompat.Small" >
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Widget.MusicPlayer.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">

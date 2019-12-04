@@ -1,6 +1,7 @@
 package com.example.musicplayer.controller;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,7 +27,7 @@ import com.example.musicplayer.repository.SongRepository;
  */
 public class CategoryFragment extends Fragment {
 
-    public static final String SONG_QUALIFIER = "song_qualifier";
+    private static final String SONG_QUALIFIER = "song_qualifier";
     private View mView;
     private RecyclerView mRecyclerView;
     private AlbumRepository mAlbumRepository;
@@ -34,7 +35,7 @@ public class CategoryFragment extends Fragment {
     private ArtistRepository mArtistRepository;
     private SongRepository mSongRepository;
     private MusicRecyclerAdapter mAdapter;
-    private ScrollHandler mActivity;
+    private ScrollHandler mCallbacks;
 
 
     public CategoryFragment() {
@@ -52,6 +53,12 @@ public class CategoryFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mCallbacks = (ScrollHandler) context;
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -59,7 +66,7 @@ public class CategoryFragment extends Fragment {
         mAlbumRepository = AlbumRepository.getInstance(getContext());
         mArtistRepository = ArtistRepository.getInstance(getContext());
         mSongRepository = SongRepository.getInstance(getContext());
-        mActivity = (ScrollHandler) getActivity();
+
     }
 
     @Override
@@ -99,20 +106,20 @@ public class CategoryFragment extends Fragment {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if(!recyclerView.canScrollVertically(1))
-                    mActivity.onScrollList(true);
-                else mActivity.onScrollList(false);
+                    mCallbacks.onScrollList(true);
+                else mCallbacks.onScrollList(false);
 
             }
         });
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mActivity = null;
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
-    public interface ScrollHandler{
+    public interface ScrollHandler {
         void onScrollList(boolean scrolled);
     }
 

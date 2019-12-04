@@ -25,7 +25,6 @@
                 <category android:name="android.intent.category.APP_MUSIC" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.SongListActivity" />
     </application>
 
 </manifest>

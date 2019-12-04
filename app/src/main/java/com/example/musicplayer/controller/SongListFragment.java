@@ -1,9 +1,11 @@
 package com.example.musicplayer.controller;
 
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -28,10 +30,13 @@ import com.example.musicplayer.repository.SongRepository;
  */
 public class SongListFragment extends Fragment {
 
+    public static final String TAG = "SongListFragment";
+
     private RecyclerView songRecycler;
     private MusicRecyclerAdapter mAdapter;
     private String mAlbumArtist;
     private TextView mItemCount;
+    private ScrollHandler mCallbacks;
 
     private static final String ARG_KEY = "albumArtist";
     private static final String ARG_QUALIFIER = "qualifier";
@@ -39,6 +44,12 @@ public class SongListFragment extends Fragment {
 
     public SongListFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mCallbacks = (ScrollHandler) context;
     }
 
     public static SongListFragment newInstance(String albumName, Qualifier qualifier) {
@@ -66,6 +77,10 @@ public class SongListFragment extends Fragment {
         else
             PlayList.setSongList(SongRepository.getInstance(getActivity()).getArtistSongList(mAlbumArtist));
 
+    }
+
+    public interface ScrollHandler {
+        void onScrollList(boolean scrolled);
     }
 
     @Override
@@ -101,6 +116,16 @@ public class SongListFragment extends Fragment {
         songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         songRecycler.setAdapter(mAdapter);
 
+        songRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1))
+                    mCallbacks.onScrollList(true);
+                else mCallbacks.onScrollList(false);
+            }
+        });
+
     }
 
     /**
@@ -114,5 +139,11 @@ public class SongListFragment extends Fragment {
         if (activity != null) {
             activity.setSupportActionBar(toolbar);
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 }

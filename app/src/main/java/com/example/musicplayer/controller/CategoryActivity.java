@@ -33,7 +33,10 @@ import com.google.android.material.tabs.TabLayout;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
-public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, PlayerManager.UIController, CategoryFragment.ScrollHandler {
+public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks,
+        PlayerManager.UIController,
+        CategoryFragment.ScrollHandler ,
+        SongListFragment.ScrollHandler{
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
     private Bundle savedInstanceState;
@@ -48,9 +51,9 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     private PlayerManager mPlayer;
     private Runnable UpdateSongTime;
 
-    private CoordinatorLayout mCoorLayout;
+    private CoordinatorLayout mCoordinatorLayout;
     private BottomAppBar mBottomAppBar;
-    private CircularSeekBar mSeekbar;
+    private CircularSeekBar mSeekBar;
     private TextView mDuration;
     private ImageButton mForward;
     private ImageButton mBackward;
@@ -84,9 +87,8 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     private void RunActivity() {
 
         initUI();
-        BottomAppBarListener();
-
         ChangeStatusBar.setStatusBarGradiant(this);
+        BottomAppBarListener();
 
         mTabLayout.post(() -> {
             mIndicatorWidth = mTabLayout.getWidth() / mTabLayout.getTabCount();
@@ -122,17 +124,18 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     private void initUI() {
+
         mViewPager = findViewById(R.id.view_pager);
         mTabLayout = findViewById(R.id.tab_layout);
         mIndicator = findViewById(R.id.indicator);
 
         mBottomAppBar = findViewById(R.id.bottomAppBar);
-        mSeekbar = findViewById(R.id.bottomAppBar_seekbar);
+        mSeekBar = findViewById(R.id.bottomAppBar_seekbar);
         mDuration = findViewById(R.id.bottomAppBar_duration);
         mForward = findViewById(R.id.bottomAppBar_forward);
         mBackward = findViewById(R.id.bottomAppBar_backward);
         mPlay = findViewById(R.id.bottomAppBar_playPause);
-        mCoorLayout = findViewById(R.id.bottomAppBar_coordinator);
+        mCoordinatorLayout = findViewById(R.id.bottomAppBar_coordinator);
 
         mAdapter = new PagerAdapter(this, getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
@@ -157,7 +160,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         Runnable mSeekToRun = new Runnable() {
             @Override
             public void run() {
-                mSeekbar.setProgress(mPlayer.getCurrentPosition());
+                mSeekBar.setProgress(mPlayer.getCurrentPosition());
                 mHandler.postDelayed(this, 130);
             }
         };
@@ -202,28 +205,34 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
 
+
     @Override
-    public void PlaySong(Song song) {
+    public void SingleSong(Song song) {
+        startActivity(SingleSongActivity.newIntent(CategoryActivity.this, song));
         mSong = song;
         PlayList.setSongList(SongRepository.getInstance(CategoryActivity.this).getSongs());
         mPlayer = PlayerManager.getPlayer(CategoryActivity.this);
         mPlayer.setUIobj(CategoryActivity.this);
         mPlayer.Play(mSong);
-        mCoorLayout.setVisibility(View.VISIBLE);
+        mCoordinatorLayout.setVisibility(View.VISIBLE);
         SeekBar();
         UpdateSongTime();
     }
 
     @Override
     public void SongList(String albumOrArtist, Qualifier qualifier) {
-        startActivity(SongListActivity.newIntent(CategoryActivity.this, albumOrArtist, qualifier));
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.category_container, SongListFragment.newInstance(albumOrArtist, qualifier))
+                .addToBackStack(SongListFragment.TAG)
+                .commit();
+
     }
 
     @Override
     public void ViewUpdater() {
         if (this.getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
             mSong = mPlayer.getCurrentSong();
-            mSeekbar.setMax(mPlayer.getDuration());
+            mSeekBar.setMax(mPlayer.getDuration());
         }
     }
 
@@ -232,7 +241,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         if (scrolled) {
             mBottomAppBar.performHide();
             mPlay.setVisibility(View.GONE);
-            mSeekbar.setVisibility(View.GONE);
+            mSeekBar.setVisibility(View.GONE);
             mForward.setVisibility(View.GONE);
             mBackward.setVisibility(View.GONE);
             mDuration.setVisibility(View.GONE);
@@ -240,7 +249,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         else {
             mBottomAppBar.getBehavior().slideUp(mBottomAppBar);
             mPlay.setVisibility(View.VISIBLE);
-            mSeekbar.setVisibility(View.VISIBLE);
+            mSeekBar.setVisibility(View.VISIBLE);
             mForward.setVisibility(View.VISIBLE);
             mBackward.setVisibility(View.VISIBLE);
             mDuration.setVisibility(View.VISIBLE);
