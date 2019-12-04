@@ -3,6 +3,7 @@ package com.example.musicplayer.controller;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -33,6 +34,7 @@ public class CategoryFragment extends Fragment {
     private ArtistRepository mArtistRepository;
     private SongRepository mSongRepository;
     private MusicRecyclerAdapter mAdapter;
+    private ScrollHandler mActivity;
 
 
     public CategoryFragment() {
@@ -57,6 +59,7 @@ public class CategoryFragment extends Fragment {
         mAlbumRepository = AlbumRepository.getInstance(getContext());
         mArtistRepository = ArtistRepository.getInstance(getContext());
         mSongRepository = SongRepository.getInstance(getContext());
+        mActivity = (ScrollHandler) getActivity();
     }
 
     @Override
@@ -89,8 +92,28 @@ public class CategoryFragment extends Fragment {
             }
 
             mRecyclerView.setAdapter(mAdapter);
-
         }
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(!recyclerView.canScrollVertically(1))
+                    mActivity.onScrollList(true);
+                else mActivity.onScrollList(false);
+
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mActivity = null;
+    }
+
+    public interface ScrollHandler{
+        void onScrollList(boolean scrolled);
     }
 
 }

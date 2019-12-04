@@ -35,8 +35,6 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
     private static String ARG_SONG = "song";
     private Song mSong;
     private PlayerManager mPlayer;
-    private Handler mHandler = new Handler();
-    private Runnable mSeekToRun;
 
     private ImageView mCover;
     private ImageView mPlayPause;
@@ -48,8 +46,6 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
     private CircularSeekBar mSeekBar;
     private TextView mTitle;
     private TextView mArtist;
-    private TextView mTime;
-    private Runnable UpdateSongTime;
 
     private Drawable playingState;
     private Drawable pauseState;
@@ -95,20 +91,19 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
     /**
      * Animation handler
      */
-    private void setDrawable(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+    private void setDrawable() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             playingState = getActivity().getDrawable(R.drawable.avd_anim);
             pauseState = getActivity().getDrawable(R.drawable.avd_anim_reverse);
             startAnimation(mPlayer.isPlaying());
-        }
-        else {
+        } else {
             playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp);
             pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow_grey_600_24dp);
         }
     }
 
-    private void startAnimation(boolean isPlaying){
-        if(pauseState instanceof Animatable && playingState instanceof Animatable) {
+    private void startAnimation(boolean isPlaying) {
+        if (pauseState instanceof Animatable && playingState instanceof Animatable) {
             if (isPlaying) {
                 ((Animatable) playingState).start();
             } else
@@ -153,7 +148,8 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
     }
 
     private void SeekBar() {
-        mSeekToRun = new Runnable() {
+        Handler mHandler = new Handler();
+        Runnable mSeekToRun = new Runnable() {
             @Override
             public void run() {
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
@@ -168,50 +164,36 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
 
         mPlayPause.setOnClickListener(view -> {
             mPlayer.Pause();
-        if (!mPlayer.isPlaying())
-            mPlayPause.setImageDrawable(pauseState);
-        else
-            mPlayPause.setImageDrawable(playingState);
-        startAnimation(mPlayer.isPlaying());
-    });
-        mForward.setOnClickListener(view ->mPlayer.goForward());
-        mBackward.setOnClickListener(view ->mPlayer.goBackward());
+            if (!mPlayer.isPlaying())
+                mPlayPause.setImageDrawable(pauseState);
+            else
+                mPlayPause.setImageDrawable(playingState);
+            startAnimation(mPlayer.isPlaying());
+        });
+        mForward.setOnClickListener(view -> mPlayer.goForward());
+        mBackward.setOnClickListener(view -> mPlayer.goBackward());
 
-        mShuffle.setOnClickListener(view ->mPlayer.Shuffle());
+        mShuffle.setOnClickListener(view -> mPlayer.Shuffle());
 
-        mRepeat.setOnClickListener(view ->mPlayer.ListLoop());
+        mRepeat.setOnClickListener(view -> mPlayer.ListLoop());
 
-        mSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener()
-
-    {
-        @Override
-        public void onProgressChanged (CircularSeekBar circularSeekBar,float progress,
-        boolean fromUser){
-        if (fromUser) {
-            mPlayer.Seek(((int) progress));
-        }
-    }
-
-        @Override
-        public void onStopTrackingTouch (CircularSeekBar seekBar){
-    }
-
-        @Override
-        public void onStartTrackingTouch (CircularSeekBar seekBar){
-    }
-    });
-}
-
-    private void UpdateSongTime() {
-        UpdateSongTime = new Runnable() {
+        mSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
-            public void run() {
-                int sTime = mPlayer.getCurrentPosition();
-                mTime.setText(String.format("%d h, %d min, %d sec", 0, TimeUnit.MILLISECONDS.toMinutes(sTime),
-                        TimeUnit.MILLISECONDS.toSeconds(sTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(sTime))));
-                mHandler.postDelayed(this, 1000);
+            public void onProgressChanged(CircularSeekBar circularSeekBar, float progress,
+                                          boolean fromUser) {
+                if (fromUser) {
+                    mPlayer.Seek(((int) progress));
+                }
             }
-        };
+
+            @Override
+            public void onStopTrackingTouch(CircularSeekBar seekBar) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(CircularSeekBar seekBar) {
+            }
+        });
     }
 
     @Override
@@ -219,14 +201,6 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
         if (isAdded()) {
             mSong = mPlayer.getCurrentSong();
             initView();
-        }
-    }
-
-    @Override
-    public void Handler() {
-        if (isAdded()) {
-//            mHandler.removeCallbacks(mSeekToRun);
-//            mHandler.removeCallbacks(UpdateSongTime);
         }
     }
 }
