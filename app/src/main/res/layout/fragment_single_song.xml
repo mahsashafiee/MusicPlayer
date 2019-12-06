@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_spacing">
+
         <androidx.cardview.widget.CardView
             android:id="@+id/card_view"
             android:layout_width="200dp"
@@ -21,10 +22,10 @@
             android:elevation="16dp"
             android:fitsSystemWindows="true"
             app:cardCornerRadius="100dp"
+            app:layout_constraintBottom_toBottomOf="@id/seekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/seekBar"
-            app:layout_constraintBottom_toBottomOf="@id/seekBar"
             app:layout_constraintVertical_chainStyle="spread">
 
             <ImageView
@@ -33,9 +34,9 @@
                 android:layout_height="200dp"
                 android:layout_gravity="center|top"
                 android:layout_margin="-24dp"
+                android:background="@drawable/song_placeholder"
                 android:foregroundGravity="center"
                 android:src="@drawable/circular_disc_form"
-                android:background="@drawable/song_placeholder"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -49,11 +50,7 @@
             android:id="@+id/seekBar"
             android:layout_width="250dp"
             android:layout_height="250dp"
-            app:cs_circle_color="#DCE2E2E2"
-            app:cs_circle_progress_color="@android:color/holo_blue_bright"
-            app:cs_circle_stroke_width="3dp"
-            app:cs_pointer_color="@android:color/holo_blue_bright"
-            app:cs_pointer_stroke_width="14dp"
+            style="@style/Widget.MusicPlayer.SeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -65,15 +62,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:ellipsize="marquee"
-            android:padding="16dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:scrollHorizontally="true"
+            android:padding="12dp"
+            style="@style/Widget.MusicPlayer.TextView.Medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/seekBar"
@@ -83,14 +73,10 @@
             android:id="@+id/song_artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:singleLine="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
+            style="@style/Widget.MusicPlayer.TextView.Small"
             android:textColor="@android:color/darker_gray"
-            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/song_title"
@@ -100,46 +86,34 @@
             android:id="@+id/controller_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="28dp"
+            android:layout_marginBottom="24dp"
             android:gravity="center"
-            android:padding="8dp"
             android:orientation="horizontal"
+            android:padding="8dp"
             app:layout_constraintBottom_toTopOf="@id/media_controller"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
                 android:id="@+id/backward"
+                style="@style/Widget.MusicPlayer.Button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="8dp"
-                android:background="@drawable/ciculare_button"
-                android:elevation="6dp"
-                android:foregroundGravity="center_vertical"
-                android:padding="8dp"
-                app:srcCompat="@drawable/ic_skip_previous_grey_600_24dp" />
+                app:srcCompat="@drawable/ic_skip_previous" />
 
             <ImageView
                 android:id="@+id/play_pause"
+                style="@style/Widget.MusicPlayer.Button"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:layout_margin="8dp"
-                android:background="@drawable/ciculare_button"
-                android:elevation="6dp"
-                android:foregroundGravity="center_vertical"
-                android:padding="8dp"
-                app:srcCompat="@drawable/ic_pause_grey_600_24dp" />
+                app:srcCompat="@drawable/ic_pause" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/forward"
+                style="@style/Widget.MusicPlayer.Button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="8dp"
-                android:background="@drawable/ciculare_button"
-                android:elevation="6dp"
-                android:foregroundGravity="center_vertical"
-                android:padding="8dp"
-                app:srcCompat="@drawable/ic_skip_next_grey_600_24dp" />
+                app:srcCompat="@drawable/ic_skip_next" />
 
         </LinearLayout>
 
@@ -152,16 +126,15 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
-                android:elevation="4dp"
                 android:id="@+id/shuffle"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/repeat"
+                app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintHorizontal_chainStyle="spread"
-                app:srcCompat="@drawable/ic_shuffle_grey_600_24dp" />
+                app:srcCompat="@drawable/ic_shuffle" />
 
             <ImageView
                 android:id="@+id/repeat"
@@ -171,7 +144,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/favorite"
                 app:layout_constraintStart_toEndOf="@id/shuffle"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_repeat_grey_600_24dp" />
+                app:srcCompat="@drawable/ic_repeat" />
 
             <ImageView
                 android:id="@+id/favorite"
@@ -183,7 +156,7 @@
                 app:layout_constraintEnd_toStartOf="@id/playlist_add"
                 app:layout_constraintStart_toEndOf="@id/repeat"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_favorite_border_grey_600_24dp" />
+                app:srcCompat="@drawable/ic_favorite_borde" />
 
             <ImageView
                 android:id="@+id/playlist_add"
@@ -193,7 +166,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/favorite"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_playlist_add_grey_600_24dp" />
+                app:srcCompat="@drawable/ic_playlist_add" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

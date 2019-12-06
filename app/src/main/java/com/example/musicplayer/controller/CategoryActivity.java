@@ -147,9 +147,9 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         mPlay.setOnClickListener(view -> {
             mPlayer.Pause();
             if (!mPlayer.isPlaying())
-                mPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow_grey_600_24dp));
+                mPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_play_arrow));
             else
-                mPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp));
+                mPlay.setImageDrawable(getResources().getDrawable(R.drawable.ic_pause));
         });
 
         mForward.setOnClickListener(view -> mPlayer.goForward());

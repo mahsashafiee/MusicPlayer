@@ -25,10 +25,10 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical">
 
-            <ImageView
+            <com.example.musicplayer.Utils.SquareImage
                 android:id="@+id/item_song_art"
-                android:layout_width="58dp"
-                android:layout_height="58dp"
+                android:layout_width="56dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
@@ -45,6 +45,7 @@
             <TextView
                 android:id="@+id/item_song_title"
                 android:layout_width="match_parent"
+                style="@style/Widget.MusicPlayer.TextView.Medium"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/item_song_art"
                 android:layout_marginTop="6dp"
@@ -52,19 +53,13 @@
                 android:layout_toLeftOf="@id/item_song_duration"
                 android:layout_toEndOf="@id/item_song_art"
                 android:layout_toRightOf="@id/item_song_art"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:marqueeRepeatLimit="marquee_forever"
                 android:padding="3dp"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
                 android:textSize="16sp"
-                android:textStyle="bold"
                 tools:text="@tools:sample/full_names" />
 
             <TextView
                 android:id="@+id/item_song_artist"
+                style="@style/Widget.MusicPlayer.TextView.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/item_song_title"
@@ -73,12 +68,8 @@
                 android:layout_toLeftOf="@id/item_song_duration"
                 android:layout_toEndOf="@id/item_song_art"
                 android:layout_toRightOf="@id/item_song_art"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:paddingStart="3dp"
                 android:paddingEnd="3dp"
-                android:singleLine="true"
                 android:textSize="12sp"
                 tools:text="@tools:sample/first_names" />
 
@@ -92,7 +83,7 @@
                 android:layout_alignParentRight="true"
                 android:foregroundGravity="center_vertical"
                 android:padding="2dp"
-                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+                app:srcCompat="@drawable/ic_more_vert" />
 
             <TextView
                 android:id="@+id/item_song_duration"

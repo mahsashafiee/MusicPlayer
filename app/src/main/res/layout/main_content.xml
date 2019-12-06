@@ -12,7 +12,6 @@
         android:background="@drawable/launcher_top_bar" />
 
 
-
     <FrameLayout
         android:id="@+id/frame_viewpager"
         android:layout_width="match_parent"
@@ -24,9 +23,9 @@
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp" />
     </FrameLayout>
 
 
@@ -35,13 +34,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="8dp"
-        android:clipToPadding="false"
-        android:background="@drawable/tab_container"
         android:layout_marginStart="42dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="42dp"
+        android:background="@drawable/tab_container"
+        android:clipToPadding="false"
         android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:layout_marginEnd="42dp">
+        android:paddingEnd="4dp">
 
         <View
             android:id="@+id/indicator"
@@ -54,14 +53,7 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            app:tabTextAppearance="@style/MyTabLayout"
-            android:background="@drawable/tab_bg"
-            app:tabGravity="fill"
-            app:tabIndicatorColor="@android:color/transparent"
-            app:tabMode="fixed"
-            app:tabRippleColor="@android:color/transparent"
-            app:tabSelectedTextColor="@android:color/holo_blue_dark" />
-
+            style="@style/Widget.MusicPlayer.TabLayout"/>
     </FrameLayout>
 
 </RelativeLayout>

@@ -19,17 +19,17 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/bottomAppBar_playPause"
-        app:srcCompat="@drawable/ic_pause_grey_600_24dp"
+        app:srcCompat="@drawable/ic_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
+        android:layout_margin="4dp"
         app:layout_anchor="@id/bottomAppBar" />
 
     <me.tankery.lib.circularseekbar.CircularSeekBar
         android:id="@+id/bottomAppBar_seekbar"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="13dp"
         android:layout_gravity="center"
         app:cs_circle_stroke_width = "6dp"
         app:cs_circle_progress_color = "@color/colorAccent"
@@ -45,7 +45,7 @@
         android:layout_marginEnd="100dp"
         android:layout_marginBottom="12dp"
         android:background="@android:color/transparent"
-        app:srcCompat="@drawable/ic_skip_next_grey_600_24dp"/>
+        app:srcCompat="@drawable/ic_skip_next"/>
 
     <ImageButton
         android:id="@+id/bottomAppBar_backward"
@@ -56,7 +56,7 @@
         android:layout_marginStart="100dp"
         android:layout_marginBottom="12dp"
         android:background="@android:color/transparent"
-        app:srcCompat="@drawable/ic_skip_previous_grey_600_24dp"/>
+        app:srcCompat="@drawable/ic_skip_previous"/>
 
     <TextView
         android:id="@+id/bottomAppBar_duration"

@@ -22,9 +22,6 @@ import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
 
-import java.util.concurrent.TimeUnit;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 /**
@@ -97,8 +94,8 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
             pauseState = getActivity().getDrawable(R.drawable.avd_anim_reverse);
             startAnimation(mPlayer.isPlaying());
         } else {
-            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp);
-            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow_grey_600_24dp);
+            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause);
+            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow);
         }
     }
 

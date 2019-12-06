@@ -2,7 +2,6 @@ package com.example.musicplayer.controller;
 
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -101,11 +100,8 @@ public class SongListFragment extends Fragment {
         mItemCount = view.findViewById(R.id.item_count);
         songRecycler = view.findViewById(R.id.recycler_view);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            view.findViewById(R.id.item_count)
-                    .setBackgroundResource(R.drawable.backdrop_background_v23);
-        } else view.findViewById(R.id.item_count)
-                .setBackgroundResource(R.drawable.backdrop_background);
+        view.findViewById(R.id.item_count)
+                .setBackgroundResource(R.drawable.song_list_background);
 
         String items = getResources()
                 .getQuantityString(R.plurals.item_number, PlayList.getSongList().size(), PlayList.getSongList().size());

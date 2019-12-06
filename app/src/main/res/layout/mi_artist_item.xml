@@ -26,24 +26,20 @@
             android:outlineProvider="bounds"
             tools:src="@tools:sample/avatars" />
     </androidx.cardview.widget.CardView>
+
     <TextView
         android:id="@+id/item_song_artist"
+        style="@style/Widget.MusicPlayer.TextView.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textStyle="bold"
-        style="@style/TextAppearance.AppCompat.Small"
-        android:ellipsize="marquee"
-        android:padding="6dp"
-        android:layout_alignStart="@id/card_artist_art"
         android:layout_below="@id/card_artist_art"
-        android:layout_alignEnd="@id/card_artist_art"
-        tools:text="@tools:sample/lorem"
-        android:singleLine="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
+        android:layout_alignStart="@id/card_artist_art"
         android:layout_alignLeft="@id/card_artist_art"
-        android:layout_alignRight="@id/card_artist_art" />
+        android:layout_alignEnd="@id/card_artist_art"
+        android:layout_alignRight="@id/card_artist_art"
+        android:gravity="center"
+        android:padding="6dp"
+        tools:text="@tools:sample/lorem" />
 
 
 </RelativeLayout>
