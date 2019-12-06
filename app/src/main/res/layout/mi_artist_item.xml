@@ -38,6 +38,7 @@
         android:layout_alignEnd="@id/card_artist_art"
         android:layout_alignRight="@id/card_artist_art"
         android:gravity="center"
+        android:textSize="16sp"
         android:padding="6dp"
         tools:text="@tools:sample/lorem" />
 

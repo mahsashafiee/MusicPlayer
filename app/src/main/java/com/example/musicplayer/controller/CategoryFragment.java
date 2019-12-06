@@ -21,6 +21,7 @@ import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.repository.AlbumRepository;
 import com.example.musicplayer.repository.ArtistRepository;
 import com.example.musicplayer.repository.SongRepository;
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,7 +30,7 @@ public class CategoryFragment extends Fragment {
 
     private static final String SONG_QUALIFIER = "song_qualifier";
     private View mView;
-    private RecyclerView mRecyclerView;
+    private FastScrollRecyclerView mRecyclerView;
     private AlbumRepository mAlbumRepository;
     private Qualifier mQualifier;
     private ArtistRepository mArtistRepository;

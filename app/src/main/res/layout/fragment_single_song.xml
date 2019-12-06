@@ -156,7 +156,7 @@
                 app:layout_constraintEnd_toStartOf="@id/playlist_add"
                 app:layout_constraintStart_toEndOf="@id/repeat"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_favorite_borde" />
+                app:srcCompat="@drawable/ic_favorite_border" />
 
             <ImageView
                 android:id="@+id/playlist_add"

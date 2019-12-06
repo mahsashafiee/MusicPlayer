@@ -26,7 +26,7 @@
         app:layout_anchor="@id/bottomAppBar" />
 
     <me.tankery.lib.circularseekbar.CircularSeekBar
-        android:id="@+id/bottomAppBar_seekbar"
+        android:id="@+id/bottomAppBar_seekBar"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginBottom="13dp"

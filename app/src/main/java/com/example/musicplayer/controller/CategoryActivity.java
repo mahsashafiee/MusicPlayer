@@ -2,10 +2,13 @@ package com.example.musicplayer.controller;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Lifecycle;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
@@ -29,6 +32,7 @@ import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
@@ -37,6 +41,8 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         PlayerManager.UIController,
         CategoryFragment.ScrollHandler ,
         SongListFragment.ScrollHandler{
+
+    private AppBarConfiguration mAppBarConfiguration;
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
     private Bundle savedInstanceState;
@@ -125,12 +131,24 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
     private void initUI() {
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_photos, R.id.nav_collections, R.id.nav_favorite)
+                .setDrawerLayout(drawer)
+                .build();
+
         mViewPager = findViewById(R.id.view_pager);
         mTabLayout = findViewById(R.id.tab_layout);
         mIndicator = findViewById(R.id.indicator);
 
         mBottomAppBar = findViewById(R.id.bottomAppBar);
-        mSeekBar = findViewById(R.id.bottomAppBar_seekbar);
+        mSeekBar = findViewById(R.id.bottomAppBar_seekBar);
         mDuration = findViewById(R.id.bottomAppBar_duration);
         mForward = findViewById(R.id.bottomAppBar_forward);
         mBackward = findViewById(R.id.bottomAppBar_backward);
