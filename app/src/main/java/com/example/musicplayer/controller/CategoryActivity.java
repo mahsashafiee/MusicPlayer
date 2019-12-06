@@ -5,15 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -33,28 +36,43 @@ import com.google.android.material.tabs.TabLayout;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
-public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, PlayerManager.UIController, CategoryFragment.ScrollHandler {
+public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, CategoryFragment.ScrollHandler {
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
     private Bundle savedInstanceState;
     private Handler mHandler = new Handler();
+    private ForBackListener mForwardListener = new ForBackListener(){
+        @Override
+        public void run() {
+            mPlayer.onFastForward();
+            super.run();
+        }
+    };
+    private ForBackListener mBackwardListener = new ForBackListener(){
+        @Override
+        public void run() {
+            mPlayer.onFastBackward();
+            super.run();
+        }
+    };
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private View mIndicator;
     private int mIndicatorWidth;
     private PagerAdapter mAdapter;
-    private Song mSong;
-    private PlayerManager mPlayer;
     private Runnable UpdateSongTime;
 
     private CoordinatorLayout mCoorLayout;
     private BottomAppBar mBottomAppBar;
-    private CircularSeekBar mSeekbar;
+    private CircularSeekBar mSeekBar;
     private TextView mDuration;
     private ImageButton mForward;
     private ImageButton mBackward;
     private FloatingActionButton mPlay;
+
+    private PlayerService mPlayer;
+    boolean serviceBound = false;
 
     public static Intent newIntent(Context target) {
         Intent intent = new Intent(target, CategoryActivity.class);
@@ -127,7 +145,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         mIndicator = findViewById(R.id.indicator);
 
         mBottomAppBar = findViewById(R.id.bottomAppBar);
-        mSeekbar = findViewById(R.id.bottomAppBar_seekbar);
+        mSeekBar = findViewById(R.id.bottomAppBar_seekbar);
         mDuration = findViewById(R.id.bottomAppBar_duration);
         mForward = findViewById(R.id.bottomAppBar_forward);
         mBackward = findViewById(R.id.bottomAppBar_backward);
@@ -139,8 +157,9 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void BottomAppBarListener() {
-        mBottomAppBar.setOnClickListener(view -> startActivity(SingleSongActivity.newIntent(CategoryActivity.this, mSong)));
+        mBottomAppBar.setOnClickListener(view -> startActivity(SingleSongActivity.newIntent(CategoryActivity.this, mPlayer.getCurrentSong())));
         mPlay.setOnClickListener(view -> {
             mPlayer.Pause();
             if (!mPlayer.isPlaying())
@@ -151,14 +170,21 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
         mForward.setOnClickListener(view -> mPlayer.goForward());
         mBackward.setOnClickListener(view -> mPlayer.goBackward());
+
+        mForward.setOnTouchListener(mForwardListener);
+        mBackward.setOnTouchListener(mBackwardListener);
+
+        mForward.setOnLongClickListener(mForwardListener);
+        mBackward.setOnLongClickListener(mBackwardListener);
     }
 
     private void SeekBar() {
         Runnable mSeekToRun = new Runnable() {
             @Override
             public void run() {
-                mSeekbar.setProgress(mPlayer.getCurrentPosition());
-                mHandler.postDelayed(this, 130);
+                mSeekBar.setMax(mPlayer.getDuration());
+                mSeekBar.setProgress(mPlayer.getCurrentPosition());
+                mHandler.postDelayed(this, 500);
             }
         };
         runOnUiThread(mSeekToRun);
@@ -204,14 +230,16 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
     @Override
     public void PlaySong(Song song) {
-        mSong = song;
         PlayList.setSongList(SongRepository.getInstance(CategoryActivity.this).getSongs());
-        mPlayer = PlayerManager.getPlayer(CategoryActivity.this);
-        mPlayer.setUIobj(CategoryActivity.this);
-        mPlayer.Play(mSong);
-        mCoorLayout.setVisibility(View.VISIBLE);
-        SeekBar();
-        UpdateSongTime();
+        startService(PlayerService.newIntent(this, song));
+
+        if (mCoorLayout.getVisibility() != View.VISIBLE) {
+            mCoorLayout.setVisibility(View.VISIBLE);
+            if (serviceBound) {
+                SeekBar();
+                UpdateSongTime();
+            }
+        }
     }
 
     @Override
@@ -220,30 +248,44 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     @Override
-    public void ViewUpdater() {
-        if (this.getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
-            mSong = mPlayer.getCurrentSong();
-            mSeekbar.setMax(mPlayer.getDuration());
-        }
-    }
-
-    @Override
     public void onScrollList(boolean scrolled) {
         if (scrolled) {
             mBottomAppBar.performHide();
             mPlay.setVisibility(View.GONE);
-            mSeekbar.setVisibility(View.GONE);
+            mSeekBar.setVisibility(View.GONE);
             mForward.setVisibility(View.GONE);
             mBackward.setVisibility(View.GONE);
             mDuration.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             mBottomAppBar.getBehavior().slideUp(mBottomAppBar);
             mPlay.setVisibility(View.VISIBLE);
-            mSeekbar.setVisibility(View.VISIBLE);
+            mSeekBar.setVisibility(View.VISIBLE);
             mForward.setVisibility(View.VISIBLE);
             mBackward.setVisibility(View.VISIBLE);
             mDuration.setVisibility(View.VISIBLE);
         }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Bind to LocalService
+        Intent intent = new Intent(this, PlayerService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            PlayerService.LocalBinder binder = (PlayerService.LocalBinder) service;
+            mPlayer = binder.getService();
+            serviceBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            serviceBound = false;
+        }
+    };
 }

@@ -6,9 +6,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.PowerManager;
 import android.util.Log;
-import android.view.View;
-
-import androidx.fragment.app.Fragment;
 
 import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
