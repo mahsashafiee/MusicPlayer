@@ -52,8 +52,8 @@ public class SongRepository {
     }
 
 
-    private void findSongs() {
-        mSongs = new ArrayList<>();
+    public void findSongs() {
+        mSongs = Collections.synchronizedList(new ArrayList<>());
 
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;

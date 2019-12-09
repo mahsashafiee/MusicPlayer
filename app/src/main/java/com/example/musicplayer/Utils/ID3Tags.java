@@ -57,12 +57,11 @@ public class ID3Tags {
         return Lyrics;
     }
 
-    public static byte[] getBinaryArtwork(String filePath) {
+    public static Artwork getBinaryArtwork(String filePath) {
         Tag mp3Tag = getAudioFile(filePath).getTag();
         if (mp3Tag != null)
-            if (mp3Tag.getFirstArtwork() != null)
-                return mp3Tag.getFirstArtwork().getBinaryData();
-        return new byte[]{0};
+            return mp3Tag.getFirstArtwork();
+        return null;
     }
 
     public static void setLyrics(String filePath, String lyrics) {
@@ -74,7 +73,7 @@ public class ID3Tags {
             setFile(audioFile);
         } catch (FieldDataInvalidException e) {
             e.printStackTrace();
-        }catch (NullPointerException e2){
+        } catch (NullPointerException e2) {
             Log.d(TAG, "setLyrics: fail");
         }
     }

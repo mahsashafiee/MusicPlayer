@@ -16,8 +16,6 @@ public class AlbumRepository {
 
     private AlbumRepository(Context context){
         mContext = context;
-        mAlbums = new ArrayList<>();
-        findAlbum();
     }
 
     public static AlbumRepository getInstance(Context context){
@@ -27,11 +25,14 @@ public class AlbumRepository {
     }
 
     public List<Album> getAlbums(){
+        if(mAlbums == null)
+            findAlbum();
         Collections.sort(mAlbums);
         return mAlbums;
     }
 
-    private void findAlbum(){
+    public void findAlbum(){
+        mAlbums = Collections.synchronizedList(new ArrayList<>());
         ModelCursorWrapper cursor = new ModelCursorWrapper(mContext.getContentResolver()
                 .query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                         null, null, null, null));

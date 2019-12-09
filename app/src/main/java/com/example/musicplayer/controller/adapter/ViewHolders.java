@@ -1,6 +1,8 @@
 package com.example.musicplayer.controller.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,7 +21,7 @@ import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
 
-import es.claucookie.miniequalizerlibrary.EqualizerView;
+import org.jaudiotagger.tag.datatype.Artwork;
 
 
 public class ViewHolders {
@@ -79,19 +81,20 @@ public class ViewHolders {
 
         }
 
-        private class SetArt extends AsyncTask<Void, Void, byte[]> {
+        private class SetArt extends AsyncTask<Void, Void, Bitmap> {
 
             @Override
-            protected byte[] doInBackground(Void... voids) {
-                if (mSong != null)
-                    return ID3Tags.getBinaryArtwork(mSong.getFilePath());
-                else return null;
+            protected Bitmap doInBackground(Void... voids) {
+                Artwork artwork = ID3Tags.getBinaryArtwork(mSong.getFilePath());
+                if(artwork == null)
+                    return BitmapFactory.decodeResource(mContext.getResources(),R.drawable.song_placeholder);
+                return BitmapFactory.decodeByteArray(artwork.getBinaryData(),0,artwork.getBinaryData().length);
             }
 
             @Override
-            protected void onPostExecute(byte[] bytes) {
+            protected void onPostExecute(Bitmap bitmap) {
                 Glide.with(mContext).asDrawable()
-                        .load(bytes)
+                        .load(bitmap)
                         .placeholder(R.drawable.song_placeholder)
                         .into(PictureUtils.getTarget(mIVMusicCover));
             }
@@ -143,6 +146,10 @@ public class ViewHolders {
 
             @Override
             protected void onPostExecute(String artFile) {
+                if(artFile == null){
+                    mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+                    return;
+                }
                 Glide.with(mContext).asDrawable()
                         .load(artFile)
                         .into(PictureUtils.getTarget(mAlbumArt));

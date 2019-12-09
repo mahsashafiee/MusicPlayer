@@ -12,8 +12,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
-import com.example.musicplayer.R;
-
 public class NavigationIconClickListener implements View.OnClickListener {
     private final AnimatorSet animatorSet = new AnimatorSet();
     private Context context;

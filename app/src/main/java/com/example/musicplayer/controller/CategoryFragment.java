@@ -42,7 +42,7 @@ public class CategoryFragment extends Fragment {
     }
 
     public static CategoryFragment newInstance(Qualifier qualifier) {
-        
+
         Bundle args = new Bundle();
         args.putSerializable(SONG_QUALIFIER, qualifier);
 
@@ -73,12 +73,12 @@ public class CategoryFragment extends Fragment {
         return mView;
     }
 
-    private void setupRecyclerView(){
+    private void setupRecyclerView() {
 
         mRecyclerView = mView.findViewById(R.id.category_recyclerView);
         mAdapter = new MusicRecyclerAdapter(getActivity(), mQualifier);
 
-        if (isAdded()){
+        if (isAdded()) {
             if (mQualifier.equals(Qualifier.ALLSONG)) {
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 mAdapter.setList(mSongRepository.getSongs());
@@ -91,6 +91,7 @@ public class CategoryFragment extends Fragment {
                     mAdapter.setList(mArtistRepository.getArtists());
             }
 
+
             mRecyclerView.setAdapter(mAdapter);
         }
 
@@ -98,7 +99,7 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(!recyclerView.canScrollVertically(1))
+                if (!recyclerView.canScrollVertically(1))
                     mActivity.onScrollList(true);
                 else mActivity.onScrollList(false);
 
@@ -112,7 +113,7 @@ public class CategoryFragment extends Fragment {
         mActivity = null;
     }
 
-    public interface ScrollHandler{
+    public interface ScrollHandler {
         void onScrollList(boolean scrolled);
     }
 

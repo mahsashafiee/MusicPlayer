@@ -5,13 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 
 import com.example.musicplayer.model.Song;
@@ -37,6 +34,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private boolean isPaused;
     private boolean isStop;
     private AudioManager mAudioManager;
+    int newPosition;
     private final IBinder iBinder = new LocalBinder();
 
     public static Intent newIntent(Context context, Song song) {
@@ -228,7 +226,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     }
 
     public int onFastForward() {
-        int newPosition;
         if (getCurrentPosition() == getDuration())
             newPosition = 0;
         newPosition = mMediaPlayer.getCurrentPosition() + SKIP_TIME;
@@ -237,7 +234,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     }
 
     public int onFastBackward() {
-        int newPosition;
         if (getCurrentPosition() == 0)
             newPosition = 0;
         newPosition = mMediaPlayer.getCurrentPosition() - SKIP_TIME;

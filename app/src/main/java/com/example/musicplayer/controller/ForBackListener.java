@@ -25,6 +25,6 @@ public class ForBackListener implements View.OnLongClickListener, Runnable, View
 
     @Override
     public void run() {
-        mHandler.postDelayed(this, 1000);
+        mHandler.postDelayed(this, 500);
     }
 }

@@ -7,17 +7,17 @@ import android.provider.MediaStore;
 import com.example.musicplayer.model.Artist;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ArtistRepository {
 
     private Context mContext;
-    private List<Artist> mArtists = new ArrayList<>();
+    private List<Artist> mArtists ;
     private static ArtistRepository mInstance;
 
     private ArtistRepository(Context context){
         mContext = context;
-        findArtist();
     }
 
     public static ArtistRepository getInstance(Context context){
@@ -26,7 +26,16 @@ public class ArtistRepository {
         return mInstance;
     }
 
-    private void findArtist(){
+
+    public List<Artist> getArtists(){
+        if(mArtists==null)
+            findArtist();
+        Collections.sort(mArtists);
+        return mArtists;
+    }
+
+    public void findArtist(){
+        mArtists = Collections.synchronizedList(new ArrayList<>());
         Cursor cursor =mContext.getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
                 ,new String[]{MediaStore.Audio.Artists.ARTIST_KEY, MediaStore.Audio.Artists.ARTIST},null,null,null);
 
@@ -46,9 +55,5 @@ public class ArtistRepository {
                 cursor.close();
             }
         }
-    }
-
-    public List<Artist> getArtists(){
-        return mArtists;
     }
 }

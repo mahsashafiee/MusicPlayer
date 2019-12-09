@@ -47,5 +47,4 @@ dependencies {
     //circular seek bar
     implementation 'me.tankery.lib:circularSeekBar:1.2.0'
 
-    implementation 'com.github.claucookie.miniequalizer:library:1.0.0'
 }
