@@ -1,6 +1,10 @@
 package com.example.musicplayer.controller;
 
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -10,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +32,11 @@ import me.tankery.lib.circularseekbar.CircularSeekBar;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SingleSongFragment extends Fragment implements PlayerManager.UIController {
+public class SingleSongFragment extends Fragment {
 
     private static String ARG_SONG = "song";
     private Song mSong;
-    private PlayerManager mPlayer;
+    private PlayerService mPlayer;
 
     private ImageView mCover;
     private ImageView mPlayPause;
@@ -68,9 +73,6 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
         super.onCreate(savedInstanceState);
 
         mSong = getArguments().getParcelable(ARG_SONG);
-        mPlayer = PlayerManager.getPlayer(getContext());
-        mPlayer.setUIobj(SingleSongFragment.this);
-        mPlayer.Play(mSong);
     }
 
     @Override
@@ -191,13 +193,5 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
             public void onStartTrackingTouch(CircularSeekBar seekBar) {
             }
         });
-    }
-
-    @Override
-    public void ViewUpdater() {
-        if (isAdded()) {
-            mSong = mPlayer.getCurrentSong();
-            initView();
-        }
     }
 }

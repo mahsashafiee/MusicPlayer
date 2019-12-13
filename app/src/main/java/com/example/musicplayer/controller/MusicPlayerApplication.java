@@ -2,26 +2,18 @@ package com.example.musicplayer.controller;
 
 import android.app.Application;
 
-import com.example.musicplayer.model.Qualifier;
-
-import android.os.Handler;
+import com.example.musicplayer.repository.AlbumRepository;
+import com.example.musicplayer.repository.ArtistRepository;
+import com.example.musicplayer.repository.SongRepository;
 
 public class MusicPlayerApplication extends Application {
-    private MyMessageLoop mMessageLoop;
-    private Handler mainHandler = new Handler();
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        mMessageLoop = new MyMessageLoop(this);
-        mMessageLoop.start();
-        mMessageLoop.getLooper();
-        mMessageLoop.setResponseHandler(mainHandler);
-
-        mMessageLoop.queueMessage(Qualifier.ALLSONG);
-        mMessageLoop.queueMessage(Qualifier.ALBUM);
-        mMessageLoop.queueMessage(Qualifier.ARTIST);
-
+        SongRepository.getInstance(this).findAllSongs();
+        AlbumRepository.getInstance(this).findAllAlbum();
+        ArtistRepository.getInstance(this).findAllArtist();
     }
 }

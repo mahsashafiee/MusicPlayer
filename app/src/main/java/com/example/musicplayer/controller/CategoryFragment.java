@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,12 +22,13 @@ import com.example.musicplayer.repository.AlbumRepository;
 import com.example.musicplayer.repository.ArtistRepository;
 import com.example.musicplayer.repository.SongRepository;
 
+import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
 public class CategoryFragment extends Fragment {
 
-    public static final String SONG_QUALIFIER = "song_qualifier";
+    private static final String SONG_QUALIFIER = "song_qualifier";
     private View mView;
     private RecyclerView mRecyclerView;
     private AlbumRepository mAlbumRepository;
@@ -35,6 +37,7 @@ public class CategoryFragment extends Fragment {
     private SongRepository mSongRepository;
     private MusicRecyclerAdapter mAdapter;
     private ScrollHandler mActivity;
+    private MutableLiveData<List> mLiveModel = new MutableLiveData<>();
 
 
     public CategoryFragment() {
@@ -60,6 +63,11 @@ public class CategoryFragment extends Fragment {
         mArtistRepository = ArtistRepository.getInstance(getContext());
         mSongRepository = SongRepository.getInstance(getContext());
         mActivity = (ScrollHandler) getActivity();
+
+        mLiveModel.observe(this, list -> {
+            mAdapter.setList(mLiveModel.getValue());
+            mAdapter.notifyDataSetChanged();
+        });
     }
 
     @Override

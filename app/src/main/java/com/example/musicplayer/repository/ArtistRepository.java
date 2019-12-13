@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.musicplayer.model.Artist;
 
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ public class ArtistRepository {
     private Context mContext;
     private List<Artist> mArtists ;
     private static ArtistRepository mInstance;
+    private MutableLiveData<List<Artist>> mLiveArtist = new MutableLiveData<>();
 
     private ArtistRepository(Context context){
         mContext = context;
@@ -28,14 +31,18 @@ public class ArtistRepository {
 
 
     public List<Artist> getArtists(){
-        if(mArtists==null)
-            findArtist();
         Collections.sort(mArtists);
         return mArtists;
     }
 
-    public void findArtist(){
-        mArtists = Collections.synchronizedList(new ArrayList<>());
+    public void findAllArtist(){
+        new Thread(this::findArtist).start();
+    }
+
+    private void findArtist(){
+        mArtists = new ArrayList<>();
+        mLiveArtist.postValue(mArtists);
+
         Cursor cursor =mContext.getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
                 ,new String[]{MediaStore.Audio.Artists.ARTIST_KEY, MediaStore.Audio.Artists.ARTIST},null,null,null);
 

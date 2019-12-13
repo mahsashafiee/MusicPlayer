@@ -36,7 +36,8 @@ import com.google.android.material.tabs.TabLayout;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
-public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, CategoryFragment.ScrollHandler {
+public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks,
+        CategoryFragment.ScrollHandler, ServiceConnection {
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
     private Bundle savedInstanceState;
@@ -85,7 +86,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
         this.savedInstanceState = savedInstanceState;
-
 
         if (ContextCompat.checkSelfPermission(CategoryActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -271,21 +271,18 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         super.onStart();
         // Bind to LocalService
         Intent intent = new Intent(this, PlayerService.class);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        bindService(intent, this, Context.BIND_AUTO_CREATE);
     }
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            PlayerService.LocalBinder binder = (PlayerService.LocalBinder) service;
-            mPlayer = binder.getService();
-            serviceBound = true;
-        }
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        PlayerService.LocalBinder binder = (PlayerService.LocalBinder) iBinder;
+        mPlayer = binder.getService();
+        serviceBound = true;
+    }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            serviceBound = false;
-        }
-    };
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+        serviceBound = false;
+    }
 }

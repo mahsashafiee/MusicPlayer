@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
+import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Song;
 
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ public class SongRepository {
     private Context mContext;
     private static SongRepository instance;
     private String TAG = "Album exception";
+    private MutableLiveData<List<Song>> mLiveSong = new MutableLiveData<>();
 
     private SongRepository(Context context) {
         mContext = context;
@@ -33,8 +37,6 @@ public class SongRepository {
     }
 
     public List<Song> getSongs() {
-        if (mSongs == null)
-            findSongs();
         Collections.sort(mSongs);
         return mSongs;
     }
@@ -51,9 +53,13 @@ public class SongRepository {
         return mBasedSongs;
     }
 
+    public void findAllSongs(){
+        new Thread(this::findSongs).start();
+    }
 
-    public void findSongs() {
-        mSongs = Collections.synchronizedList(new ArrayList<>());
+    private void findSongs() {
+        mSongs = new ArrayList<>();
+        mLiveSong.postValue(mSongs);
 
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
