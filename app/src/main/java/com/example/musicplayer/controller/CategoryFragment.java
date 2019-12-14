@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +21,6 @@ import com.example.musicplayer.repository.AlbumRepository;
 import com.example.musicplayer.repository.ArtistRepository;
 import com.example.musicplayer.repository.SongRepository;
 
-import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -36,8 +34,7 @@ public class CategoryFragment extends Fragment {
     private ArtistRepository mArtistRepository;
     private SongRepository mSongRepository;
     private MusicRecyclerAdapter mAdapter;
-    private ScrollHandler mActivity;
-    private MutableLiveData<List> mLiveModel = new MutableLiveData<>();
+    private RecyclerScroller mActivity;
 
 
     public CategoryFragment() {
@@ -62,12 +59,7 @@ public class CategoryFragment extends Fragment {
         mAlbumRepository = AlbumRepository.getInstance(getContext());
         mArtistRepository = ArtistRepository.getInstance(getContext());
         mSongRepository = SongRepository.getInstance(getContext());
-        mActivity = (ScrollHandler) getActivity();
-
-        mLiveModel.observe(this, list -> {
-            mAdapter.setList(mLiveModel.getValue());
-            mAdapter.notifyDataSetChanged();
-        });
+        mActivity = (RecyclerScroller) getActivity();
     }
 
     @Override
@@ -77,6 +69,7 @@ public class CategoryFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_category, container, false);
 
         setupRecyclerView();
+        RepositoryObserver();
 
         return mView;
     }
@@ -87,21 +80,15 @@ public class CategoryFragment extends Fragment {
         mAdapter = new MusicRecyclerAdapter(getActivity(), mQualifier);
 
         if (isAdded()) {
-            if (mQualifier.equals(Qualifier.ALLSONG)) {
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mAdapter.setList(mSongRepository.getSongs());
-            }
-            else {
-                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-                if (mQualifier.equals(Qualifier.ALBUM))
-                    mAdapter.setList(mAlbumRepository.getAlbums());
-                else
-                    mAdapter.setList(mArtistRepository.getArtists());
-            }
 
+            if (mQualifier.equals(Qualifier.ALLSONG))
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            else
+                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
 
             mRecyclerView.setAdapter(mAdapter);
         }
+
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -121,8 +108,22 @@ public class CategoryFragment extends Fragment {
         mActivity = null;
     }
 
-    public interface ScrollHandler {
+    public interface RecyclerScroller {
         void onScrollList(boolean scrolled);
     }
 
+    private void RepositoryObserver() {
+
+        if (mQualifier.equals(Qualifier.ALLSONG))
+            mSongRepository.getLiveSong().observe(this, Song ->
+                    mAdapter.setList(mSongRepository.getLiveSong().getValue()));
+
+        else if (mQualifier.equals(Qualifier.ALBUM))
+            mAlbumRepository.getLiveAlbum().observe(this, albums ->
+                    mAdapter.setList(mAlbumRepository.getLiveAlbum().getValue()));
+        else
+            mArtistRepository.getLiveArtist().observe(this, artists ->
+                    mAdapter.setList(mArtistRepository.getLiveArtist().getValue()));
+    }
 }
+

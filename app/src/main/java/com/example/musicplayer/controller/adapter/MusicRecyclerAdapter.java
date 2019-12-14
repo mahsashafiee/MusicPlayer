@@ -28,6 +28,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void setList(List list) {
         mList = list;
+        notifyDataSetChanged();
     }
 
     @NonNull

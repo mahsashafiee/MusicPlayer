@@ -10,7 +10,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
-
+import androidx.lifecycle.MutableLiveData;
 import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 
@@ -34,8 +34,9 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private boolean isPaused;
     private boolean isStop;
     private AudioManager mAudioManager;
-    int newPosition;
+    private int newPosition;
     private final IBinder iBinder = new LocalBinder();
+    private MutableLiveData<Song> mLiveSong = new MutableLiveData<>();
 
     public static Intent newIntent(Context context, Song song) {
         Intent intent = new Intent(context, PlayerService.class);
@@ -55,13 +56,17 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         }
     }
 
+    public MutableLiveData<Song> getLiveSong() {
+        return mLiveSong;
+    }
+
     private void initMediaPlayer() {
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //what should happen after
         mMediaPlayer.setOnCompletionListener(this::onCompletion);
-        setPlayList();
     }
 
     private void setPlayList() {
@@ -89,6 +94,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         if (currentSong == mPlayList.size() - 1 && !mListLoop) {
             Stop();
             isStop = true;
+            mLiveSong.setValue(null);
             return;
         }
         //List loop handler
@@ -104,30 +110,25 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private void Play(Song song) {
 
-        if (!mMediaPlayer.isPlaying() && mPlayList.get(currentSong).equals(song)) {
+        if (mSong == null)
+            songPlayer(song);
+
+        else if (!mMediaPlayer.isPlaying() && mSong.equals(song)) {
             if (isPaused)
                 Pause();
             else
                 songPlayer(song);
-        } else if (!mPlayList.get(currentSong).equals(song)) {
-
-            if (mPlayList.equals(PlayList.getSongList()))
-                songPlayer(song);
-            else {
-                setPlayList();
-                songPlayer(song);
-            }
-        }
+        } else if (!mSong.equals(song))
+            songPlayer(song);
     }
 
     private void songPlayer(Song song) {
 
         mSong = song;
-
         currentSong = mPlayList.indexOf(song);
-
-        //clicked song will be played
         Play(song.getPath());
+        //observe in single song fragment
+        mLiveSong.setValue(song);
     }
 
     public Song getCurrentSong() {
@@ -159,7 +160,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             mMediaPlayer.start();
             isPaused = false;
         }
-
     }
 
     public void Stop() {
@@ -254,7 +254,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             case AudioManager.AUDIOFOCUS_GAIN:
                 if (mMediaPlayer == null) initMediaPlayer();
                 else if (!mMediaPlayer.isPlaying()) Pause();
-                mMediaPlayer.setVolume(1.0f,1.0f);
+                mMediaPlayer.setVolume(1.0f, 1.0f);
                 break;
             case AudioManager.AUDIOFOCUS_LOSS:
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
@@ -270,7 +270,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     }
 
     private boolean requestAudioFocus() {
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
             return true;

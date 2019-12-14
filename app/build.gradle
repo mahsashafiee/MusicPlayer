@@ -47,4 +47,6 @@ dependencies {
     //circular seek bar
     implementation 'me.tankery.lib:circularSeekBar:1.2.0'
 
+    implementation 'com.airbnb.android:lottie:3.3.0'
+
 }

@@ -9,7 +9,6 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Song;
 
 import java.util.ArrayList;
@@ -53,14 +52,16 @@ public class SongRepository {
         return mBasedSongs;
     }
 
+    public MutableLiveData<List<Song>> getLiveSong(){
+        return mLiveSong;
+    }
+
     public void findAllSongs(){
         new Thread(this::findSongs).start();
     }
 
     private void findSongs() {
         mSongs = new ArrayList<>();
-        mLiveSong.postValue(mSongs);
-
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         ModelCursorWrapper songWrapper = new ModelCursorWrapper(musicResolver.query(musicUri, null, null, null, null));
@@ -75,6 +76,7 @@ public class SongRepository {
                     Song song = songWrapper.getSong(contentUri);
 
                     mSongs.add(song);
+                    mLiveSong.postValue(getSongs());
                     songWrapper.moveToNext();
                 }
 

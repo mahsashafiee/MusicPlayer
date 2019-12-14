@@ -57,7 +57,7 @@ public class ID3Tags {
         return Lyrics;
     }
 
-    public static Artwork getBinaryArtwork(String filePath) {
+    public static Artwork getArtwork(String filePath) {
         Tag mp3Tag = getAudioFile(filePath).getTag();
         if (mp3Tag != null)
             return mp3Tag.getFirstArtwork();

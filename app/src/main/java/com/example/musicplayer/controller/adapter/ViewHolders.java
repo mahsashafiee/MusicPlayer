@@ -85,9 +85,10 @@ public class ViewHolders {
 
             @Override
             protected Bitmap doInBackground(Void... voids) {
-                Artwork artwork = ID3Tags.getBinaryArtwork(mSong.getFilePath());
+                Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
                 if(artwork == null)
                     return BitmapFactory.decodeResource(mContext.getResources(),R.drawable.song_placeholder);
+                long length = artwork.getBinaryData().length;
                 return BitmapFactory.decodeByteArray(artwork.getBinaryData(),0,artwork.getBinaryData().length);
             }
 
@@ -187,5 +188,4 @@ public class ViewHolders {
             mName.setText(artist.getName());
         }
     }
-
 }

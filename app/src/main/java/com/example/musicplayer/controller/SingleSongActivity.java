@@ -3,16 +3,24 @@ package com.example.musicplayer.controller;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.model.Song;
 
-public class SingleSongActivity extends AppCompatActivity{
+public class SingleSongActivity extends AppCompatActivity implements ServiceConnection {
 
-    public static final String SONG_INTENT = "SongID";
+    private static final String SONG_INTENT = "SongID";
+    private PlayerService mPlayer;
+    private boolean mServiceConction;
+    private SingleSongFragment mFragment;
+    private Song mSong;
+    private Bundle mSavedInstanceState;
 
     public static Intent newIntent(Context target, Song song) {
         Intent intent = new Intent(target, SingleSongActivity.class);
@@ -25,12 +33,31 @@ public class SingleSongActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_song);
+        mSavedInstanceState = savedInstanceState;
+        mSong = getIntent().getParcelableExtra(SONG_INTENT);
+        Intent intent = new Intent(this, PlayerService.class);
+        bindService(intent, this, Context.BIND_AUTO_CREATE);
 
-        if(savedInstanceState==null){
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        PlayerService.LocalBinder binder = (PlayerService.LocalBinder) iBinder;
+        mPlayer = binder.getService();
+        mServiceConction = true;
+        startService(PlayerService.newIntent(this, mSong));
+        mFragment = SingleSongFragment.newInstance(mSong);
+        mFragment.setPlayer(mPlayer);
+
+        if (mSavedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container,
-                            SingleSongFragment.newInstance( getIntent().getParcelableExtra(SONG_INTENT)))
+                    .replace(R.id.fragment_container, mFragment)
                     .commit();
         }
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+        mServiceConction = false;
     }
 }

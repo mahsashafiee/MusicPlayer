@@ -1,10 +1,8 @@
 package com.example.musicplayer.controller;
 
 
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -14,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
-import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +23,8 @@ import com.example.musicplayer.R;
 import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
+
+import org.jaudiotagger.tag.datatype.Artwork;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
@@ -49,8 +48,27 @@ public class SingleSongFragment extends Fragment {
     private TextView mTitle;
     private TextView mArtist;
 
+    private Bitmap mArtwork;
+    private Handler mHandler = new Handler();
+    private Runnable mRunnable;
+
     private Drawable playingState;
     private Drawable pauseState;
+
+    private PlayBackBottomBar.ForBackListener mForwardListener = new PlayBackBottomBar.ForBackListener(){
+        @Override
+        public void run() {
+            mPlayer.onFastForward();
+            super.run();
+        }
+    };
+    private PlayBackBottomBar.ForBackListener mBackwardListener = new PlayBackBottomBar.ForBackListener(){
+        @Override
+        public void run() {
+            mPlayer.onFastBackward();
+            super.run();
+        }
+    };
 
 
     public SingleSongFragment() {
@@ -68,11 +86,27 @@ public class SingleSongFragment extends Fragment {
         return fragment;
     }
 
+    public void setPlayer(PlayerService mPlayer) {
+        this.mPlayer = mPlayer;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mSong = getArguments().getParcelable(ARG_SONG);
+
+        mPlayer.getLiveSong().observe(this, song -> {
+            if(song == null) {
+                mPlayPause.setImageDrawable(pauseState);
+                mSeekBar.setMax(0);
+                startAnimation(false);
+            }
+            else {
+                mSong = song;
+                initView();
+            }
+        });
     }
 
     @Override
@@ -108,6 +142,8 @@ public class SingleSongFragment extends Fragment {
             } else
                 ((Animatable) pauseState).start();
         }
+        else if(pauseState instanceof Animatable)
+            ((Animatable) pauseState).start();
     }
 
     private void findViews() {
@@ -126,9 +162,16 @@ public class SingleSongFragment extends Fragment {
 
     private void initView() {
 
+        Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
+
+        if (artwork == null)
+            mArtwork = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.song_placeholder);
+        else
+            mArtwork = BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+
         Glide.with(mView).asDrawable()
                 .placeholder(R.drawable.song_placeholder)
-                .load(ID3Tags.getBinaryArtwork(mSong.getFilePath()))
+                .load(mArtwork)
                 .into(PictureUtils.getTarget(mCover));
 
         mTitle.setText(mSong.getTitle());
@@ -139,7 +182,7 @@ public class SingleSongFragment extends Fragment {
         setDrawable();
 
         if (mPlayer.isPlaying())
-            mPlayPause.setImageDrawable(playingState);
+            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp));
         else
             mPlayPause.setImageDrawable(pauseState);
 
@@ -147,16 +190,15 @@ public class SingleSongFragment extends Fragment {
     }
 
     private void SeekBar() {
-        Handler mHandler = new Handler();
-        Runnable mSeekToRun = new Runnable() {
+        mRunnable = new Runnable() {
             @Override
             public void run() {
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
                 mHandler.postDelayed(this, 130);
             }
         };
-        getActivity().runOnUiThread(mSeekToRun);
 
+        mHandler.post(mRunnable);
     }
 
     private void Listener() {
@@ -171,6 +213,12 @@ public class SingleSongFragment extends Fragment {
         });
         mForward.setOnClickListener(view -> mPlayer.goForward());
         mBackward.setOnClickListener(view -> mPlayer.goBackward());
+
+        mForward.setOnTouchListener(mForwardListener);
+        mBackward.setOnTouchListener(mBackwardListener);
+
+        mForward.setOnLongClickListener(mForwardListener);
+        mBackward.setOnLongClickListener(mBackwardListener);
 
         mShuffle.setOnClickListener(view -> mPlayer.Shuffle());
 

@@ -31,6 +31,10 @@ public class AlbumRepository {
         return mAlbums;
     }
 
+    public MutableLiveData<List<Album>> getLiveAlbum(){
+        return mLiveAlbum;
+    }
+
     public void findAllAlbum(){
         new Thread(this::findAlbum).start();
     }
@@ -38,7 +42,6 @@ public class AlbumRepository {
     private void findAlbum(){
 //        mAlbums = Collections.synchronizedList(new ArrayList<>());
         mAlbums = new ArrayList<>();
-        mLiveAlbum.postValue(mAlbums);
 
         ModelCursorWrapper cursor = new ModelCursorWrapper(mContext.getContentResolver()
                 .query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
@@ -54,6 +57,7 @@ public class AlbumRepository {
                 }while (!cursor.isAfterLast());
 
             } finally {
+                mLiveAlbum.postValue(getAlbums());
                 cursor.close();
             }
         }

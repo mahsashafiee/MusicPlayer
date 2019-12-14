@@ -35,13 +35,16 @@ public class ArtistRepository {
         return mArtists;
     }
 
+    public MutableLiveData<List<Artist>> getLiveArtist(){
+        return mLiveArtist;
+    }
+
     public void findAllArtist(){
         new Thread(this::findArtist).start();
     }
 
     private void findArtist(){
         mArtists = new ArrayList<>();
-        mLiveArtist.postValue(mArtists);
 
         Cursor cursor =mContext.getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
                 ,new String[]{MediaStore.Audio.Artists.ARTIST_KEY, MediaStore.Audio.Artists.ARTIST},null,null,null);
@@ -59,6 +62,7 @@ public class ArtistRepository {
                 }while (!cursor.isAfterLast());
 
             } finally {
+                mLiveArtist.postValue(getArtists());
                 cursor.close();
             }
         }
