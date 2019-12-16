@@ -59,5 +59,12 @@ public class SingleSongActivity extends AppCompatActivity implements ServiceConn
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
         mServiceConction = false;
+        mPlayer = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(this);
     }
 }

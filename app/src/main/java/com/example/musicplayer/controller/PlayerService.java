@@ -1,5 +1,7 @@
 package com.example.musicplayer.controller;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +12,11 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.musicplayer.R;
 import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 
@@ -21,22 +27,25 @@ import java.util.List;
 public class PlayerService extends Service implements MediaPlayer.OnCompletionListener,
         AudioManager.OnAudioFocusChangeListener {
 
+    private final IBinder iBinder = new LocalBinder();
+
+    private static int PENDING_INTENT_REQUEST_CODE = 0;
+    private static int PENDING_INTENT_FLAG = 0;
     private String TAG = "PlayerService";
     private static final String SONG_EXTRA = "song";
     private final int SKIP_TIME = 5000;
 
     private MediaPlayer mMediaPlayer;
+    private AudioManager mAudioManager;
     private List<Song> mPlayList;
     private Song mSong;
-    private int currentSong;
+    private MutableLiveData<Song> mLiveSong = new MutableLiveData<>();
+    private int mCurrentSongIndex;
     private boolean mListLoop;
     private boolean mShuffle;
     private boolean isPaused;
     private boolean isStop;
-    private AudioManager mAudioManager;
     private int newPosition;
-    private final IBinder iBinder = new LocalBinder();
-    private MutableLiveData<Song> mLiveSong = new MutableLiveData<>();
 
     public static Intent newIntent(Context context, Song song) {
         Intent intent = new Intent(context, PlayerService.class);
@@ -71,6 +80,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private void setPlayList() {
         mPlayList = PlayList.getSongList();
+        if (mShuffle)
+            Collections.shuffle(mPlayList);
     }
 
     @Override
@@ -81,6 +92,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         if (!requestAudioFocus())
             stopSelf();
         Play((Song) intent.getParcelableExtra(SONG_EXTRA));
+        startForeground(1,getNotification());
         return START_NOT_STICKY;
     }
 
@@ -91,7 +103,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        if (currentSong == mPlayList.size() - 1 && !mListLoop) {
+        if (mCurrentSongIndex == mPlayList.size() - 1 && !mListLoop) {
             Stop();
             isStop = true;
             mLiveSong.setValue(null);
@@ -99,13 +111,13 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         }
         //List loop handler
         if (!mListLoop) {
-            currentSong++;
+            mCurrentSongIndex++;
         } else {
-            currentSong = (currentSong + 1) % mPlayList.size();
+            mCurrentSongIndex = (mCurrentSongIndex + 1) % mPlayList.size();
         }
 
-        //plays the song that is referred by "currentSong"
-        songPlayer(mPlayList.get(currentSong));
+        //plays the song that is referred by "mCurrentSongIndex"
+        songPlayer(mPlayList.get(mCurrentSongIndex));
     }
 
     private void Play(Song song) {
@@ -125,13 +137,13 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private void songPlayer(Song song) {
 
         mSong = song;
-        currentSong = mPlayList.indexOf(song);
+        mCurrentSongIndex = mPlayList.indexOf(song);
         Play(song.getPath());
         //observe in single song fragment
         mLiveSong.setValue(song);
     }
 
-    public Song getCurrentSong() {
+    public Song getmCurrentSongIndex() {
         return mSong;
     }
 
@@ -192,8 +204,10 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
         if (mShuffle)
             Collections.shuffle(mPlayList);
-        else
+        else {
             mPlayList = PlayList.getSongList();
+            mCurrentSongIndex = mPlayList.indexOf(mSong);
+        }
 
     }
 
@@ -210,11 +224,11 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     }
 
     public void goForward() {
-        songPlayer(mPlayList.get((currentSong + 1) % mPlayList.size()));
+        songPlayer(mPlayList.get((mCurrentSongIndex + 1) % mPlayList.size()));
     }
 
     public void goBackward() {
-        songPlayer(mPlayList.get((currentSong - 1 + mPlayList.size()) % mPlayList.size()));
+        songPlayer(mPlayList.get((mCurrentSongIndex - 1 + mPlayList.size()) % mPlayList.size()));
     }
 
     public boolean isShuffle() {
@@ -257,10 +271,14 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
                 mMediaPlayer.setVolume(1.0f, 1.0f);
                 break;
             case AudioManager.AUDIOFOCUS_LOSS:
+                Release();
+                stopSelf();
+                break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 if (mMediaPlayer.isPlaying())
                     Pause();
                 break;
+
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                 if (mMediaPlayer.isPlaying())
@@ -278,5 +296,15 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private boolean removeAudioFocus() {
         return AudioManager.AUDIOFOCUS_REQUEST_GRANTED == mAudioManager.abandonAudioFocus(this);
+    }
+
+    private Notification getNotification(){
+        return new NotificationCompat
+                .Builder(this, getString(R.string.notification_channel_id))
+                .setContentIntent(PendingIntent.getActivity(
+                        this,
+                        PENDING_INTENT_REQUEST_CODE,
+                        SingleSongActivity.newIntent(this, mSong), PENDING_INTENT_FLAG))
+                .build();
     }
 }

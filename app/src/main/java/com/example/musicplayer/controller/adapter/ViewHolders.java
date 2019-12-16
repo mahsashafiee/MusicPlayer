@@ -88,7 +88,6 @@ public class ViewHolders {
                 Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
                 if(artwork == null)
                     return BitmapFactory.decodeResource(mContext.getResources(),R.drawable.song_placeholder);
-                long length = artwork.getBinaryData().length;
                 return BitmapFactory.decodeByteArray(artwork.getBinaryData(),0,artwork.getBinaryData().length);
             }
 

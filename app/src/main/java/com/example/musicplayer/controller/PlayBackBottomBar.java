@@ -67,7 +67,7 @@ public class PlayBackBottomBar {
 
     @SuppressLint("ClickableViewAccessibility")
     private void BottomAppBarListener() {
-        mBottomAppBar.setOnClickListener(view -> mActivity.startActivity(SingleSongActivity.newIntent(mActivity, mPlayer.getCurrentSong())));
+        mBottomAppBar.setOnClickListener(view -> mActivity.startActivity(SingleSongActivity.newIntent(mActivity, mPlayer.getmCurrentSongIndex())));
         mPlay.setOnClickListener(view -> {
             mPlayer.Pause();
             if (!mPlayer.isPlaying())

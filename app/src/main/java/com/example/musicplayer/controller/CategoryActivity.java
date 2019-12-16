@@ -165,6 +165,12 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(this);
+    }
+
+    @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         PlayerService.LocalBinder binder = (PlayerService.LocalBinder) iBinder;
         mPlayer = binder.getService();
@@ -173,6 +179,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
     @Override
     public void onServiceDisconnected(ComponentName componentName) {
+        mPlayer = null;
         serviceBound = false;
     }
 }
