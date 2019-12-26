@@ -3,7 +3,12 @@ package com.example.musicplayer.controller;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Build;
+import android.os.IBinder;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.repository.AlbumRepository;
@@ -12,10 +17,24 @@ import com.example.musicplayer.repository.SongRepository;
 
 public class MusicPlayerApplication extends Application {
 
+    private ServiceConnection mPlayerConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            PlayerService.LocalBinder binder = (PlayerService.LocalBinder) iBinder;
+            binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
 
+        bindService(new Intent(this,PlayerService.class),mPlayerConnection, Context.BIND_AUTO_CREATE);
         CreateNotificationChannel();
 
         SongRepository.getInstance(this).findAllSongs();
@@ -30,5 +49,11 @@ public class MusicPlayerApplication extends Application {
             NotificationChannel notificationChannel = new NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH);
             ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(notificationChannel);
         }
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        unbindService(mPlayerConnection);
     }
 }

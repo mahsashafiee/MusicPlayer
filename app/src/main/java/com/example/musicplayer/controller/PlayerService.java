@@ -3,12 +3,15 @@ package com.example.musicplayer.controller;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -34,6 +37,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private String TAG = "PlayerService";
     private static final String SONG_EXTRA = "song";
     private final int SKIP_TIME = 5000;
+    private float volume;
 
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
@@ -46,6 +50,13 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private boolean isPaused;
     private boolean isStop;
     private int newPosition;
+
+    BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Pause();
+        }
+    };
 
     public static Intent newIntent(Context context, Song song) {
         Intent intent = new Intent(context, PlayerService.class);
@@ -76,6 +87,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //what should happen after
         mMediaPlayer.setOnCompletionListener(this::onCompletion);
+        registerReceiver(becomingNoisyReceiver,new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
     }
 
     private void setPlayList() {
@@ -259,6 +271,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     public void onDestroy() {
         super.onDestroy();
         Release();
+        unregisterReceiver(becomingNoisyReceiver);
     }
 
     @Override
@@ -267,18 +280,33 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         switch (focusState) {
             case AudioManager.AUDIOFOCUS_GAIN:
                 if (mMediaPlayer == null) initMediaPlayer();
-                else if (!mMediaPlayer.isPlaying()) Pause();
-                mMediaPlayer.setVolume(1.0f, 1.0f);
+
+                else if (!mMediaPlayer.isPlaying()){
+                    volume = 0f;
+                    Handler handler = new Handler();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mMediaPlayer.setVolume(volume, volume);
+                            volume += 0.2;
+                            if(volume <= 1)
+                                handler.postDelayed(this::run,250);
+                            Log.d(TAG, "run: "+volume);
+                        }
+                    });
+                    Pause();
+                }
                 break;
+
             case AudioManager.AUDIOFOCUS_LOSS:
                 Release();
                 stopSelf();
                 break;
+
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 if (mMediaPlayer.isPlaying())
                     Pause();
                 break;
-
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                 if (mMediaPlayer.isPlaying())
