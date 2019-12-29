@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 public class CategoryFragment extends Fragment {
 
     private static final String SONG_QUALIFIER = "song_qualifier";
+    private static final String TAG = "CategoryFragment";
     private View mView;
     private RecyclerView mRecyclerView;
     private AlbumRepository mAlbumRepository;
@@ -118,14 +120,14 @@ public class CategoryFragment extends Fragment {
 
         if (mQualifier.equals(Qualifier.ALLSONG))
             mSongRepository.getLiveSong().observe(this, Song ->
-                    mAdapter.setList(mSongRepository.getLiveSong().getValue()));
+                    mAdapter.setList(Song));
 
         else if (mQualifier.equals(Qualifier.ALBUM))
             mAlbumRepository.getLiveAlbum().observe(this, albums ->
-                    mAdapter.setList(mAlbumRepository.getLiveAlbum().getValue()));
+                    mAdapter.setList(albums));
         else
             mArtistRepository.getLiveArtist().observe(this, artists ->
-                    mAdapter.setList(mArtistRepository.getLiveArtist().getValue()));
+                    mAdapter.setList(artists));
     }
 }
 

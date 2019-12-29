@@ -37,7 +37,6 @@ public class SingleSongActivity extends AppCompatActivity implements ServiceConn
         mSong = getIntent().getParcelableExtra(SONG_INTENT);
         Intent intent = new Intent(this, PlayerService.class);
         bindService(intent, this, Context.BIND_AUTO_CREATE);
-
     }
 
     @Override

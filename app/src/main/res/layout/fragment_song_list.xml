@@ -7,28 +7,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="0dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/app_bar"
-            style="@style/Widget.MusicPlayer.Toolbar"
-            android:layout_width="match_parent"
-            app:titleTextColor="@color/textColorPrimary"
-            android:layout_height="?attr/actionBarSize"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            app:contentInsetStart="0dp"
-            app:navigationIcon="@drawable/ic_piano"
-            app:title="@string/mp_app_name" />
-    </com.google.android.material.appbar.AppBarLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="56dp"
         android:background="@color/colorPrimary"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">

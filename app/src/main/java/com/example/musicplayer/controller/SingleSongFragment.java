@@ -100,6 +100,11 @@ public class SingleSongFragment extends Fragment {
             if(song == null) {
                 mPlayPause.setImageDrawable(pauseState);
                 mSeekBar.setMax(0);
+                if (mPlayer.isPlaying())
+                    mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
+                else
+                    mPlayPause.setImageDrawable(pauseState);
+
                 startAnimation(false);
             }
             else {

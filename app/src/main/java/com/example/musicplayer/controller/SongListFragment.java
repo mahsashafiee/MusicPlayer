@@ -35,7 +35,6 @@ public class SongListFragment extends Fragment {
     private MusicRecyclerAdapter mAdapter;
     private String mAlbumArtist;
     private TextView mItemCount;
-    private ScrollHandler mCallbacks;
 
     private static final String ARG_KEY = "albumArtist";
     private static final String ARG_QUALIFIER = "qualifier";
@@ -45,11 +44,6 @@ public class SongListFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mCallbacks = (ScrollHandler) context;
-    }
 
     public static SongListFragment newInstance(String albumName, Qualifier qualifier) {
 
@@ -65,7 +59,6 @@ public class SongListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
 
         mAlbumArtist = getArguments().getString(ARG_KEY);
 
@@ -78,9 +71,6 @@ public class SongListFragment extends Fragment {
 
     }
 
-    public interface ScrollHandler {
-        void onScrollList(boolean scrolled);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,7 +86,7 @@ public class SongListFragment extends Fragment {
      * @param view
      */
     private void initUI(View view) {
-        setUpToolbar(view);
+        /*        setUpToolbar(view);*/
         mItemCount = view.findViewById(R.id.item_count);
         songRecycler = view.findViewById(R.id.recycler_view);
 
@@ -112,34 +102,7 @@ public class SongListFragment extends Fragment {
         songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         songRecycler.setAdapter(mAdapter);
 
-        songRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1))
-                    mCallbacks.onScrollList(true);
-                else mCallbacks.onScrollList(false);
-            }
-        });
-
     }
 
-    /**
-     * Toolbar Handler
-     *
-     * @param view
-     */
-    private void setUpToolbar(View view) {
-        Toolbar toolbar = view.findViewById(R.id.app_bar);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        if (activity != null) {
-            activity.setSupportActionBar(toolbar);
-        }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallbacks = null;
-    }
 }

@@ -17,6 +17,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -26,13 +27,18 @@ import com.example.musicplayer.controller.adapter.PagerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
+import com.example.musicplayer.repository.AlbumRepository;
+import com.example.musicplayer.repository.ArtistRepository;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 
-public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection, CategoryFragment.RecyclerScroller {
+public class CategoryActivity extends AppCompatActivity implements
+        ViewHolders.CallBacks,
+        ServiceConnection,
+        CategoryFragment.RecyclerScroller {
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
 
@@ -71,6 +77,10 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     private void RunActivity() {
+
+        SongRepository.getInstance(this).findAllSongs();
+        AlbumRepository.getInstance(this).findAllAlbum();
+        ArtistRepository.getInstance(this).findAllArtist();
 
         setContentView(R.layout.activity_category);
 
