@@ -55,14 +55,14 @@ public class SingleSongFragment extends Fragment {
     private Drawable playingState;
     private Drawable pauseState;
 
-    private PlayBackBottomBar.ForBackListener mForwardListener = new PlayBackBottomBar.ForBackListener(){
+    private PlayBackBottomBar.ForBackListener mForwardListener = new PlayBackBottomBar.ForBackListener() {
         @Override
         public void run() {
             mPlayer.onFastForward();
             super.run();
         }
     };
-    private PlayBackBottomBar.ForBackListener mBackwardListener = new PlayBackBottomBar.ForBackListener(){
+    private PlayBackBottomBar.ForBackListener mBackwardListener = new PlayBackBottomBar.ForBackListener() {
         @Override
         public void run() {
             mPlayer.onFastBackward();
@@ -97,7 +97,7 @@ public class SingleSongFragment extends Fragment {
         mSong = getArguments().getParcelable(ARG_SONG);
 
         mPlayer.getLiveSong().observe(this, song -> {
-            if(song == null) {
+            if (song == null) {
                 mPlayPause.setImageDrawable(pauseState);
                 mSeekBar.setMax(0);
                 if (mPlayer.isPlaying())
@@ -106,8 +106,7 @@ public class SingleSongFragment extends Fragment {
                     mPlayPause.setImageDrawable(pauseState);
 
                 startAnimation(false);
-            }
-            else {
+            } else {
                 mSong = song;
                 initView();
             }
@@ -130,14 +129,10 @@ public class SingleSongFragment extends Fragment {
      * Animation handler
      */
     private void setDrawable() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            playingState = getActivity().getDrawable(R.drawable.avd_anim);
-            pauseState = getActivity().getDrawable(R.drawable.avd_anim_reverse);
-            startAnimation(mPlayer.isPlaying());
-        } else {
-            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause);
-            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow);
-        }
+
+        playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause);
+        pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow);
+
     }
 
     private void startAnimation(boolean isPlaying) {
@@ -146,8 +141,7 @@ public class SingleSongFragment extends Fragment {
                 ((Animatable) playingState).start();
             } else
                 ((Animatable) pauseState).start();
-        }
-        else if(pauseState instanceof Animatable)
+        } else if (pauseState instanceof Animatable)
             ((Animatable) pauseState).start();
     }
 
