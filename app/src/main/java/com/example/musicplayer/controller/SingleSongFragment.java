@@ -1,6 +1,8 @@
 package com.example.musicplayer.controller;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -22,16 +24,18 @@ import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
 
+import org.jaudiotagger.tag.datatype.Artwork;
+
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SingleSongFragment extends Fragment implements PlayerManager.UIController {
+public class SingleSongFragment extends Fragment {
 
     private static String ARG_SONG = "song";
     private Song mSong;
-    private PlayerManager mPlayer;
+    private PlayerService mPlayer;
 
     private ImageView mCover;
     private ImageView mPlayPause;
@@ -44,8 +48,27 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
     private TextView mTitle;
     private TextView mArtist;
 
+    private Bitmap mArtwork;
+    private Handler mHandler = new Handler();
+    private Runnable mRunnable;
+
     private Drawable playingState;
     private Drawable pauseState;
+
+    private PlayBackBottomBar.ForBackListener mForwardListener = new PlayBackBottomBar.ForBackListener(){
+        @Override
+        public void run() {
+            mPlayer.onFastForward();
+            super.run();
+        }
+    };
+    private PlayBackBottomBar.ForBackListener mBackwardListener = new PlayBackBottomBar.ForBackListener(){
+        @Override
+        public void run() {
+            mPlayer.onFastBackward();
+            super.run();
+        }
+    };
 
 
     public SingleSongFragment() {
@@ -63,14 +86,27 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
         return fragment;
     }
 
+    public void setPlayer(PlayerService mPlayer) {
+        this.mPlayer = mPlayer;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mSong = getArguments().getParcelable(ARG_SONG);
-        mPlayer = PlayerManager.getPlayer(getContext());
-        mPlayer.setUIobj(SingleSongFragment.this);
-        mPlayer.Play(mSong);
+
+        mPlayer.getLiveSong().observe(this, song -> {
+            if(song == null) {
+                mPlayPause.setImageDrawable(pauseState);
+                mSeekBar.setMax(0);
+                startAnimation(false);
+            }
+            else {
+                mSong = song;
+                initView();
+            }
+        });
     }
 
     @Override
@@ -106,6 +142,8 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
             } else
                 ((Animatable) pauseState).start();
         }
+        else if(pauseState instanceof Animatable)
+            ((Animatable) pauseState).start();
     }
 
     private void findViews() {
@@ -124,9 +162,16 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
 
     private void initView() {
 
+        Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
+
+        if (artwork == null)
+            mArtwork = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.song_placeholder);
+        else
+            mArtwork = BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+
         Glide.with(mView).asDrawable()
                 .placeholder(R.drawable.song_placeholder)
-                .load(ID3Tags.getBinaryArtwork(mSong.getFilePath()))
+                .load(mArtwork)
                 .into(PictureUtils.getTarget(mCover));
 
         mTitle.setText(mSong.getTitle());
@@ -137,7 +182,7 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
         setDrawable();
 
         if (mPlayer.isPlaying())
-            mPlayPause.setImageDrawable(playingState);
+            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
         else
             mPlayPause.setImageDrawable(pauseState);
 
@@ -145,16 +190,15 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
     }
 
     private void SeekBar() {
-        Handler mHandler = new Handler();
-        Runnable mSeekToRun = new Runnable() {
+        mRunnable = new Runnable() {
             @Override
             public void run() {
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
                 mHandler.postDelayed(this, 130);
             }
         };
-        getActivity().runOnUiThread(mSeekToRun);
 
+        mHandler.post(mRunnable);
     }
 
     private void Listener() {
@@ -169,6 +213,12 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
         });
         mForward.setOnClickListener(view -> mPlayer.goForward());
         mBackward.setOnClickListener(view -> mPlayer.goBackward());
+
+        mForward.setOnTouchListener(mForwardListener);
+        mBackward.setOnTouchListener(mBackwardListener);
+
+        mForward.setOnLongClickListener(mForwardListener);
+        mBackward.setOnLongClickListener(mBackwardListener);
 
         mShuffle.setOnClickListener(view -> mPlayer.Shuffle());
 
@@ -191,13 +241,5 @@ public class SingleSongFragment extends Fragment implements PlayerManager.UICont
             public void onStartTrackingTouch(CircularSeekBar seekBar) {
             }
         });
-    }
-
-    @Override
-    public void ViewUpdater() {
-        if (isAdded()) {
-            mSong = mPlayer.getCurrentSong();
-            initView();
-        }
     }
 }

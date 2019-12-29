@@ -30,13 +30,13 @@ public class CategoryFragment extends Fragment {
 
     private static final String SONG_QUALIFIER = "song_qualifier";
     private View mView;
-    private FastScrollRecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
     private AlbumRepository mAlbumRepository;
     private Qualifier mQualifier;
     private ArtistRepository mArtistRepository;
     private SongRepository mSongRepository;
     private MusicRecyclerAdapter mAdapter;
-    private ScrollHandler mCallbacks;
+    private RecyclerScroller mActivity;
 
 
     public CategoryFragment() {
@@ -44,19 +44,13 @@ public class CategoryFragment extends Fragment {
     }
 
     public static CategoryFragment newInstance(Qualifier qualifier) {
-        
+
         Bundle args = new Bundle();
         args.putSerializable(SONG_QUALIFIER, qualifier);
 
         CategoryFragment fragment = new CategoryFragment();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mCallbacks = (ScrollHandler) context;
     }
 
     @Override
@@ -67,7 +61,7 @@ public class CategoryFragment extends Fragment {
         mAlbumRepository = AlbumRepository.getInstance(getContext());
         mArtistRepository = ArtistRepository.getInstance(getContext());
         mSongRepository = SongRepository.getInstance(getContext());
-
+        mActivity = (RecyclerScroller) getActivity();
     }
 
     @Override
@@ -77,51 +71,61 @@ public class CategoryFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_category, container, false);
 
         setupRecyclerView();
+        RepositoryObserver();
 
         return mView;
     }
 
-    private void setupRecyclerView(){
+    private void setupRecyclerView() {
 
         mRecyclerView = mView.findViewById(R.id.category_recyclerView);
         mAdapter = new MusicRecyclerAdapter(getActivity(), mQualifier);
 
-        if (isAdded()){
-            if (mQualifier.equals(Qualifier.ALLSONG)) {
+        if (isAdded()) {
+
+            if (mQualifier.equals(Qualifier.ALLSONG))
                 mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mAdapter.setList(mSongRepository.getSongs());
-            }
-            else {
+            else
                 mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-                if (mQualifier.equals(Qualifier.ALBUM))
-                    mAdapter.setList(mAlbumRepository.getAlbums());
-                else
-                    mAdapter.setList(mArtistRepository.getArtists());
-            }
 
             mRecyclerView.setAdapter(mAdapter);
         }
+
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(!recyclerView.canScrollVertically(1))
-                    mCallbacks.onScrollList(true);
-                else mCallbacks.onScrollList(false);
+                if (!recyclerView.canScrollVertically(1))
+                    mActivity.onScrollList(true);
+                else mActivity.onScrollList(false);
 
             }
         });
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mCallbacks = null;
+    public void onDestroy() {
+        super.onDestroy();
+        mActivity = null;
     }
 
-    public interface ScrollHandler {
+    public interface RecyclerScroller {
         void onScrollList(boolean scrolled);
     }
 
+    private void RepositoryObserver() {
+
+        if (mQualifier.equals(Qualifier.ALLSONG))
+            mSongRepository.getLiveSong().observe(this, Song ->
+                    mAdapter.setList(mSongRepository.getLiveSong().getValue()));
+
+        else if (mQualifier.equals(Qualifier.ALBUM))
+            mAlbumRepository.getLiveAlbum().observe(this, albums ->
+                    mAdapter.setList(mAlbumRepository.getLiveAlbum().getValue()));
+        else
+            mArtistRepository.getLiveArtist().observe(this, artists ->
+                    mAdapter.setList(mArtistRepository.getLiveArtist().getValue()));
+    }
 }
+

@@ -54,4 +54,7 @@ dependencies {
 
     //FastScrollRecyclerView
     implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.0'
+
+    //lottie
+    implementation 'com.airbnb.android:lottie:3.3.0'
 }

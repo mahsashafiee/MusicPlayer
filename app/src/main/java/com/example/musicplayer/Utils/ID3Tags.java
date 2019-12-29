@@ -1,5 +1,7 @@
 package com.example.musicplayer.Utils;
 
+import android.util.Log;
+
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -16,6 +18,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class ID3Tags {
+
+    private static String TAG = "ID3TAG";
 
     private static AudioFile getAudioFile(String FilePath) {
         try {
@@ -35,7 +39,7 @@ public class ID3Tags {
         return null;
     }
 
-    private static void setFile(AudioFile audioFile){
+    private static void setFile(AudioFile audioFile) {
         try {
             //AudioFileIO.write(audioFile);
             audioFile.commit();
@@ -53,62 +57,64 @@ public class ID3Tags {
         return Lyrics;
     }
 
-    public static byte[] getBinaryArtwork(String filePath) {
+    public static Artwork getArtwork(String filePath) {
         Tag mp3Tag = getAudioFile(filePath).getTag();
-        if (mp3Tag.getFirstArtwork() != null)
-            return mp3Tag.getFirstArtwork().getBinaryData();
-        return new byte[]{0};
+        if (mp3Tag != null)
+            return mp3Tag.getFirstArtwork();
+        return null;
     }
 
-    public static void setLyrics(String filePath,String lyrics){
+    public static void setLyrics(String filePath, String lyrics) {
         AudioFile audioFile = getAudioFile(filePath);
-        Tag mTag = audioFile.getTag();
         try {
+            Tag mTag = audioFile.getTag();
             mTag.deleteField(FieldKey.LYRICS);
-            mTag.setField(FieldKey.LYRICS,lyrics);
+            mTag.setField(FieldKey.LYRICS, lyrics);
             setFile(audioFile);
         } catch (FieldDataInvalidException e) {
             e.printStackTrace();
+        } catch (NullPointerException e2) {
+            Log.d(TAG, "setLyrics: fail");
         }
     }
 
-    public static void setAlbum(String filePath, String album){
+    public static void setAlbum(String filePath, String album) {
         AudioFile audioFile = getAudioFile(filePath);
         Tag mTag = audioFile.getTag();
         try {
             mTag.deleteField(FieldKey.ALBUM);
-            mTag.setField(FieldKey.ALBUM,album);
+            mTag.setField(FieldKey.ALBUM, album);
             setFile(audioFile);
         } catch (FieldDataInvalidException e) {
             e.printStackTrace();
         }
     }
 
-    public static void setArtist(String filePath, String artist){
+    public static void setArtist(String filePath, String artist) {
         AudioFile audioFile = getAudioFile(filePath);
         Tag mTag = audioFile.getTag();
         try {
             mTag.deleteField(FieldKey.ARTIST);
-            mTag.setField(FieldKey.ARTIST,artist);
+            mTag.setField(FieldKey.ARTIST, artist);
             setFile(audioFile);
         } catch (FieldDataInvalidException e) {
             e.printStackTrace();
         }
     }
 
-    public static void setTitle(String filePath, String title){
+    public static void setTitle(String filePath, String title) {
         AudioFile audioFile = getAudioFile(filePath);
         Tag mTag = audioFile.getTag();
         try {
             mTag.deleteField(FieldKey.TITLE);
-            mTag.setField(FieldKey.TITLE,title);
+            mTag.setField(FieldKey.TITLE, title);
             setFile(audioFile);
         } catch (FieldDataInvalidException e) {
             e.printStackTrace();
         }
     }
 
-    public static void setArtwork(String filePath, Artwork artwork){
+    public static void setArtwork(String filePath, Artwork artwork) {
         AudioFile audioFile = getAudioFile(filePath);
         Tag mTag = audioFile.getTag();
         try {

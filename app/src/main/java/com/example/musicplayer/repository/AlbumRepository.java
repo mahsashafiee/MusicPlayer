@@ -3,6 +3,7 @@ package com.example.musicplayer.repository;
 import android.content.Context;
 import android.provider.MediaStore;
 
+import androidx.lifecycle.MutableLiveData;
 import com.example.musicplayer.model.Album;
 
 import java.util.ArrayList;
@@ -13,11 +14,10 @@ public class AlbumRepository {
     private static AlbumRepository instance;
     private Context mContext;
     private List<Album> mAlbums;
+    private MutableLiveData<List<Album>> mLiveAlbum = new MutableLiveData<>();
 
     private AlbumRepository(Context context){
         mContext = context;
-        mAlbums = new ArrayList<>();
-        findAlbum();
     }
 
     public static AlbumRepository getInstance(Context context){
@@ -31,7 +31,18 @@ public class AlbumRepository {
         return mAlbums;
     }
 
+    public MutableLiveData<List<Album>> getLiveAlbum(){
+        return mLiveAlbum;
+    }
+
+    public void findAllAlbum(){
+        new Thread(this::findAlbum).start();
+    }
+
     private void findAlbum(){
+//        mAlbums = Collections.synchronizedList(new ArrayList<>());
+        mAlbums = new ArrayList<>();
+
         ModelCursorWrapper cursor = new ModelCursorWrapper(mContext.getContentResolver()
                 .query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
                         null, null, null, null));
@@ -46,6 +57,7 @@ public class AlbumRepository {
                 }while (!cursor.isAfterLast());
 
             } finally {
+                mLiveAlbum.postValue(getAlbums());
                 cursor.close();
             }
         }

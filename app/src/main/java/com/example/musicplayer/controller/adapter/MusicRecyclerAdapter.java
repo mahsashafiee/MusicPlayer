@@ -2,23 +2,20 @@ package com.example.musicplayer.controller.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.musicplayer.R;
-import com.example.musicplayer.model.Album;
-import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
-import com.example.musicplayer.model.Song;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List mList;
+    private List mList = new ArrayList();
     private ViewHolders viewHolders;
     private Context mContext;
     private Qualifier flag;
@@ -31,6 +28,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public void setList(List list) {
         mList = list;
+        notifyDataSetChanged();
     }
 
     @NonNull

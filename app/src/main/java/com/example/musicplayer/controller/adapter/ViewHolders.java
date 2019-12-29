@@ -1,8 +1,8 @@
 package com.example.musicplayer.controller.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,7 +20,9 @@ import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
-import es.claucookie.miniequalizerlibrary.EqualizerView;
+
+import org.jaudiotagger.tag.datatype.Artwork;
+
 
 public class ViewHolders {
 
@@ -32,9 +34,9 @@ public class ViewHolders {
         mContext = context;
     }
 
-    //Handle SingleSong and SongList fragment invoker;
+    //Handle PlaySong and SongList fragment invoker;
     public interface CallBacks {
-        void SingleSong(Song song);
+        void PlaySong(Song song);
 
         void SongList(String albumOrArtist, Qualifier qualifier);
     }
@@ -57,8 +59,10 @@ public class ViewHolders {
             mTVMusicName = itemView.findViewById(R.id.item_song_title);
             mDuration = itemView.findViewById(R.id.item_song_duration);
 
-            itemView.setOnClickListener(view ->
-                callBacks.SingleSong(mSong));
+            itemView.setOnClickListener(view -> {
+                callBacks.PlaySong(mSong);
+                mTVMusicName.setSelected(true);
+            });
 
         }
 
@@ -77,32 +81,31 @@ public class ViewHolders {
 
         }
 
-        private class SetArt extends AsyncTask<Void, Void, byte[]> {
-
+        private class SetArt extends AsyncTask<Void, Void, Bitmap> {
 
             @Override
-            protected byte[] doInBackground(Void... voids) {
-                if (mSong != null)
-                    return ID3Tags.getBinaryArtwork(mSong.getFilePath());
-                else return null;
+            protected Bitmap doInBackground(Void... voids) {
+                Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
+                if(artwork == null)
+                    return BitmapFactory.decodeResource(mContext.getResources(),R.drawable.song_placeholder);
+                return BitmapFactory.decodeByteArray(artwork.getBinaryData(),0,artwork.getBinaryData().length);
             }
 
             @Override
-            protected void onPostExecute(byte[] bytes) {
+            protected void onPostExecute(Bitmap bitmap) {
                 Glide.with(mContext).asDrawable()
-                        .load(bytes)
+                        .load(bitmap)
                         .placeholder(R.drawable.song_placeholder)
                         .into(PictureUtils.getTarget(mIVMusicCover));
             }
         }
-
     }
 
 
     /**
      * ALBUM VIEW HOLDER CLASS
      */
-    public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Album>{
+    public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Album> {
 
         private SquareImage mAlbumArt;
         private TextView mTitle;
@@ -116,8 +119,10 @@ public class ViewHolders {
             mAlbumArt = itemView.findViewById(R.id.item_album_art);
             mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
-            itemView.setOnClickListener(view ->
-                callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM));
+            itemView.setOnClickListener(view -> {
+                callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
+                mTitle.setSelected(true);
+            });
 
         }
 
@@ -134,7 +139,6 @@ public class ViewHolders {
 
         private class SetArt extends AsyncTask<Void, Void, String> {
 
-
             @Override
             protected String doInBackground(Void... voids) {
                 return mAlbum.getArtworkPath();
@@ -142,6 +146,10 @@ public class ViewHolders {
 
             @Override
             protected void onPostExecute(String artFile) {
+                if(artFile == null){
+                    mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+                    return;
+                }
                 Glide.with(mContext).asDrawable()
                         .load(artFile)
                         .into(PictureUtils.getTarget(mAlbumArt));
@@ -166,8 +174,10 @@ public class ViewHolders {
             mName = itemView.findViewById(R.id.item_song_artist);
             mImage = itemView.findViewById(R.id.item_artist_art);
 
-            itemView.setOnClickListener(view ->
-                callBacks.SongList(mArtist.getName(), Qualifier.ARTIST));
+            itemView.setOnClickListener(view -> {
+                callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
+                mName.setSelected(true);
+            });
 
         }
 
