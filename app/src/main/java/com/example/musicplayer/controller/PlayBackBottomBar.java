@@ -57,7 +57,7 @@ public class PlayBackBottomBar {
 
     private void initView(){
         mBottomAppBar = mActivity.findViewById(R.id.bottomAppBar);
-        mSeekBar = mActivity.findViewById(R.id.bottomAppBar_seekbar);
+        mSeekBar = mActivity.findViewById(R.id.bottomAppBar_seekBar);
         mDuration = mActivity.findViewById(R.id.bottomAppBar_duration);
         mForward = mActivity.findViewById(R.id.bottomAppBar_forward);
         mBackward = mActivity.findViewById(R.id.bottomAppBar_backward);

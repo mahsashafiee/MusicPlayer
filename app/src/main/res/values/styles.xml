@@ -11,29 +11,48 @@
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
     </style>
 
-    <style name="Widget.MusicPlayer.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="backgroundTint">?attr/colorPrimaryDark</item>
+    <style name="Theme.MusicPlayer.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:elevation" tools:ignore="NewApi">0dp</item>
+    </style>
+
+    <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark"></style>
+
+    <style name="Button">
+        <item name="android:background">@drawable/circular_button</item>
+        <item name="android:foregroundGravity">center_vertical</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:elevation" tools:ignore="NewApi">6dp</item>
+        <item name="android:layout_margin">8dp</item>
         <item name="android:stateListAnimator" tools:ignore="NewApi">
             @animator/mp_button_anim
         </item>
     </style>
 
-    <style name="Widget.MusicPlayer.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="hintTextAppearance">@style/TextAppearance.MusicPlayer.TextInputLayout.HintText</item>
-        <item name="hintTextColor">@color/textColorPrimary</item>
-        <item name="android:paddingBottom">2dp</item>
-        <item name="boxBackgroundColor">@color/textInputBackgroundColor</item>
+    <style name="Widget.MusicPlayer.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="cs_circle_color">#DCE2E2E2</item>
+        <item name="cs_circle_progress_color">@android:color/holo_blue_bright</item>
+        <item name="cs_circle_stroke_width">3dp</item>
+        <item name="cs_pointer_color">@android:color/holo_blue_bright</item>
+        <item name="cs_pointer_stroke_width">14dp</item>
     </style>
 
-    <style name="TextAppearance.MusicPlayer.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    <style name="Widget.MusicPlayer.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabTextAppearance">@style/Widget.MusicPlayer.TabLayout.TextAppearance</item>
+        <item name="android:background">@drawable/tab_bg</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabIndicatorColor">@android:color/transparent</item>
+        <item name="tabRippleColor">@android:color/transparent</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabSelectedTextColor">@android:color/holo_blue_dark</item>
     </style>
 
-    <style name="Widget.MusicPlayer.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="iconPadding">@dimen/activity_spacing</item>
-        <item name="iconTint">@color/textColorPrimary</item>
+    <style name="Widget.MusicPlayer.TabLayout.TextAppearance" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Widget.MusicPlayer.Toolbar" parent="Widget.AppCompat.Toolbar">
@@ -43,19 +62,26 @@
         <item name="titleTextAppearance">@style/TextAppearance.MusicPlayer.Toolbar</item>
     </style>
 
+    <style name="Widget.MusicPlayer.TextView.Medium" parent="Widget.MaterialComponents.TextView">
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+    </style>
+
+    <style name="Widget.MusicPlayer.TextView.Small" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Small</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
     <style name="TextAppearance.MusicPlayer.Toolbar" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
-    </style>
-
-    <style name="TextAppearance.MusicPlayer.Title" parent="TextAppearance.MaterialComponents.Headline4">
-        <item name="textAllCaps">true</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-    </style>
-
-    <style name="Widget.MusicPlayer.Backdrop" parent="">
-        <item name="android:background">?attr/colorAccent</item>
     </style>
 
 </resources>
