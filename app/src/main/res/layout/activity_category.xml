@@ -25,8 +25,8 @@
             android:layout_marginEnd="32dp"
             android:hint="@string/search"
             android:background="@drawable/tab_container"
-            android:drawableStart="@drawable/ic_search_black_24dp"
-            android:drawableLeft="@drawable/ic_search_black_24dp" />
+            android:drawableStart="@drawable/ic_search"
+            android:drawableLeft="@drawable/ic_search" />
 
     </FrameLayout>
 
@@ -101,7 +101,7 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/bottomAppBar_playPause"
-            app:srcCompat="@drawable/ic_pause_grey_600_24dp"
+            app:srcCompat="@drawable/ic_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
@@ -126,7 +126,7 @@
             android:layout_marginRight="100dp"
             android:layout_marginBottom="19dp"
             android:background="@android:color/transparent"
-            app:srcCompat="@drawable/ic_skip_next_grey_600_24dp"/>
+            app:srcCompat="@drawable/ic_skip_next"/>
 
         <ImageButton
             android:id="@+id/bottomAppBar_backward"
@@ -136,7 +136,7 @@
             android:layout_marginLeft="100dp"
             android:layout_marginBottom="19dp"
             android:background="@android:color/transparent"
-            app:srcCompat="@drawable/ic_skip_previous_grey_600_24dp"/>
+            app:srcCompat="@drawable/ic_skip_previous"/>
 
         <TextView
             android:id="@+id/bottomAppBar_duration"

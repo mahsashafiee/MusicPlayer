@@ -61,7 +61,6 @@ public class ViewHolders {
 
             itemView.setOnClickListener(view -> {
                 callBacks.PlaySong(mSong);
-                mTVMusicName.setSelected(true);
             });
 
         }
@@ -121,7 +120,6 @@ public class ViewHolders {
             mArtist = itemView.findViewById(R.id.item_album_artist);
             itemView.setOnClickListener(view -> {
                 callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
-                mTitle.setSelected(true);
             });
 
         }
@@ -176,7 +174,6 @@ public class ViewHolders {
 
             itemView.setOnClickListener(view -> {
                 callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
-                mName.setSelected(true);
             });
 
         }

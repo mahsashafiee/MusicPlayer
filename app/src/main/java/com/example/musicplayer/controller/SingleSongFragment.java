@@ -101,7 +101,7 @@ public class SingleSongFragment extends Fragment {
                 mPlayPause.setImageDrawable(pauseState);
                 mSeekBar.setMax(0);
                 if (mPlayer.isPlaying())
-                    mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp));
+                    mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
                 else
                     mPlayPause.setImageDrawable(pauseState);
 
@@ -130,14 +130,10 @@ public class SingleSongFragment extends Fragment {
      * Animation handler
      */
     private void setDrawable() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            playingState = getActivity().getDrawable(R.drawable.avd_anim);
-            pauseState = getActivity().getDrawable(R.drawable.avd_anim_reverse);
+            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause);
+            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow);
             startAnimation(mPlayer.isPlaying());
-        } else {
-            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp);
-            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow_grey_600_24dp);
-        }
+
     }
 
     private void startAnimation(boolean isPlaying) {
@@ -187,7 +183,7 @@ public class SingleSongFragment extends Fragment {
         setDrawable();
 
         if (mPlayer.isPlaying())
-            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp));
+            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
         else
             mPlayPause.setImageDrawable(pauseState);
 

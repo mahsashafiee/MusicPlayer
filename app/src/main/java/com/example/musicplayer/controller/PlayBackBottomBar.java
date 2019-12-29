@@ -71,9 +71,9 @@ public class PlayBackBottomBar {
         mPlay.setOnClickListener(view -> {
             mPlayer.Pause();
             if (!mPlayer.isPlaying())
-                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_play_arrow_grey_600_24dp));
+                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_play_arrow));
             else
-                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp));
+                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_pause));
         });
 
         mForward.setOnClickListener(view -> mPlayer.goForward());
