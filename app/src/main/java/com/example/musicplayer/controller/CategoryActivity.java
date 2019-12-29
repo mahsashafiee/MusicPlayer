@@ -3,11 +3,9 @@ package com.example.musicplayer.controller;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Lifecycle;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.viewpager.widget.ViewPager;
 
@@ -18,12 +16,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.Utils.ChangeStatusBar;
@@ -33,12 +28,9 @@ import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
-import com.google.android.material.bottomappbar.BottomAppBar;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
-import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection, CategoryFragment.RecyclerScroller {
 
@@ -56,7 +48,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     private PlayerService mPlayer;
     boolean serviceBound = false;
 
-
     public static Intent newIntent(Context target) {
         Intent intent = new Intent(target, CategoryActivity.class);
         return intent;
@@ -66,7 +57,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         if (ContextCompat.checkSelfPermission(CategoryActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -122,6 +112,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     private void initUI() {
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -133,7 +124,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
                 R.id.nav_photos, R.id.nav_collections, R.id.nav_favorite)
                 .setDrawerLayout(drawer)
                 .build();
-
         mViewPager = findViewById(R.id.view_pager);
         mTabLayout = findViewById(R.id.tab_layout);
         mIndicator = findViewById(R.id.indicator);
@@ -143,7 +133,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-        /**
+    /**
      * Handle the permissions request response
      *
      * @param requestCode
@@ -176,11 +166,10 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     @Override
     public void SongList(String albumOrArtist, Qualifier qualifier) {
         getSupportFragmentManager().beginTransaction()
-            .replace(R.id.category_container, SongListFragment.newInstance(albumOrArtist, qualifier))
-            .addToBackStack(SongListFragment.TAG)
-            .commit();
+                .replace(R.id.category_container, SongListFragment.newInstance(albumOrArtist, qualifier))
+                .addToBackStack(SongListFragment.TAG)
+                .commit();
     }
-
 
     @Override
     public void onScrollList(boolean scrolled) {
