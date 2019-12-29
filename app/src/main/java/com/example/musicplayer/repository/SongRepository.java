@@ -65,7 +65,6 @@ public class SongRepository {
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         ModelCursorWrapper songWrapper = new ModelCursorWrapper(musicResolver.query(musicUri, null, null, null, null));
-
         if (songWrapper != null && songWrapper.moveToFirst()) {
             try {
 
@@ -81,7 +80,7 @@ public class SongRepository {
                 }
 
             } catch (Exception e) {
-                return;
+                Log.d("MusicPlayer", e.getMessage());
             } finally {
                 songWrapper.close();
             }

@@ -36,10 +36,6 @@ public class MusicPlayerApplication extends Application {
 
         bindService(new Intent(this,PlayerService.class),mPlayerConnection, Context.BIND_AUTO_CREATE);
         CreateNotificationChannel();
-
-        SongRepository.getInstance(this).findAllSongs();
-        AlbumRepository.getInstance(this).findAllAlbum();
-        ArtistRepository.getInstance(this).findAllArtist();
     }
 
     private void CreateNotificationChannel() {
