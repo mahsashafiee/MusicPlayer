@@ -22,8 +22,6 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     private List<String> mTitles = new ArrayList<>();
 
 
-
-
     public PagerAdapter(Context context, @NonNull FragmentManager fm) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         mContext = context;
@@ -50,7 +48,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         return mTitles.get(position);
     }
 
-    private void addTabs(CategoryFragment fragment, String title){
+    private void addTabs(CategoryFragment fragment, String title) {
         mFragments.add(fragment);
         mTitles.add(title);
     }

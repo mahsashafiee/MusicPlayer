@@ -2,11 +2,13 @@
 
     <!-- Base application theme. -->
 
-    <style name="Theme.MusicPlayer" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="Theme.MusicPlayer" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
     </style>
 
     <style name="Theme.MusicPlayer.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -14,18 +16,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" >
+    <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:elevation" tools:ignore="NewApi">0dp</item>
     </style>
 
-    <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" >
-        <item name="android:navigationIcon" tools:ignore="NewApi">@drawable/ic_menu</item>
-    </style>
+    <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark"></style>
 
-    <style name="Widget.MusicPlayer.Button" parent="Widget.AppCompat.ImageButton">
+    <style name="Button">
         <item name="android:background">@drawable/circular_button</item>
-        <item name="android:padding">8dp</item>
         <item name="android:foregroundGravity">center_vertical</item>
+        <item name="android:padding">8dp</item>
         <item name="android:elevation" tools:ignore="NewApi">6dp</item>
         <item name="android:layout_margin">8dp</item>
         <item name="android:stateListAnimator" tools:ignore="NewApi">
@@ -41,7 +41,7 @@
         <item name="cs_pointer_stroke_width">14dp</item>
     </style>
 
-    <style name="Widget.MusicPlayer.TabLayout" parent="Widget.MaterialComponents.TabLayout" >
+    <style name="Widget.MusicPlayer.TabLayout" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabTextAppearance">@style/Widget.MusicPlayer.TabLayout.TextAppearance</item>
         <item name="android:background">@drawable/tab_bg</item>
         <item name="tabGravity">fill</item>
@@ -83,6 +83,5 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
-
 
 </resources>

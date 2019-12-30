@@ -2,11 +2,8 @@ package com.example.musicplayer.controller;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
@@ -31,18 +28,12 @@ import com.example.musicplayer.repository.AlbumRepository;
 import com.example.musicplayer.repository.ArtistRepository;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 
-public class CategoryActivity extends AppCompatActivity implements
-        ViewHolders.CallBacks,
-        ServiceConnection,
-        CategoryFragment.RecyclerScroller {
+public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection, CategoryFragment.RecyclerScroller {
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
-
-    private AppBarConfiguration mAppBarConfiguration;
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
@@ -122,18 +113,6 @@ public class CategoryActivity extends AppCompatActivity implements
     }
 
     private void initUI() {
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_photos, R.id.nav_collections, R.id.nav_favorite)
-                .setDrawerLayout(drawer)
-                .build();
         mViewPager = findViewById(R.id.view_pager);
         mTabLayout = findViewById(R.id.tab_layout);
         mIndicator = findViewById(R.id.indicator);
@@ -175,10 +154,7 @@ public class CategoryActivity extends AppCompatActivity implements
 
     @Override
     public void SongList(String albumOrArtist, Qualifier qualifier) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.category_container, SongListFragment.newInstance(albumOrArtist, qualifier))
-                .addToBackStack(SongListFragment.TAG)
-                .commit();
+        startActivity(SongListActivity.newIntent(CategoryActivity.this, albumOrArtist, qualifier));
     }
 
     @Override

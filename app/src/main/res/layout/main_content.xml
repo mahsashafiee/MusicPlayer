@@ -7,11 +7,11 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/app_bar_main">
+    tools:showIn="@layout/activity_category">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="24dp"
+        android:layout_height="20dp"
         android:background="@drawable/launcher_top_bar" />
 
 
@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignTop="@id/tab_container"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/launcher_bottom_bar">
 
 
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginStart="42dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="42dp"
         android:background="@drawable/tab_container"
         android:clipToPadding="false"

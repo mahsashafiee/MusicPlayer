@@ -21,21 +21,19 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity
-            android:name=".controller.CategoryActivity"
-            android:theme="@style/Theme.MusicPlayer.NoActionBar">
+        <activity android:name=".controller.CategoryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.SingleSongActivity"
-            android:theme="@style/Theme.MusicPlayer.NoActionBar">
+        <activity android:name=".controller.SingleSongActivity">
             <intent-filter>
                 <category android:name="android.intent.category.APP_MUSIC" />
             </intent-filter>
         </activity>
+        <activity android:name=".controller.SongListActivity" />
     </application>
 
 </manifest>

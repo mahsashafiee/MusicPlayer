@@ -61,7 +61,6 @@ public class ViewHolders {
 
             itemView.setOnClickListener(view -> {
                 callBacks.PlaySong(mSong);
-                mTVMusicName.setSelected(true);
             });
 
         }
@@ -86,9 +85,9 @@ public class ViewHolders {
             @Override
             protected Bitmap doInBackground(Void... voids) {
                 Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
-                if(artwork == null)
-                    return BitmapFactory.decodeResource(mContext.getResources(),R.drawable.song_placeholder);
-                return BitmapFactory.decodeByteArray(artwork.getBinaryData(),0,artwork.getBinaryData().length);
+                if (artwork == null)
+                    return BitmapFactory.decodeResource(mContext.getResources(), R.drawable.song_placeholder);
+                return BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
             }
 
             @Override
@@ -121,7 +120,6 @@ public class ViewHolders {
             mArtist = itemView.findViewById(R.id.item_album_artist);
             itemView.setOnClickListener(view -> {
                 callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
-                mTitle.setSelected(true);
             });
 
         }
@@ -146,7 +144,7 @@ public class ViewHolders {
 
             @Override
             protected void onPostExecute(String artFile) {
-                if(artFile == null){
+                if (artFile == null) {
                     mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
                     return;
                 }
@@ -176,7 +174,6 @@ public class ViewHolders {
 
             itemView.setOnClickListener(view -> {
                 callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
-                mName.setSelected(true);
             });
 
         }

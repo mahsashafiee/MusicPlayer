@@ -29,14 +29,14 @@ public class PlayBackBottomBar {
     private PlayerService mPlayer;
     private Handler mHandler = new Handler();
     private Runnable UpdateSongTime;
-    private ForBackListener mForwardListener = new ForBackListener(){
+    private ForBackListener mForwardListener = new ForBackListener() {
         @Override
         public void run() {
             mPlayer.onFastForward();
             super.run();
         }
     };
-    private ForBackListener mBackwardListener = new ForBackListener(){
+    private ForBackListener mBackwardListener = new ForBackListener() {
         @Override
         public void run() {
             mPlayer.onFastBackward();
@@ -55,7 +55,7 @@ public class PlayBackBottomBar {
         mCoorLayout.setVisibility(View.VISIBLE);
     }
 
-    private void initView(){
+    private void initView() {
         mBottomAppBar = mActivity.findViewById(R.id.bottomAppBar);
         mSeekBar = mActivity.findViewById(R.id.bottomAppBar_seekBar);
         mDuration = mActivity.findViewById(R.id.bottomAppBar_duration);
@@ -124,7 +124,7 @@ public class PlayBackBottomBar {
         }
     }
 
-    private void setVisibility(int visibility){
+    private void setVisibility(int visibility) {
         mPlay.setVisibility(visibility);
         mSeekBar.setVisibility(visibility);
         mForward.setVisibility(visibility);

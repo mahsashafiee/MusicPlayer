@@ -1,10 +1,9 @@
 package com.example.musicplayer.controller;
 
 
-import android.content.Context;
+
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,8 +28,6 @@ import com.example.musicplayer.repository.SongRepository;
  */
 public class SongListFragment extends Fragment {
 
-    public static final String TAG = "SongListFragment";
-
     private RecyclerView songRecycler;
     private MusicRecyclerAdapter mAdapter;
     private String mAlbumArtist;
@@ -43,7 +40,6 @@ public class SongListFragment extends Fragment {
     public SongListFragment() {
         // Required empty public constructor
     }
-
 
     public static SongListFragment newInstance(String albumName, Qualifier qualifier) {
 
@@ -59,6 +55,7 @@ public class SongListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         mAlbumArtist = getArguments().getString(ARG_KEY);
 
@@ -70,7 +67,6 @@ public class SongListFragment extends Fragment {
             PlayList.setSongList(SongRepository.getInstance(getActivity()).getArtistSongList(mAlbumArtist));
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,12 +82,13 @@ public class SongListFragment extends Fragment {
      * @param view
      */
     private void initUI(View view) {
-        /*        setUpToolbar(view);*/
+        setUpToolbar(view);
         mItemCount = view.findViewById(R.id.item_count);
         songRecycler = view.findViewById(R.id.recycler_view);
 
-        view.findViewById(R.id.item_count)
-                .setBackgroundResource(R.drawable.song_list_background);
+
+        view.findViewById(R.id.item_count).setBackgroundResource(R.drawable.backdrop_background);
+
 
         String items = getResources()
                 .getQuantityString(R.plurals.item_number, PlayList.getSongList().size(), PlayList.getSongList().size());
@@ -104,5 +101,16 @@ public class SongListFragment extends Fragment {
 
     }
 
-
+    /**
+     * Toolbar Handler
+     *
+     * @param view
+     */
+    private void setUpToolbar(View view) {
+        Toolbar toolbar = view.findViewById(R.id.app_bar);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null) {
+            activity.setSupportActionBar(toolbar);
+        }
+    }
 }

@@ -48,9 +48,9 @@
 
         <me.tankery.lib.circularseekbar.CircularSeekBar
             android:id="@+id/seekBar"
+            style="@style/Widget.MusicPlayer.SeekBar"
             android:layout_width="250dp"
             android:layout_height="250dp"
-            style="@style/Widget.MusicPlayer.SeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -59,11 +59,11 @@
 
         <TextView
             android:id="@+id/song_title"
+            style="@style/Widget.MusicPlayer.TextView.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:padding="12dp"
-            style="@style/Widget.MusicPlayer.TextView.Medium"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/seekBar"
@@ -71,11 +71,11 @@
 
         <TextView
             android:id="@+id/song_artist"
+            style="@style/Widget.MusicPlayer.TextView.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            style="@style/Widget.MusicPlayer.TextView.Small"
             android:textColor="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -96,21 +96,21 @@
 
             <ImageView
                 android:id="@+id/backward"
-                style="@style/Widget.MusicPlayer.Button"
+                style="@style/Button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 app:srcCompat="@drawable/ic_skip_previous" />
 
             <ImageView
                 android:id="@+id/play_pause"
-                style="@style/Widget.MusicPlayer.Button"
+                style="@style/Button"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 app:srcCompat="@drawable/ic_pause" />
 
             <ImageButton
                 android:id="@+id/forward"
-                style="@style/Widget.MusicPlayer.Button"
+                style="@style/Button"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 app:srcCompat="@drawable/ic_skip_next" />

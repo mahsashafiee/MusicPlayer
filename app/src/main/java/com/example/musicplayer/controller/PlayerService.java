@@ -87,7 +87,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //what should happen after
         mMediaPlayer.setOnCompletionListener(this::onCompletion);
-        registerReceiver(becomingNoisyReceiver,new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
+        registerReceiver(becomingNoisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
     }
 
     private void setPlayList() {
@@ -104,7 +104,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         if (!requestAudioFocus())
             stopSelf();
         Play((Song) intent.getParcelableExtra(SONG_EXTRA));
-        startForeground(1,getNotification());
+        startForeground(1, getNotification());
         return START_NOT_STICKY;
     }
 
@@ -281,7 +281,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             case AudioManager.AUDIOFOCUS_GAIN:
                 if (mMediaPlayer == null) initMediaPlayer();
 
-                else if (!mMediaPlayer.isPlaying()){
+                else if (!mMediaPlayer.isPlaying()) {
                     volume = 0f;
                     Handler handler = new Handler();
                     handler.post(new Runnable() {
@@ -289,9 +289,9 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
                         public void run() {
                             mMediaPlayer.setVolume(volume, volume);
                             volume += 0.2;
-                            if(volume <= 1)
-                                handler.postDelayed(this::run,250);
-                            Log.d(TAG, "run: "+volume);
+                            if (volume <= 1)
+                                handler.postDelayed(this::run, 250);
+                            Log.d(TAG, "run: " + volume);
                         }
                     });
                     Pause();
@@ -326,7 +326,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         return AudioManager.AUDIOFOCUS_REQUEST_GRANTED == mAudioManager.abandonAudioFocus(this);
     }
 
-    private Notification getNotification(){
+    private Notification getNotification() {
         return new NotificationCompat
                 .Builder(this, getString(R.string.notification_channel_id))
                 .setContentIntent(PendingIntent.getActivity(
