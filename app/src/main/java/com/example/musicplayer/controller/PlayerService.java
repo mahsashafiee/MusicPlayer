@@ -88,7 +88,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //what should happen after
         mMediaPlayer.setOnCompletionListener(this::onCompletion);
-        registerReceiver(becomingNoisyReceiver,new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
+        registerReceiver(becomingNoisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
     }
 
     private void setPlayList() {
@@ -105,7 +105,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         if (!requestAudioFocus())
             stopSelf();
         Play((Song) intent.getParcelableExtra(SONG_EXTRA));
-        startForeground(1,getNotification());
+        startForeground(1, getNotification());
         return START_NOT_STICKY;
     }
 

@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +22,7 @@ import com.example.musicplayer.model.Song;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewHolders {
 
@@ -48,7 +48,7 @@ public class ViewHolders {
     public class MusicItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Song> {
 
         private TextView mTVMusicName, mTVMusicArtist, mDuration;
-        private ImageView mIVMusicCover;
+        private CircleImageView mIVMusicCover;
         private Song mSong;
 
         public MusicItems(@NonNull View itemView) {
@@ -61,7 +61,6 @@ public class ViewHolders {
 
             itemView.setOnClickListener(view -> {
                 callBacks.PlaySong(mSong);
-                mTVMusicName.setSelected(true);
             });
 
         }
@@ -74,7 +73,7 @@ public class ViewHolders {
             mTVMusicArtist.setText(mSong.getArtist());
             mTVMusicName.setText(mSong.getTitle());
             mDuration.setText(mSong.getDuration());
-            mIVMusicCover.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+            mIVMusicCover.setBackground(mContext.getResources().getDrawable(R.drawable.album_placeholder));
 
             SetArt art = new SetArt();
             art.execute();
@@ -85,8 +84,8 @@ public class ViewHolders {
 
             @Override
             protected Bitmap doInBackground(Void... voids) {
-                Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
                try {
+                   Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
                    return BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
 
                }catch (Exception e){
@@ -96,10 +95,10 @@ public class ViewHolders {
 
             @Override
             protected void onPostExecute(Bitmap bitmap) {
-                Glide.with(mContext).asDrawable()
+                Glide.with(mIVMusicCover).asDrawable()
                         .load(bitmap)
-                        .placeholder(R.drawable.song_placeholder)
-                        .into(PictureUtils.getTarget(mIVMusicCover));
+                        .placeholder(R.drawable.album_placeholder)
+                        .into(mIVMusicCover);
             }
         }
     }
@@ -134,29 +133,13 @@ public class ViewHolders {
             mAlbum = album;
             mTitle.setText(album.getTitle());
             mArtist.setText(album.getAlbumArtist());
-            mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+            mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.album_placeholder));
 
-            SetArt art = new SetArt();
-            art.execute();
-        }
+            Glide.with(mContext).asDrawable()
+                    .load(album.getArtworkPath())
+                    .placeholder(R.drawable.album_placeholder)
+                    .into(PictureUtils.getTarget(mAlbumArt));
 
-        private class SetArt extends AsyncTask<Void, Void, String> {
-
-            @Override
-            protected String doInBackground(Void... voids) {
-                return mAlbum.getArtworkPath();
-            }
-
-            @Override
-            protected void onPostExecute(String artFile) {
-                if(artFile == null){
-                    mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
-                    return;
-                }
-                Glide.with(mContext).asDrawable()
-                        .load(artFile)
-                        .into(PictureUtils.getTarget(mAlbumArt));
-            }
         }
     }
 
@@ -179,7 +162,6 @@ public class ViewHolders {
 
             itemView.setOnClickListener(view -> {
                 callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
-                mName.setSelected(true);
             });
 
         }

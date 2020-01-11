@@ -14,6 +14,7 @@ import com.example.musicplayer.model.Song;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class SongRepository {
 
@@ -80,7 +81,7 @@ public class SongRepository {
                 }
 
             } catch (Exception e) {
-                Log.d("MusicPlayer", e.getMessage());
+                /*Log.e("MusicPlayer", Objects.requireNonNull(e.getMessage()));*/
             } finally {
                 songWrapper.close();
             }

@@ -3,8 +3,8 @@
 
     <gradient
         android:angle="45"
-        android:endColor="@color/colorPrimary"
-        android:startColor="@color/light_pink"
+        android:endColor="@color/tab_indicator_end"
+        android:startColor="@color/tab_indicator_start"
         android:type="linear" />
 
     <corners android:radius="25dp" />

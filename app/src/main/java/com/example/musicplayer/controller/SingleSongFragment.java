@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.example.musicplayer.model.Song;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 /**
@@ -37,7 +39,7 @@ public class SingleSongFragment extends Fragment {
     private Song mSong;
     private PlayerService mPlayer;
 
-    private ImageView mCover;
+    private CircleImageView mCover;
     private ImageView mPlayPause;
     private ImageView mForward;
     private ImageView mBackward;
@@ -55,14 +57,14 @@ public class SingleSongFragment extends Fragment {
     private Drawable playingState;
     private Drawable pauseState;
 
-    private PlayBackBottomBar.ForBackListener mForwardListener = new PlayBackBottomBar.ForBackListener(){
+    private PlayBackBottomBar.ForBackListener mForwardListener = new PlayBackBottomBar.ForBackListener() {
         @Override
         public void run() {
             mPlayer.onFastForward();
             super.run();
         }
     };
-    private PlayBackBottomBar.ForBackListener mBackwardListener = new PlayBackBottomBar.ForBackListener(){
+    private PlayBackBottomBar.ForBackListener mBackwardListener = new PlayBackBottomBar.ForBackListener() {
         @Override
         public void run() {
             mPlayer.onFastBackward();
@@ -97,19 +99,20 @@ public class SingleSongFragment extends Fragment {
         mSong = getArguments().getParcelable(ARG_SONG);
 
         mPlayer.getLiveSong().observe(this, song -> {
-            if(song == null) {
+            if (song == null) {
+
+                mHandler.removeCallbacks(mRunnable);
                 mPlayPause.setImageDrawable(pauseState);
-                mSeekBar.setMax(0);
                 if (mPlayer.isPlaying())
-                    mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp));
+                    mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
                 else
                     mPlayPause.setImageDrawable(pauseState);
 
                 startAnimation(false);
-            }
-            else {
+            } else {
                 mSong = song;
                 initView();
+                SeekBar();
             }
         });
     }
@@ -130,14 +133,10 @@ public class SingleSongFragment extends Fragment {
      * Animation handler
      */
     private void setDrawable() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            playingState = getActivity().getDrawable(R.drawable.avd_anim);
-            pauseState = getActivity().getDrawable(R.drawable.avd_anim_reverse);
-            startAnimation(mPlayer.isPlaying());
-        } else {
-            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp);
-            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow_grey_600_24dp);
-        }
+
+        playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause);
+        pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow);
+
     }
 
     private void startAnimation(boolean isPlaying) {
@@ -146,8 +145,7 @@ public class SingleSongFragment extends Fragment {
                 ((Animatable) playingState).start();
             } else
                 ((Animatable) pauseState).start();
-        }
-        else if(pauseState instanceof Animatable)
+        } else if (pauseState instanceof Animatable)
             ((Animatable) pauseState).start();
     }
 
@@ -170,14 +168,19 @@ public class SingleSongFragment extends Fragment {
         Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
 
         if (artwork == null)
-            mArtwork = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.song_placeholder);
-        else
-            mArtwork = BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+            mArtwork = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.music_placeholder);
+        else {
+            try {
+                mArtwork = BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+            }catch (OutOfMemoryError error){
+                Log.d("Single song fragment", "initView: "+error.getMessage());
+            }
+        }
 
         Glide.with(mView).asDrawable()
-                .placeholder(R.drawable.song_placeholder)
+                .placeholder(R.drawable.music_placeholder)
                 .load(mArtwork)
-                .into(PictureUtils.getTarget(mCover));
+                .into(mCover);
 
         mTitle.setText(mSong.getTitle());
         mTitle.setSelected(true);
@@ -187,7 +190,7 @@ public class SingleSongFragment extends Fragment {
         setDrawable();
 
         if (mPlayer.isPlaying())
-            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp));
+            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
         else
             mPlayPause.setImageDrawable(pauseState);
 
@@ -198,6 +201,7 @@ public class SingleSongFragment extends Fragment {
         mRunnable = new Runnable() {
             @Override
             public void run() {
+                mSeekBar.setMax(mPlayer.getDuration());
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
                 mHandler.postDelayed(this, 130);
             }
