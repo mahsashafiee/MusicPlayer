@@ -55,6 +55,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         @Override
         public void onReceive(Context context, Intent intent) {
             Pause();
+            mLiveSong.setValue(null);
         }
     };
 
@@ -283,24 +284,23 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
                 else if (!mMediaPlayer.isPlaying()){
                     volume = 0f;
-                    Handler handler = new Handler();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mMediaPlayer.setVolume(volume, volume);
-                            volume += 0.2;
-                            if(volume <= 1)
-                                handler.postDelayed(this::run,250);
-                            Log.d(TAG, "run: "+volume);
-                        }
-                    });
                     Pause();
                 }
+
+                Handler handler = new Handler();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMediaPlayer.setVolume(volume, volume);
+                        volume += 0.1;
+                        if(volume <= 1)
+                            handler.postDelayed(this::run,250);
+                    }
+                });
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS:
                 Release();
-                stopSelf();
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
@@ -309,17 +309,17 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                if (mMediaPlayer.isPlaying())
-                    mMediaPlayer.setVolume(0.1f, 0.1f);
+                if (mMediaPlayer.isPlaying()) {
+                    volume = 0.1f;
+                    mMediaPlayer.setVolume(volume, volume);
+                }
                 break;
         }
     }
 
     private boolean requestAudioFocus() {
         int result = mAudioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-            return true;
-        return false;
+        return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
     private boolean removeAudioFocus() {

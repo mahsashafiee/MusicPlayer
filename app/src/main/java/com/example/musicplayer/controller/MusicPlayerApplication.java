@@ -10,10 +10,9 @@ import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.IBinder;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.example.musicplayer.R;
-import com.example.musicplayer.repository.AlbumRepository;
-import com.example.musicplayer.repository.ArtistRepository;
-import com.example.musicplayer.repository.SongRepository;
 
 public class MusicPlayerApplication extends Application {
 
@@ -34,6 +33,7 @@ public class MusicPlayerApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         bindService(new Intent(this,PlayerService.class),mPlayerConnection, Context.BIND_AUTO_CREATE);
         CreateNotificationChannel();
     }

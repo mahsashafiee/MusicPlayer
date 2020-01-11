@@ -86,9 +86,12 @@ public class ViewHolders {
             @Override
             protected Bitmap doInBackground(Void... voids) {
                 Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
-                if(artwork == null)
-                    return BitmapFactory.decodeResource(mContext.getResources(),R.drawable.song_placeholder);
-                return BitmapFactory.decodeByteArray(artwork.getBinaryData(),0,artwork.getBinaryData().length);
+               try {
+                   return BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+
+               }catch (Exception e){
+                   return null;
+               }
             }
 
             @Override
