@@ -5,7 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 
-public class Song implements Comparable<Song> , Parcelable {
+public class Song implements Comparable<Song>, Parcelable {
 
     private Long mSongId;
     private String mTitle;
@@ -15,6 +15,7 @@ public class Song implements Comparable<Song> , Parcelable {
     private Uri mPath;
     private String mLyrics;
     private String mFilePath;
+    private String mArtworkPath;
 
     public Song(Uri path , Long id) {
         mPath = path;
@@ -77,6 +78,14 @@ public class Song implements Comparable<Song> , Parcelable {
 
     public void setFilePath(String FilePath) {this.mFilePath = FilePath; }
 
+    public String getArtworkPath() {
+        return mArtworkPath;
+    }
+
+    public void setArtworkPath(String artworkPath) {
+        mArtworkPath = artworkPath;
+    }
+
 
     @Override
     public int compareTo(Song song) {
@@ -91,8 +100,6 @@ public class Song implements Comparable<Song> , Parcelable {
         return mSongId.equals(song.mSongId) &&
                 mFilePath.equals(song.mFilePath);
     }
-
-
 
     @Override
     public int describeContents() {
@@ -109,6 +116,7 @@ public class Song implements Comparable<Song> , Parcelable {
         dest.writeParcelable(this.mPath, flags);
         dest.writeString(this.mLyrics);
         dest.writeString(this.mFilePath);
+        dest.writeString(this.mArtworkPath);
     }
 
     protected Song(Parcel in) {
@@ -120,9 +128,10 @@ public class Song implements Comparable<Song> , Parcelable {
         this.mPath = in.readParcelable(Uri.class.getClassLoader());
         this.mLyrics = in.readString();
         this.mFilePath = in.readString();
+        this.mArtworkPath = in.readString();
     }
 
-    public static final Creator<Song> CREATOR = new Creator<Song>() {
+    public static final Parcelable.Creator<Song> CREATOR = new Parcelable.Creator<Song>() {
         @Override
         public Song createFromParcel(Parcel source) {
             return new Song(source);

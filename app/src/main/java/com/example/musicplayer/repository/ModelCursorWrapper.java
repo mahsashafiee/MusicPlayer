@@ -36,6 +36,7 @@ public class ModelCursorWrapper extends CursorWrapper {
         String Title = getString(getColumnIndex(MediaStore.Audio.Media.TITLE));
         String Artist =getString(getColumnIndex(MediaStore.Audio.Media.ARTIST));
         String Album = getString(getColumnIndex(MediaStore.Audio.Media.ALBUM));
+        String Artwork = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART));
         int Duration = getInt(getColumnIndex(MediaStore.Audio.Media.DURATION));
 
         Song song = new Song(path,id);
@@ -44,6 +45,7 @@ public class ModelCursorWrapper extends CursorWrapper {
         song.setArtist(Artist);
         song.setDuration(Duration);
         song.setLyrics(ID3Tags.getLyrics(FilePath));
+        song.setArtworkPath(Artwork);
         song.setFilePath(FilePath);
 
         return song;

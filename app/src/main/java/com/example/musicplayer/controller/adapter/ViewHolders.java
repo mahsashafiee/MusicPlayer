@@ -1,11 +1,11 @@
 package com.example.musicplayer.controller.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +23,7 @@ import com.example.musicplayer.model.Song;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewHolders {
 
@@ -48,7 +49,7 @@ public class ViewHolders {
     public class MusicItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Song> {
 
         private TextView mTVMusicName, mTVMusicArtist, mDuration;
-        private ImageView mIVMusicCover;
+        private CircleImageView mIVMusicCover;
         private Song mSong;
 
         public MusicItems(@NonNull View itemView) {
@@ -73,29 +74,38 @@ public class ViewHolders {
             mTVMusicArtist.setText(mSong.getArtist());
             mTVMusicName.setText(mSong.getTitle());
             mDuration.setText(mSong.getDuration());
-            mIVMusicCover.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+            mIVMusicCover.setBackground(mContext.getResources().getDrawable(R.drawable.album_placeholder));
 
+            Glide.with(mContext)
+                    .load(song.getArtworkPath())
+                    .placeholder(R.drawable.music_placeholder)
+                    .into(mIVMusicCover);
             SetArt art = new SetArt();
-            art.execute();
+           // art.execute();
 
         }
 
+        @SuppressLint("StaticFieldLeak")
         private class SetArt extends AsyncTask<Void, Void, Bitmap> {
 
             @Override
             protected Bitmap doInBackground(Void... voids) {
                 Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
                 if (artwork == null)
-                    return BitmapFactory.decodeResource(mContext.getResources(), R.drawable.song_placeholder);
-                return BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+                    return null;
+                try {
+                    return BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+                }catch (OutOfMemoryError e){
+                    return null;
+                }
             }
 
             @Override
             protected void onPostExecute(Bitmap bitmap) {
                 Glide.with(mContext).asDrawable()
                         .load(bitmap)
-                        .placeholder(R.drawable.song_placeholder)
-                        .into(PictureUtils.getTarget(mIVMusicCover));
+                        .placeholder(R.drawable.album_placeholder)
+                        .into(mIVMusicCover);
             }
         }
     }
@@ -129,12 +139,13 @@ public class ViewHolders {
             mAlbum = album;
             mTitle.setText(album.getTitle());
             mArtist.setText(album.getAlbumArtist());
-            mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+            mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.album_placeholder));
 
             SetArt art = new SetArt();
             art.execute();
         }
 
+        @SuppressLint("StaticFieldLeak")
         private class SetArt extends AsyncTask<Void, Void, String> {
 
             @Override
@@ -145,7 +156,7 @@ public class ViewHolders {
             @Override
             protected void onPostExecute(String artFile) {
                 if (artFile == null) {
-                    mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+                    mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.album_placeholder));
                     return;
                 }
                 Glide.with(mContext).asDrawable()

@@ -2,25 +2,23 @@
 
     <!-- Base application theme. -->
 
-    <style name="Theme.MusicPlayer" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.MusicPlayer" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
-    <style name="Theme.MusicPlayer.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.MusicPlayer.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light">
-        <item name="android:elevation" tools:ignore="NewApi">0dp</item>
-    </style>
 
-    <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark"></style>
+    <style name="Theme.MusicPlayer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Button">
         <item name="android:background">@drawable/circular_button</item>

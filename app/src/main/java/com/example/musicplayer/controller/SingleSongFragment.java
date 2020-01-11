@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import com.example.musicplayer.model.Song;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 /**
@@ -37,7 +39,7 @@ public class SingleSongFragment extends Fragment {
     private Song mSong;
     private PlayerService mPlayer;
 
-    private ImageView mCover;
+    private CircleImageView mCover;
     private ImageView mPlayPause;
     private ImageView mForward;
     private ImageView mBackward;
@@ -98,8 +100,9 @@ public class SingleSongFragment extends Fragment {
 
         mPlayer.getLiveSong().observe(this, song -> {
             if (song == null) {
+
+                mHandler.removeCallbacks(mRunnable);
                 mPlayPause.setImageDrawable(pauseState);
-                mSeekBar.setMax(0);
                 if (mPlayer.isPlaying())
                     mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
                 else
@@ -109,6 +112,7 @@ public class SingleSongFragment extends Fragment {
             } else {
                 mSong = song;
                 initView();
+                SeekBar();
             }
         });
     }
@@ -164,14 +168,19 @@ public class SingleSongFragment extends Fragment {
         Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
 
         if (artwork == null)
-            mArtwork = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.song_placeholder);
-        else
-            mArtwork = BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+            mArtwork = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.music_placeholder);
+        else {
+            try {
+                mArtwork = BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+            }catch (OutOfMemoryError error){
+                Log.d("Single song fragment", "initView: "+error.getMessage());
+            }
+        }
 
         Glide.with(mView).asDrawable()
-                .placeholder(R.drawable.song_placeholder)
+                .placeholder(R.drawable.music_placeholder)
                 .load(mArtwork)
-                .into(PictureUtils.getTarget(mCover));
+                .into(mCover);
 
         mTitle.setText(mSong.getTitle());
         mTitle.setSelected(true);
@@ -192,6 +201,7 @@ public class SingleSongFragment extends Fragment {
         mRunnable = new Runnable() {
             @Override
             public void run() {
+                mSeekBar.setMax(mPlayer.getDuration());
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
                 mHandler.postDelayed(this, 130);
             }

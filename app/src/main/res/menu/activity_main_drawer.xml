@@ -5,17 +5,17 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_photos"
-            android:icon="@drawable/ic_favorite_border"
-            android:title="@string/mp_favorite_tracks_label" />
+            android:id="@+id/nav_all_song"
+            android:icon="@drawable/ic_music_songs"
+            android:title="@string/category_all" />
         <item
-            android:id="@+id/nav_collections"
-            android:icon="@drawable/ic_playlist_play"
-            android:title="@string/mp_playlist_label" />
+            android:id="@+id/nav_albums"
+            android:icon="@drawable/ic_music_albums"
+            android:title="@string/category_album" />
         <item
-            android:id="@+id/nav_favorite"
-            android:icon="@drawable/ic_most_played"
-            android:title="@string/mp_most_played_label" />
+            android:id="@+id/nav_artists"
+            android:icon="@drawable/ic_music_artists"
+            android:title="@string/category_artist" />
     </group>
 
 </menu>

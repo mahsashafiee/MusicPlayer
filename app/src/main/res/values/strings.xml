@@ -40,4 +40,6 @@
 
     <string name="notification_channel_id">channel_id</string>
     <string name="notification_channel_name">Playback Notification</string>
+    <string name="nav_header_text1">USIC</string>
+    <string name="nav_header_text2">Player</string>
 </resources>
