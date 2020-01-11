@@ -51,21 +51,26 @@ public class ID3Tags {
 
     public static String getLyrics(String filePath) {
         String Lyrics = "";
-        Tag mp3Tag = getAudioFile(filePath).getTag();
-        if (mp3Tag != null) {
-            try {
+        try {
+            Tag mp3Tag = getAudioFile(filePath).getTag();
+            if (mp3Tag != null) {
                 Lyrics = mp3Tag.getFirst(FieldKey.LYRICS);
-            }catch (UnsupportedOperationException e){
-                Log.d(TAG, "getLyrics: "+e.getMessage());
             }
+        } catch (Exception e) {
+            Log.d(TAG, "getLyrics: " + e.getMessage());
         }
         return Lyrics;
     }
 
     public static Artwork getArtwork(String filePath) {
-        Tag mp3Tag = getAudioFile(filePath).getTag();
-        if (mp3Tag != null)
-            return mp3Tag.getFirstArtwork();
+        try {
+            Tag mp3Tag = getAudioFile(filePath).getTag();
+            if (mp3Tag != null)
+                return mp3Tag.getFirstArtwork();
+
+        }catch (Exception e){
+            Log.d(TAG, "getArtwork: "+e.getMessage());
+        }
         return null;
     }
 

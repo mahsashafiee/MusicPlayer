@@ -1,6 +1,5 @@
 package com.example.musicplayer.controller.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -60,9 +59,7 @@ public class ViewHolders {
             mTVMusicName = itemView.findViewById(R.id.item_song_title);
             mDuration = itemView.findViewById(R.id.item_song_duration);
 
-            itemView.setOnClickListener(view -> {
-                callBacks.PlaySong(mSong);
-            });
+            itemView.setOnClickListener(view -> callBacks.PlaySong(mSong));
 
         }
 
@@ -76,34 +73,31 @@ public class ViewHolders {
             mDuration.setText(mSong.getDuration());
             mIVMusicCover.setBackground(mContext.getResources().getDrawable(R.drawable.album_placeholder));
 
-            Glide.with(mContext)
-                    .load(song.getArtworkPath())
-                    .placeholder(R.drawable.music_placeholder)
-                    .into(mIVMusicCover);
             SetArt art = new SetArt();
-           // art.execute();
+            art.execute();
 
         }
 
-        @SuppressLint("StaticFieldLeak")
-        private class SetArt extends AsyncTask<Void, Void, Bitmap> {
+        private class SetArt extends AsyncTask<Void, Void, byte []> {
 
             @Override
-            protected Bitmap doInBackground(Void... voids) {
-                Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
-                if (artwork == null)
-                    return null;
-                try {
-                    return BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
-                }catch (OutOfMemoryError e){
-                    return null;
-                }
+            protected byte [] doInBackground(Void... voids) {
+               try {
+                   Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
+                   return artwork.getBinaryData();
+
+               }catch (OutOfMemoryError error){
+                   return null;
+               }
+               catch (NullPointerException e){
+                   return null;
+               }
             }
 
             @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                Glide.with(mContext).asDrawable()
-                        .load(bitmap)
+            protected void onPostExecute(byte [] bytes) {
+                Glide.with(mIVMusicCover).asDrawable()
+                        .load(bytes)
                         .placeholder(R.drawable.album_placeholder)
                         .into(mIVMusicCover);
             }
@@ -130,6 +124,7 @@ public class ViewHolders {
             mArtist = itemView.findViewById(R.id.item_album_artist);
             itemView.setOnClickListener(view -> {
                 callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
+                mTitle.setSelected(true);
             });
 
         }
@@ -141,28 +136,11 @@ public class ViewHolders {
             mArtist.setText(album.getAlbumArtist());
             mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.album_placeholder));
 
-            SetArt art = new SetArt();
-            art.execute();
-        }
+            Glide.with(mContext).asDrawable()
+                    .load(album.getArtworkPath())
+                    .placeholder(R.drawable.album_placeholder)
+                    .into(PictureUtils.getTarget(mAlbumArt));
 
-        @SuppressLint("StaticFieldLeak")
-        private class SetArt extends AsyncTask<Void, Void, String> {
-
-            @Override
-            protected String doInBackground(Void... voids) {
-                return mAlbum.getArtworkPath();
-            }
-
-            @Override
-            protected void onPostExecute(String artFile) {
-                if (artFile == null) {
-                    mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.album_placeholder));
-                    return;
-                }
-                Glide.with(mContext).asDrawable()
-                        .load(artFile)
-                        .into(PictureUtils.getTarget(mAlbumArt));
-            }
         }
     }
 
@@ -183,9 +161,7 @@ public class ViewHolders {
             mName = itemView.findViewById(R.id.item_song_artist);
             mImage = itemView.findViewById(R.id.item_artist_art);
 
-            itemView.setOnClickListener(view -> {
-                callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
-            });
+            itemView.setOnClickListener(view -> callBacks.SongList(mArtist.getName(), Qualifier.ARTIST));
 
         }
 
@@ -195,5 +171,4 @@ public class ViewHolders {
             mName.setText(artist.getName());
         }
     }
-
 }
