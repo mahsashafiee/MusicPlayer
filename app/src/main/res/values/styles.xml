@@ -21,11 +21,7 @@
     <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Button">
-        <item name="android:background">@drawable/circular_button</item>
-        <item name="android:foregroundGravity">center_vertical</item>
-        <item name="android:padding">8dp</item>
-        <item name="android:elevation" tools:ignore="NewApi">6dp</item>
-        <item name="android:layout_margin">8dp</item>
+        <item name="android:elevation" tools:ignore="NewApi">@dimen/activity_horizontal_margin</item>
         <item name="android:stateListAnimator" tools:ignore="NewApi">
             @animator/mp_button_anim
         </item>
@@ -33,9 +29,12 @@
 
     <style name="Widget.MusicPlayer.SeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="cs_circle_color">#DCE2E2E2</item>
-        <item name="cs_circle_progress_color">@android:color/holo_blue_bright</item>
+        <item name="cs_start_angle">180</item>
+        <item name="cs_maintain_equal_circle">false</item>
+        <item name="cs_end_angle">360</item>
+        <item name="cs_circle_progress_color">@color/colorPrimaryDark</item>
         <item name="cs_circle_stroke_width">3dp</item>
-        <item name="cs_pointer_color">@android:color/holo_blue_bright</item>
+        <item name="cs_pointer_color">@color/colorPrimaryDark</item>
         <item name="cs_pointer_stroke_width">14dp</item>
     </style>
 

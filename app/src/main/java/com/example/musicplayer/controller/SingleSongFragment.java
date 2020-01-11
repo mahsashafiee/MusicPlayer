@@ -157,9 +157,9 @@ public class SingleSongFragment extends Fragment {
         mArtist = mView.findViewById(R.id.song_artist);
         mPlayPause = mView.findViewById(R.id.play_pause);
         mForward = mView.findViewById(R.id.forward);
-        mBackward = mView.findViewById(R.id.backward);
+        mBackward = mView.findViewById(R.id.backward);/*
         mShuffle = mView.findViewById(R.id.shuffle);
-        mRepeat = mView.findViewById(R.id.repeat);
+        mRepeat = mView.findViewById(R.id.repeat);*/
 
     }
 
