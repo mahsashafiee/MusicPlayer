@@ -59,9 +59,7 @@ public class ViewHolders {
             mTVMusicName = itemView.findViewById(R.id.item_song_title);
             mDuration = itemView.findViewById(R.id.item_song_duration);
 
-            itemView.setOnClickListener(view -> {
-                callBacks.PlaySong(mSong);
-            });
+            itemView.setOnClickListener(view -> callBacks.PlaySong(mSong));
 
         }
 
@@ -80,23 +78,26 @@ public class ViewHolders {
 
         }
 
-        private class SetArt extends AsyncTask<Void, Void, Bitmap> {
+        private class SetArt extends AsyncTask<Void, Void, byte []> {
 
             @Override
-            protected Bitmap doInBackground(Void... voids) {
+            protected byte [] doInBackground(Void... voids) {
                try {
                    Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
-                   return BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+                   return artwork.getBinaryData();
 
-               }catch (Exception e){
+               }catch (OutOfMemoryError error){
+                   return null;
+               }
+               catch (NullPointerException e){
                    return null;
                }
             }
 
             @Override
-            protected void onPostExecute(Bitmap bitmap) {
+            protected void onPostExecute(byte [] bytes) {
                 Glide.with(mIVMusicCover).asDrawable()
-                        .load(bitmap)
+                        .load(bytes)
                         .placeholder(R.drawable.album_placeholder)
                         .into(mIVMusicCover);
             }
@@ -160,9 +161,7 @@ public class ViewHolders {
             mName = itemView.findViewById(R.id.item_song_artist);
             mImage = itemView.findViewById(R.id.item_artist_art);
 
-            itemView.setOnClickListener(view -> {
-                callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
-            });
+            itemView.setOnClickListener(view -> callBacks.SongList(mArtist.getName(), Qualifier.ARTIST));
 
         }
 
