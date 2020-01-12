@@ -1,8 +1,6 @@
 package com.example.musicplayer.controller.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.TextView;
@@ -71,7 +69,8 @@ public class ViewHolders {
             mTVMusicArtist.setText(mSong.getArtist());
             mTVMusicName.setText(mSong.getTitle());
             mDuration.setText(mSong.getDuration());
-            mIVMusicCover.setBackground(mContext.getResources().getDrawable(R.drawable.album_placeholder));
+            //mIVMusicCover.setBackground(mContext.getResources().getDrawable(R.drawable.album_placeholder));
+            mIVMusicCover.setImageDrawable(mContext.getResources().getDrawable(R.drawable.album_placeholder));
 
             SetArt art = new SetArt();
             art.execute();

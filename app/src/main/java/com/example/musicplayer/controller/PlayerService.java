@@ -38,6 +38,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private static final String SONG_EXTRA = "song";
     private final int SKIP_TIME = 5000;
     private float volume;
+    private boolean pauseFocus = false;
 
     private MediaPlayer mMediaPlayer;
     private AudioManager mAudioManager;
@@ -282,9 +283,10 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             case AudioManager.AUDIOFOCUS_GAIN:
                 if (mMediaPlayer == null) initMediaPlayer();
 
-                else if (!mMediaPlayer.isPlaying()){
+                else if (!mMediaPlayer.isPlaying() && pauseFocus){
                     volume = 0f;
                     Pause();
+                    pauseFocus = false;
                 }
 
                 Handler handler = new Handler();
@@ -304,8 +306,10 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                if (mMediaPlayer.isPlaying())
+                if (mMediaPlayer.isPlaying()) {
+                    pauseFocus = true;
                     Pause();
+                }
                 break;
 
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
