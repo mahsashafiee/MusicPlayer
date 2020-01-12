@@ -14,11 +14,11 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/album_cover"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:layout_gravity="center|top"
-            android:layout_marginTop="64dp"
-            android:elevation="48dp"
+            android:layout_marginTop="24dp"
+            android:elevation="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,28 +30,27 @@
         <me.tankery.lib.circularseekbar.CircularSeekBar
             android:id="@+id/seekBar"
             style="@style/Widget.MusicPlayer.SeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="230dp"
-            android:layout_marginStart="64dp"
-            android:layout_marginLeft="64dp"
-            android:layout_marginRight="64dp"
-            android:layout_marginEnd="64dp"
+            android:layout_width="200dp"
+            android:layout_height="185dp"
+            android:layout_marginStart="72dp"
+            android:layout_marginLeft="72dp"
+            android:layout_marginEnd="72dp"
+            android:layout_marginRight="72dp"
+            android:layout_marginBottom="@dimen/activity_spacing"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-        </me.tankery.lib.circularseekbar.CircularSeekBar>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/song_title"
             style="@style/Widget.MusicPlayer.TextView.Medium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:padding="12dp"
+            android:layout_marginTop="16dp"
+            android:padding="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/seekBar"
+            app:layout_constraintTop_toBottomOf="@id/album_cover"
             tools:text="In My Remains" />
 
         <TextView
@@ -59,23 +58,84 @@
             style="@style/Widget.MusicPlayer.TextView.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="4dp"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
-            android:textColor="@android:color/darker_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/song_title"
             tools:text="Linkin Park" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/item_song_album_name"
+            style="@style/Widget.MusicPlayer.TextView.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/song_artist"
+            tools:text="One More Light" />
+
+        <TextView
+            android:id="@+id/line"
+            android:layout_width="24dp"
+            android:layout_height="2dp"
+            android:layout_margin="@dimen/activity_spacing"
+            android:background="@drawable/little_line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_song_album_name"
+            tools:text="One More Light" />
+
+        <LinearLayout
+            android:id="@+id/duration_container"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/activity_spacing"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/line"
+            tools:text="One More Light" >
+
+            <TextView
+                style="@style/Widget.MusicPlayer.TextView.Medium"
+                android:id="@+id/song_real_time_duration"
+                android:layout_width="wrap_content"
+                android:padding="2dp"
+                android:layout_height="match_parent"
+                tools:text="2:30"/>
+            <TextView
+                style="@style/Widget.MusicPlayer.TextView.Medium"
+                android:layout_width="wrap_content"
+                android:padding="2dp"
+                android:layout_height="match_parent"
+                tools:text="/"/>
+            <TextView
+                style="@style/Widget.MusicPlayer.TextView.Medium"
+                android:id="@+id/song_total_duration"
+                android:layout_width="wrap_content"
+                android:padding="2dp"
+                android:layout_height="match_parent"
+                tools:text="3:36"/>
+
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="100dp"
             android:background="@drawable/background_controller_red"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="@id/seekBar"
-            app:layout_constraintLeft_toLeftOf="@id/seekBar"
-            app:layout_constraintRight_toRightOf="@id/seekBar">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/seekBar">
 
             <FrameLayout
                 android:id="@+id/controller_item"
@@ -84,45 +144,45 @@
                 android:layout_gravity="center"
                 android:layout_margin="32dp"
                 android:background="@drawable/background_controller_orange"
-                android:elevation="@dimen/activity_horizontal_margin"
+                android:elevation="8dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:padding="8dp">
 
                 <ImageView
                     android:id="@+id/play_pause"
-                    style="@style/Button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="24dp"
+                    android:layout_margin="@dimen/activity_spacing"
                     android:background="@drawable/background_controller_play"
-                    android:padding="@dimen/activity_spacing"
+                    android:padding="10dp"
                     app:srcCompat="@drawable/ic_pause" />
 
             </FrameLayout>
 
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/forward"
-                style="@style/Button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|left"
                 android:background="@drawable/background_controller_orange"
-                android:paddingLeft="10dp"
+                android:elevation="8dp"
+                android:paddingLeft="12dp"
                 app:layout_constraintBottom_toBottomOf="@+id/controller_item"
-                app:layout_constraintLeft_toRightOf="@+id/controller_item"
-                app:layout_constraintRight_toRightOf="@+id/controller_item"
+                app:layout_constraintLeft_toRightOf="@id/controller_item"
+                app:layout_constraintRight_toRightOf="@id/controller_item"
                 app:layout_constraintTop_toTopOf="@+id/controller_item"
                 app:srcCompat="@drawable/ic_skip_next" />
 
 
             <ImageView
                 android:id="@+id/backward"
-                style="@style/Button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center_vertical|left"
                 android:background="@drawable/background_controller_orange"
+                android:elevation="8dp"
                 android:paddingRight="10dp"
                 app:layout_constraintBottom_toBottomOf="@+id/controller_item"
                 app:layout_constraintLeft_toLeftOf="@id/controller_item"
@@ -176,8 +236,8 @@
 
         <ImageView
             android:id="@+id/repeat"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_margin="@dimen/activity_spacing"
             android:background="@drawable/background_controller_orange"
             android:padding="8dp"
@@ -188,8 +248,8 @@
 
         <ImageView
             android:id="@+id/shuffle"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_margin="@dimen/activity_spacing"
             android:background="@drawable/background_controller_red"
             android:padding="8dp"

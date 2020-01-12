@@ -10,8 +10,8 @@
 
     <color name="controller_red">#E74E20</color>
     <color name="controller_orange">#FF9008</color>
-    <color name="controller_yellow">#FDAE32</color>
-    <color name="seek_bar_">#FDAE32</color>
+    <color name="controller_yellow">#FDB13A</color>
+    <color name="seek_bar_">#99FDAE32</color>
 
     <color name="tab_indicator_end">#74E3F0FD</color>
     <color name="tab_indicator_start">#74F8E2E2</color>

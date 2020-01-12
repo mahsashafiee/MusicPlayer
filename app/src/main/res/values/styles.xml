@@ -20,13 +20,6 @@
 
     <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="Button">
-        <item name="android:elevation" tools:ignore="NewApi">@dimen/activity_horizontal_margin</item>
-        <item name="android:stateListAnimator" tools:ignore="NewApi">
-            @animator/mp_button_anim
-        </item>
-    </style>
-
     <style name="Widget.MusicPlayer.SeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="cs_circle_color">#DCE2E2E2</item>
         <item name="cs_start_angle">180</item>
