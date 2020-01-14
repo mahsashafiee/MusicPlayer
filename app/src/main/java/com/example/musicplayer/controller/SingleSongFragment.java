@@ -26,6 +26,7 @@ import com.example.musicplayer.model.Song;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 /**
@@ -37,7 +38,7 @@ public class SingleSongFragment extends Fragment {
     private Song mSong;
     private PlayerService mPlayer;
 
-    private ImageView mCover;
+    private CircleImageView mCover;
     private ImageView mPlayPause;
     private ImageView mForward;
     private ImageView mBackward;
@@ -101,7 +102,7 @@ public class SingleSongFragment extends Fragment {
                 mPlayPause.setImageDrawable(pauseState);
                 mSeekBar.setMax(0);
                 if (mPlayer.isPlaying())
-                    mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp));
+                    mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey));
                 else
                     mPlayPause.setImageDrawable(pauseState);
 
@@ -135,8 +136,8 @@ public class SingleSongFragment extends Fragment {
             pauseState = getActivity().getDrawable(R.drawable.avd_anim_reverse);
             startAnimation(mPlayer.isPlaying());
         } else {
-            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp);
-            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow_grey_600_24dp);
+            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause_grey);
+            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow_grey);
         }
     }
 
@@ -177,7 +178,7 @@ public class SingleSongFragment extends Fragment {
         Glide.with(mView).asDrawable()
                 .placeholder(R.drawable.song_placeholder)
                 .load(mArtwork)
-                .into(PictureUtils.getTarget(mCover));
+                .into(mCover);
 
         mTitle.setText(mSong.getTitle());
         mTitle.setSelected(true);
@@ -187,7 +188,7 @@ public class SingleSongFragment extends Fragment {
         setDrawable();
 
         if (mPlayer.isPlaying())
-            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey_600_24dp));
+            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey));
         else
             mPlayPause.setImageDrawable(pauseState);
 

@@ -1,7 +1,6 @@
 package com.example.musicplayer.controller;
 
 
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -86,14 +85,11 @@ public class SongListFragment extends Fragment {
         mItemCount = view.findViewById(R.id.item_count);
         songRecycler = view.findViewById(R.id.recycler_view);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            view.findViewById(R.id.item_count)
-                    .setBackgroundResource(R.drawable.backdrop_background_v23);
-        } else view.findViewById(R.id.item_count)
+        view.findViewById(R.id.item_count)
                 .setBackgroundResource(R.drawable.backdrop_background);
 
         String items = getResources()
-                .getQuantityString(R.plurals.item_number, PlayList.getSongList().size(), PlayList.getSongList().size());
+                .getQuantityString(R.plurals.total_songs, PlayList.getSongList().size(), PlayList.getSongList().size());
         mItemCount.setText(items);
 
         mAdapter = new MusicRecyclerAdapter(getActivity(), Qualifier.ALLSONG);
@@ -109,7 +105,7 @@ public class SongListFragment extends Fragment {
      * @param view
      */
     private void setUpToolbar(View view) {
-        Toolbar toolbar = view.findViewById(R.id.app_bar);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if (activity != null) {
             activity.setSupportActionBar(toolbar);

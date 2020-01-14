@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#E3E5F7</color>
-    <color name="colorPrimaryDark">#E3E5F7</color>
+    <color name="colorPrimaryDark">@color/colorPrimary</color>
     <color name="colorAccent">#FF8045</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="toolbarIconColor">@color/textColorPrimary</color>
-    <color name="textInputBackgroundColor">#65A75286</color>
-    <color name="light_pink">#F8E2E2</color>
+    <color name="default_background">#398885</color>
+
+    <color name="colorTabUnselected">#A6FFFFFF</color>
+    <color name="colorOfLine">#59FFFFFF</color>
+
+    <color name="colorDarkShadow_400">#1E000000</color>
+    <color name="colorDarkShadow_800">#B2000000</color>
 
 </resources>

@@ -12,11 +12,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.Utils.ChangeStatusBar;
@@ -77,8 +86,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
         initUI();
 
-        ChangeStatusBar.setStatusBarGradiant(this);
-
         mTabLayout.post(() -> {
             mIndicatorWidth = mTabLayout.getWidth() / mTabLayout.getTabCount();
 
@@ -93,7 +100,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mIndicator.getLayoutParams();
 
                 //Multiply positionOffset with indicatorWidth to get translation
-
                 float translationOffset = (positionOffset + position) * mIndicatorWidth;
                 params.leftMargin = (int) translationOffset;
                 mIndicator.setLayoutParams(params);
@@ -120,6 +126,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         mAdapter = new PagerAdapter(this, getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+
     }
 
     /**

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout android:id="@+id/bottomAppBar_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="91dp"
+    android:visibility="invisible"
+    android:layout_gravity="bottom"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        style="@style/Widget.MaterialComponents.BottomAppBar"
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabAlignmentMode="center"
+        app:buttonGravity="top|bottom" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/bottomAppBar_playPause"
+        app:srcCompat="@drawable/ic_pause_grey"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        app:layout_anchor="@id/bottomAppBar" />
+
+    <me.tankery.lib.circularseekbar.CircularSeekBar
+        android:id="@+id/bottomAppBar_seekbar"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center"
+        app:cs_circle_stroke_width = "6dp"
+        app:cs_circle_progress_color = "@color/colorAccent"
+        app:cs_circle_color="@android:color/transparent"
+        app:cs_disable_pointer="true"/>
+
+    <ImageButton
+        android:id="@+id/bottomAppBar_forward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="100dp"
+        android:layout_marginBottom="19dp"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/ic_skip_next_grey"/>
+
+    <ImageButton
+        android:id="@+id/bottomAppBar_backward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="100dp"
+        android:layout_marginBottom="19dp"
+        android:background="@android:color/transparent"
+        app:srcCompat="@drawable/ic_skip_previous"/>
+
+    <TextView
+        android:id="@+id/bottomAppBar_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="19dp"
+        tools:text="00:00"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,7 +5,7 @@
     <!-- MusicPlayer backdrop menu labels -->
     <string name="mp_favorite_tracks_label">Favorite Tracks</string>
     <string name="mp_most_played_label">Most Played</string>
-    <string name="mp_recently_played_label">Recently Played</string>
+    <string name="mp_recently_played_label">Recent</string>
     <string name="mp_all_songs_label">All Songs</string>
     <string name="mp_album_label">Albums</string>
     <string name="mp_artist_label">Artists</string>
@@ -16,13 +16,14 @@
     <string name="category_title">Category</string>
     <string name="category_album">Albums</string>
     <string name="category_artist">Artists</string>
-    <string name="category_all">All Songs</string>
+    <string name="category_all">Songs</string>
+    <string name="category_favourite">Favourites</string>
 
     <string name="search">Search…</string>
 
-    <plurals name="item_number">
-        <item quantity="one">%1$d item</item>
-        <item quantity="other">%1$d items</item>
+    <plurals name="total_songs">
+        <item quantity="one">%1$d song</item>
+        <item quantity="other">%1$d songs</item>
     </plurals>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -30,4 +31,5 @@
 
     <string name="notification_channel_id">channel_id</string>
     <string name="notification_channel_name">Playback Notification</string>
+    <string name="local_songs">Local Songs</string>
 </resources>

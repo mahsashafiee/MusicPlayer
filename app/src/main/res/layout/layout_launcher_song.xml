@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.example.musicplayer.Utils.SquareImage
+        android:id="@+id/main_recent_song"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/song_placeholder">
+
+    </com.example.musicplayer.Utils.SquareImage>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/main_recent_song"
+        android:layout_alignLeft="@id/main_recent_song"
+        android:layout_alignTop="@id/main_recent_song"
+        android:layout_alignEnd="@id/main_recent_song"
+        android:layout_alignRight="@id/main_recent_song"
+        android:layout_alignBottom="@id/main_recent_song"
+        android:background="@drawable/launcher_image_gradient" />
+
+
+    <TextView
+        android:id="@+id/main_song_name"
+        style="@style/TextAppearance.AppCompat.Medium.Inverse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/main_artist_name"
+        android:layout_toStartOf="@id/main_play_btn"
+        android:layout_toLeftOf="@id/main_play_btn"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:text="Battle Symphony" />
+
+    <TextView
+        android:id="@+id/main_artist_name"
+        style="@style/TextAppearance.AppCompat.Small.Inverse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/main_recent_song"
+        android:layout_toStartOf="@id/main_play_btn"
+        android:layout_toLeftOf="@id/main_play_btn"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        android:textColor="@android:color/white"
+        android:text="Linkin Park" />
+
+    <ImageView
+        android:id="@+id/main_play_btn"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignTop="@id/main_song_name"
+        android:layout_alignEnd="@id/main_recent_song"
+        android:layout_alignRight="@id/main_recent_song"
+        android:layout_alignBottom="@id/main_recent_song"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:padding="9dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/circular_button"
+        android:contentDescription="@string/app_name"
+        app:srcCompat="@drawable/ic_pause" />
+
+</RelativeLayout>

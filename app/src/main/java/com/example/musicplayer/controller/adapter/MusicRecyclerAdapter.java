@@ -3,6 +3,7 @@ package com.example.musicplayer.controller.adapter;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.SectionIndexer;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,7 +28,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public void setList(List list) {
-        mList = list;
+        mList= list;
         notifyDataSetChanged();
     }
 
@@ -39,7 +40,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         if (flag.equals(Qualifier.ALLSONG))
             return viewHolders.new MusicItems(inflater.inflate(R.layout.song_list_item, parent, false));
-         else if (flag.equals(Qualifier.ALBUM))
+        else if (flag.equals(Qualifier.ALBUM))
             return viewHolders.new AlbumItems(inflater.inflate(R.layout.mi_album_item, parent, false));
 
         return viewHolders.new ArtistItems(inflater.inflate(R.layout.mi_artist_item, parent, false));
@@ -48,7 +49,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        ((BindCallBack)holder).bindHolder(mList.get(position));
+        ((BindCallBack) holder).bindHolder(mList.get(position));
     }
 
     @Override
@@ -56,7 +57,8 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         return mList.size();
     }
 
-    public interface BindCallBack<O>{
+
+    public interface BindCallBack<O> {
         void bindHolder(O model);
     }
 }

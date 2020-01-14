@@ -1,49 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
-    android:background="@android:color/transparent"
-    android:padding="4dp">
+    android:layout_margin="1dp"
+    android:background="@android:color/transparent">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_artist_art"
+    <com.example.musicplayer.Utils.SquareRoundedImage
+        android:id="@+id/item_artist_art"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:elevation="12dp"
-        app:cardCornerRadius="52dp">
+        android:src="@drawable/song_placeholder"
+        app:riv_border_color="@color/colorTabUnselected"
+        app:riv_border_width="1px"
+        app:riv_corner_radius="4dp" />
 
-        <com.example.musicplayer.Utils.SquareImage
-            android:id="@+id/item_artist_art"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/background_album_items"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_song_artist"
+            style="@style/Widget.MusicPlayer.TextView.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/song_placeholder"
-            android:outlineProvider="bounds"
-            tools:src="@tools:sample/avatars" />
-    </androidx.cardview.widget.CardView>
-    <TextView
-        android:id="@+id/item_song_artist"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textStyle="bold"
-        style="@style/TextAppearance.AppCompat.Small"
-        android:ellipsize="marquee"
-        android:padding="6dp"
-        android:layout_alignStart="@id/card_artist_art"
-        android:layout_below="@id/card_artist_art"
-        android:layout_alignEnd="@id/card_artist_art"
-        tools:text="@tools:sample/lorem"
-        android:singleLine="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:layout_alignLeft="@id/card_artist_art"
-        android:layout_alignRight="@id/card_artist_art" />
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            tools:text="@tools:sample/lorem" />
+
+        <TextView
+            android:id="@+id/item_artist_count"
+            style="@style/Widget.MusicPlayer.TextView.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="6dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            tools:text="@tools:sample/lorem" />
+
+    </LinearLayout>
 
 
-</RelativeLayout>
+</FrameLayout>
