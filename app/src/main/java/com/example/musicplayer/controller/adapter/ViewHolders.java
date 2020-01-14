@@ -113,7 +113,7 @@ public class ViewHolders {
      */
     public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Album> {
 
-        private SquareRoundedImage mAlbumArt;
+        private CircleImageView mAlbumArt;
         private TextView mTitle;
         private TextView mArtist;
         private Album mAlbum;
@@ -169,7 +169,7 @@ public class ViewHolders {
 
     public class ArtistItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Artist> {
 
-        private SquareRoundedImage mImage;
+        private CircleImageView mImage;
         private TextView mName;
         private Artist mArtist;
 

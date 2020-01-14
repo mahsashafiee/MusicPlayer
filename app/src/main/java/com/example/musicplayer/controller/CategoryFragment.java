@@ -81,13 +81,8 @@ public class CategoryFragment extends Fragment {
         mAdapter = new MusicRecyclerAdapter(getActivity(), mQualifier);
 
         if (isAdded()) {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-            if (mQualifier.equals(Qualifier.ALLSONG))
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            else {
-                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-                mRecyclerView.setPadding(1, 10, 1, 10);
-            }
 
 /*            mFastScrollerView.setupWithRecyclerView(
                     mRecyclerView,
