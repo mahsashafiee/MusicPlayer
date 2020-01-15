@@ -2,29 +2,37 @@ package com.example.musicplayer.controller;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.Utils.ID3Tags;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.jaudiotagger.tag.datatype.Artwork;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 public class PlayBackBottomBar {
 
-    private CoordinatorLayout mCoorLayout;
-    private BottomAppBar mBottomAppBar;
+    private RelativeLayout mParentLayout;
     private CircularSeekBar mSeekBar;
+    private CircleImageView mCover;
     private TextView mDuration;
-    private ImageButton mForward;
-    private ImageButton mBackward;
-    private FloatingActionButton mPlay;
+    private ImageView mForward;
+    private ImageView mPlay;
     private Activity mActivity;
     private PlayerService mPlayer;
     private Handler mHandler = new Handler();
@@ -36,38 +44,29 @@ public class PlayBackBottomBar {
             super.run();
         }
     };
-    private ForBackListener mBackwardListener = new ForBackListener(){
-        @Override
-        public void run() {
-            mPlayer.onFastBackward();
-            super.run();
-        }
-    };
 
     public PlayBackBottomBar(Activity activity, PlayerService service) {
         mActivity = activity;
         mPlayer = service;
         initView();
+        setupArtwork();
         BottomAppBarListener();
         UpdateSongTime();
         SeekBar();
-        mBottomAppBar.getBehavior().slideUp(mBottomAppBar);
-        mCoorLayout.setVisibility(View.VISIBLE);
     }
 
     private void initView(){
-        mBottomAppBar = mActivity.findViewById(R.id.bottomAppBar);
-        mSeekBar = mActivity.findViewById(R.id.bottomAppBar_seekBar);
-        mDuration = mActivity.findViewById(R.id.bottomAppBar_duration);
-        mForward = mActivity.findViewById(R.id.bottomAppBar_forward);
-        mBackward = mActivity.findViewById(R.id.bottomAppBar_backward);
-        mPlay = mActivity.findViewById(R.id.bottomAppBar_playPause);
-        mCoorLayout = mActivity.findViewById(R.id.bottomAppBar_coordinator);
+        mParentLayout = mActivity.findViewById(R.id.song_bar);
+        mCover = mActivity.findViewById(R.id.song_bar_artwork);
+        mSeekBar = mActivity.findViewById(R.id.song_bar_seek_bar);
+        mDuration = mActivity.findViewById(R.id.song_bar_duration);
+        mForward = mActivity.findViewById(R.id.skip);
+        mPlay = mActivity.findViewById(R.id.play_pause);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void BottomAppBarListener() {
-        mBottomAppBar.setOnClickListener(view -> mActivity.startActivity(SingleSongActivity.newIntent(mActivity, mPlayer.getmCurrentSongIndex())));
+        mParentLayout.setOnClickListener(view -> mActivity.startActivity(SingleSongActivity.newIntent(mActivity, mPlayer.getmCurrentSongIndex())));
         mPlay.setOnClickListener(view -> {
             mPlayer.Pause();
             if (!mPlayer.isPlaying())
@@ -77,13 +76,10 @@ public class PlayBackBottomBar {
         });
 
         mForward.setOnClickListener(view -> mPlayer.goForward());
-        mBackward.setOnClickListener(view -> mPlayer.goBackward());
 
         mForward.setOnTouchListener(mForwardListener);
-        mBackward.setOnTouchListener(mBackwardListener);
 
         mForward.setOnLongClickListener(mForwardListener);
-        mBackward.setOnLongClickListener(mBackwardListener);
     }
 
     private void SeekBar() {
@@ -114,22 +110,23 @@ public class PlayBackBottomBar {
         mActivity.runOnUiThread(UpdateSongTime);
     }
 
-    public void onScrollList(boolean scrolled) {
-        if (scrolled) {
-            mBottomAppBar.performHide();
-            setVisibility(View.GONE);
-        } else {
-            mBottomAppBar.getBehavior().slideUp(mBottomAppBar);
-            setVisibility(View.VISIBLE);
-        }
-    }
+    private void setupArtwork(){
 
-    private void setVisibility(int visibility){
-        mPlay.setVisibility(visibility);
-        mSeekBar.setVisibility(visibility);
-        mForward.setVisibility(visibility);
-        mBackward.setVisibility(visibility);
-        mDuration.setVisibility(visibility);
+        if (mPlayer.getmCurrentSongIndex() == null)
+            return;
+
+        Artwork artwork = ID3Tags.getArtwork(mPlayer.getmCurrentSongIndex().getFilePath());
+        Bitmap bitmap;
+
+        if (artwork == null)
+            bitmap = BitmapFactory.decodeResource(mActivity.getResources(), R.drawable.song_placeholder);
+        else
+            bitmap = BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
+
+        Glide.with(mActivity).asDrawable()
+                .placeholder(R.drawable.song_placeholder)
+                .load(bitmap)
+                .into(mCover);
     }
 
     public static class ForBackListener implements View.OnLongClickListener, Runnable, View.OnTouchListener {

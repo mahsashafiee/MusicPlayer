@@ -36,7 +36,6 @@ public class CategoryFragment extends Fragment {
     private ArtistRepository mArtistRepository;
     private SongRepository mSongRepository;
     private MusicRecyclerAdapter mAdapter;
-    private RecyclerScroller mActivity;
 
 
     public CategoryFragment() {
@@ -61,7 +60,6 @@ public class CategoryFragment extends Fragment {
         mAlbumRepository = AlbumRepository.getInstance(getContext());
         mArtistRepository = ArtistRepository.getInstance(getContext());
         mSongRepository = SongRepository.getInstance(getContext());
-        mActivity = (RecyclerScroller) getActivity();
     }
 
     @Override
@@ -83,35 +81,10 @@ public class CategoryFragment extends Fragment {
 
         if (isAdded()) {
 
-            if (mQualifier.equals(Qualifier.ALLSONG))
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            else
-                mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             mRecyclerView.setAdapter(mAdapter);
         }
 
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1))
-                    mActivity.onScrollList(true);
-                else mActivity.onScrollList(false);
-
-            }
-        });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mActivity = null;
-    }
-
-    public interface RecyclerScroller {
-        void onScrollList(boolean scrolled);
     }
 
     private void RepositoryObserver() {

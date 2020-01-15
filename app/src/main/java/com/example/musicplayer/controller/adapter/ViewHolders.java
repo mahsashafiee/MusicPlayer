@@ -14,14 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
 import com.example.musicplayer.Utils.ID3Tags;
-import com.example.musicplayer.Utils.PictureUtils;
-import com.example.musicplayer.Utils.SquareImage;
 import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
 
 import org.jaudiotagger.tag.datatype.Artwork;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class ViewHolders {
@@ -48,7 +48,7 @@ public class ViewHolders {
     public class MusicItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Song> {
 
         private TextView mTVMusicName, mTVMusicArtist, mDuration;
-        private ImageView mIVMusicCover;
+        private CircleImageView mIVMusicCover;
         private Song mSong;
 
         public MusicItems(@NonNull View itemView) {
@@ -59,9 +59,7 @@ public class ViewHolders {
             mTVMusicName = itemView.findViewById(R.id.item_song_title);
             mDuration = itemView.findViewById(R.id.item_song_duration);
 
-            itemView.setOnClickListener(view -> {
-                callBacks.PlaySong(mSong);
-            });
+            itemView.setOnClickListener(view -> callBacks.PlaySong(mSong));
 
         }
 
@@ -73,29 +71,35 @@ public class ViewHolders {
             mTVMusicArtist.setText(mSong.getArtist());
             mTVMusicName.setText(mSong.getTitle());
             mDuration.setText(mSong.getDuration());
-            mIVMusicCover.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+            mIVMusicCover.setImageDrawable(mContext.getResources().getDrawable(R.drawable.song_placeholder));
 
             SetArt art = new SetArt();
             art.execute();
 
         }
 
-        private class SetArt extends AsyncTask<Void, Void, Bitmap> {
+        private class SetArt extends AsyncTask<Void, Void, byte []> {
 
             @Override
-            protected Bitmap doInBackground(Void... voids) {
-                Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
-                if(artwork == null)
-                    return BitmapFactory.decodeResource(mContext.getResources(),R.drawable.song_placeholder);
-                return BitmapFactory.decodeByteArray(artwork.getBinaryData(),0,artwork.getBinaryData().length);
+            protected byte [] doInBackground(Void... voids) {
+                try {
+                    Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
+                    return artwork.getBinaryData();
+
+                }catch (OutOfMemoryError error){
+                    return null;
+                }
+                catch (NullPointerException e){
+                    return null;
+                }
             }
 
             @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                Glide.with(mContext).asDrawable()
-                        .load(bitmap)
+            protected void onPostExecute(byte [] bytes) {
+                Glide.with(mIVMusicCover).asDrawable()
+                        .load(bytes)
                         .placeholder(R.drawable.song_placeholder)
-                        .into(PictureUtils.getTarget(mIVMusicCover));
+                        .into(mIVMusicCover);
             }
         }
     }
@@ -106,7 +110,7 @@ public class ViewHolders {
      */
     public class AlbumItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Album> {
 
-        private SquareImage mAlbumArt;
+        private CircleImageView mAlbumArt;
         private TextView mTitle;
         private TextView mArtist;
         private Album mAlbum;
@@ -115,12 +119,11 @@ public class ViewHolders {
         public AlbumItems(@NonNull View itemView) {
             super(itemView);
 
-            mAlbumArt = itemView.findViewById(R.id.item_album_art);
+            mAlbumArt = itemView.findViewById(R.id.item_album_cover);
             mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
-            itemView.setOnClickListener(view -> {
-                callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM);
-            });
+            itemView.setOnClickListener(view ->
+                    callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM));
 
         }
 
@@ -129,29 +132,14 @@ public class ViewHolders {
             mAlbum = album;
             mTitle.setText(album.getTitle());
             mArtist.setText(album.getAlbumArtist());
-            mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+            mAlbumArt.setImageDrawable(mContext.getResources().getDrawable(R.drawable.song_placeholder));
 
-            SetArt art = new SetArt();
-            art.execute();
-        }
+            Glide.with(mContext).asDrawable()
+                    .load(album.getArtworkPath())
+                    .placeholder(R.drawable.song_placeholder)
+                    .override(300, 300)
+                    .into(mAlbumArt);
 
-        private class SetArt extends AsyncTask<Void, Void, String> {
-
-            @Override
-            protected String doInBackground(Void... voids) {
-                return mAlbum.getArtworkPath();
-            }
-
-            @Override
-            protected void onPostExecute(String artFile) {
-                if(artFile == null){
-                    mAlbumArt.setBackground(mContext.getResources().getDrawable(R.drawable.song_placeholder));
-                    return;
-                }
-                Glide.with(mContext).asDrawable()
-                        .load(artFile)
-                        .into(PictureUtils.getTarget(mAlbumArt));
-            }
         }
     }
 
@@ -162,7 +150,7 @@ public class ViewHolders {
 
     public class ArtistItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Artist> {
 
-        private SquareImage mImage;
+        private CircleImageView mImage;
         private TextView mName;
         private Artist mArtist;
 
@@ -172,9 +160,7 @@ public class ViewHolders {
             mName = itemView.findViewById(R.id.item_song_artist);
             mImage = itemView.findViewById(R.id.item_artist_art);
 
-            itemView.setOnClickListener(view -> {
-                callBacks.SongList(mArtist.getName(), Qualifier.ARTIST);
-            });
+            itemView.setOnClickListener(view -> callBacks.SongList(mArtist.getName(), Qualifier.ARTIST));
 
         }
 

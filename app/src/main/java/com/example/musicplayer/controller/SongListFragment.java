@@ -91,7 +91,7 @@ public class SongListFragment extends Fragment {
 
 
         String items = getResources()
-                .getQuantityString(R.plurals.item_number, PlayList.getSongList().size(), PlayList.getSongList().size());
+                .getQuantityString(R.plurals.total_songs, PlayList.getSongList().size(), PlayList.getSongList().size());
         mItemCount.setText(items);
 
         mAdapter = new MusicRecyclerAdapter(getActivity(), Qualifier.ALLSONG);

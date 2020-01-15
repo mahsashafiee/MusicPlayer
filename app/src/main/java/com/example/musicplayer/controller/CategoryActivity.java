@@ -31,7 +31,7 @@ import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.tabs.TabLayout;
 
 
-public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection, CategoryFragment.RecyclerScroller {
+public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection {
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
 
@@ -76,8 +76,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         setContentView(R.layout.activity_category);
 
         initUI();
-
-        ChangeStatusBar.setStatusBarGradiant(this);
 
         mTabLayout.post(() -> {
             mIndicatorWidth = mTabLayout.getWidth() / mTabLayout.getTabCount();
@@ -155,12 +153,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     @Override
     public void SongList(String albumOrArtist, Qualifier qualifier) {
         startActivity(SongListActivity.newIntent(CategoryActivity.this, albumOrArtist, qualifier));
-    }
-
-    @Override
-    public void onScrollList(boolean scrolled) {
-        if (playBackBottomBar != null)
-            playBackBottomBar.onScrollList(scrolled);
     }
 
     @Override
