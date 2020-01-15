@@ -14,6 +14,7 @@ import com.example.musicplayer.model.Song;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class SongRepository {
 
@@ -23,6 +24,7 @@ public class SongRepository {
     private static SongRepository instance;
     private String TAG = "Album exception";
     private MutableLiveData<List<Song>> mLiveSong = new MutableLiveData<>();
+    private MutableLiveData<Integer> mDominantColor = new MutableLiveData<>();
 
     private SongRepository(Context context) {
         mContext = context;
@@ -80,11 +82,27 @@ public class SongRepository {
                 }
 
             } catch (Exception e) {
-                Log.d("MusicPlayer", e.getMessage());
+                /*Log.e("MusicPlayer", Objects.requireNonNull(e.getMessage()));*/
             } finally {
                 songWrapper.close();
             }
         }
+    }
+
+    public Song findSongById(Long id){
+        ContentResolver musicResolver = mContext.getContentResolver();
+        Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        ModelCursorWrapper songWrapper = new ModelCursorWrapper(musicResolver.query(musicUri, null, null, null, null));
+        if (songWrapper != null && songWrapper.moveToFirst()) {
+            try {
+                return songWrapper.getSong(ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id));
+            } catch (Exception e) {
+                /*Log.e("MusicPlayer", Objects.requireNonNull(e.getMessage()));*/
+            } finally {
+                songWrapper.close();
+            }
+        }
+        return null;
     }
 
     private void getAlbumSongs(String albumName) {
@@ -145,4 +163,7 @@ public class SongRepository {
         }
     }
 
+    public MutableLiveData<Integer> getDominantColor() {
+        return mDominantColor;
+    }
 }

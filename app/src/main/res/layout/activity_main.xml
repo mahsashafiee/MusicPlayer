@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:background="@drawable/defult_gradient_background"
+    android:background="@drawable/default_gradient_background"
     tools:context=".controller.MainActivity">
 
     <include layout="@layout/layout_launcher_song" />

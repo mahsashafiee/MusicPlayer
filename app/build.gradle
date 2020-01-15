@@ -27,13 +27,13 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
     implementation 'de.hdodenhof:circleimageview:3.0.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.google.android.material:material:1.2.0-alpha01'
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
     implementation 'androidx.cardview:cardview:1.0.0'
 
     //id3v2 tags
@@ -47,10 +47,13 @@ dependencies {
     implementation 'me.tankery.lib:circularSeekBar:1.2.0'
 
     //lottie
-    implementation 'com.airbnb.android:lottie:3.3.0'
+    implementation 'com.airbnb.android:lottie:3.3.1'
 
     //rounded image view
     implementation 'com.makeramen:roundedimageview:2.3.0'
+
+    //palette
+    implementation 'androidx.palette:palette:1.0.0'
 
 /*
     //fast recycler view

@@ -28,7 +28,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.Utils.ChangeStatusBar;
+import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.controller.adapter.PagerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
@@ -40,7 +42,7 @@ import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.tabs.TabLayout;
 
 
-public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection, CategoryFragment.RecyclerScroller {
+public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection {
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
 
@@ -165,12 +167,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     @Override
-    public void onScrollList(boolean scrolled) {
-        if (playBackBottomBar != null)
-            playBackBottomBar.onScrollList(scrolled);
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         // Bind to LocalService
@@ -195,5 +191,12 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     public void onServiceDisconnected(ComponentName componentName) {
         mPlayer = null;
         serviceBound = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PictureUtils.setBackgroundGradient(this, MusicPreferences.getMusicDominantColor(this));
+
     }
 }

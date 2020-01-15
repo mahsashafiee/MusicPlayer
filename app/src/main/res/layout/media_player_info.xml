@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/activity_spacing"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/song_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:padding="5dp"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+        tools:text="In My Remains" />
+
+    <TextView
+        android:id="@+id/song_artist"
+        style="@style/Widget.MusicPlayer.TextView.Small.Marquee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Linkin Park" />
+
+    <TextView
+        android:id="@+id/song_album_name"
+        style="@style/Widget.MusicPlayer.TextView.Small.Marquee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        tools:text="One More Light" />
+
+    <TextView
+        android:id="@+id/line"
+        android:layout_width="24dp"
+        android:layout_height="2dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="2dp">
+
+        <TextView
+            android:id="@+id/song_total_duration"
+            style="@style/Widget.MusicPlayer.TextView.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp" />
+
+        <TextView
+            style="@style/Widget.MusicPlayer.TextView.Medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/" />
+
+        <TextView
+            android:id="@+id/song_realtime_duration"
+            style="@style/Widget.MusicPlayer.TextView.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp" />
+
+    </LinearLayout>
+</LinearLayout>

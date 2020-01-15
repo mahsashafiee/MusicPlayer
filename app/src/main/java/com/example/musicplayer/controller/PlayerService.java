@@ -20,6 +20,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 
@@ -88,7 +89,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         //what should happen after
         mMediaPlayer.setOnCompletionListener(this::onCompletion);
-        registerReceiver(becomingNoisyReceiver,new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
+        registerReceiver(becomingNoisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
     }
 
     private void setPlayList() {
@@ -105,7 +106,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         if (!requestAudioFocus())
             stopSelf();
         Play((Song) intent.getParcelableExtra(SONG_EXTRA));
-        startForeground(1,getNotification());
+        startForeground(1, getNotification());
         return START_NOT_STICKY;
     }
 
@@ -136,7 +137,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private void Play(Song song) {
 
         if (mSong == null)
-            songPlayer(song);
+            return;
 
         else if (!mMediaPlayer.isPlaying() && mSong.equals(song)) {
             if (isPaused)
@@ -145,6 +146,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
                 songPlayer(song);
         } else if (!mSong.equals(song))
             songPlayer(song);
+
+        MusicPreferences.setLastMusic(this, song.getSongId());
     }
 
     private void songPlayer(Song song) {

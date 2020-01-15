@@ -15,8 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MusicPlayer">
-        <activity android:name=".controller.MainActivity">
-        </activity>
+        <activity android:name=".controller.MainActivity"></activity>
 
         <service
             android:name=".controller.PlayerService"
@@ -24,13 +23,11 @@
             android:exported="false" />
 
         <activity android:name=".controller.CategoryActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity android:name=".controller.SingleSongActivity">
             <intent-filter>

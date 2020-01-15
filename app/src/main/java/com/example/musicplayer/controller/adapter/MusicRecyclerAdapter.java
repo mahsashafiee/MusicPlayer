@@ -3,7 +3,6 @@ package com.example.musicplayer.controller.adapter;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.SectionIndexer;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,9 +40,9 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (flag.equals(Qualifier.ALLSONG))
             return viewHolders.new MusicItems(inflater.inflate(R.layout.song_list_item, parent, false));
         else if (flag.equals(Qualifier.ALBUM))
-            return viewHolders.new AlbumItems(inflater.inflate(R.layout.mi_album_item, parent, false));
+            return viewHolders.new AlbumItems(inflater.inflate(R.layout.album_list_item, parent, false));
 
-        return viewHolders.new ArtistItems(inflater.inflate(R.layout.mi_artist_item, parent, false));
+        return viewHolders.new ArtistItems(inflater.inflate(R.layout.artist_list_item, parent, false));
     }
 
     @Override

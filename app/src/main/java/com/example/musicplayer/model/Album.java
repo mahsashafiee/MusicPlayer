@@ -8,6 +8,7 @@ public class Album implements Comparable<Album> {
     private String mArtworkPath;
     private String mAlbumArtist;
     private String mReleaseDate;
+    private String mNumberOfSongs;
 
     public Album (String id){
         mId = id;
@@ -31,6 +32,14 @@ public class Album implements Comparable<Album> {
 
     public String getReleaseDate() {
         return mReleaseDate;
+    }
+
+    public String getNumberOfSongs() {
+        return mNumberOfSongs;
+    }
+
+    public void setNumberOfSongs(String numberOfSongs) {
+        mNumberOfSongs = numberOfSongs;
     }
 
     public void setTitle(String Title) {

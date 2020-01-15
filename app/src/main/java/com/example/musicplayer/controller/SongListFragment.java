@@ -30,10 +30,11 @@ public class SongListFragment extends Fragment {
     private RecyclerView songRecycler;
     private MusicRecyclerAdapter mAdapter;
     private String mAlbumArtist;
-    private TextView mItemCount;
+    private TextView mListTitle;
 
     private static final String ARG_KEY = "albumArtist";
-    private static final String ARG_QUALIFIER = "qualifier";
+    private static final String ARG_QUALIFIER = "mQualifier";
+    private Qualifier mQualifier;
 
 
     public SongListFragment() {
@@ -58,12 +59,14 @@ public class SongListFragment extends Fragment {
 
         mAlbumArtist = getArguments().getString(ARG_KEY);
 
-        Qualifier qualifier = (Qualifier) getArguments().getSerializable(ARG_QUALIFIER);
+        mQualifier = (Qualifier) getArguments().getSerializable(ARG_QUALIFIER);
 
-        if (qualifier.equals(Qualifier.ALBUM))
+        if (mQualifier.equals(Qualifier.ALBUM))
             PlayList.setSongList(SongRepository.getInstance(getActivity()).getAlbumSongList(mAlbumArtist));
+
         else
             PlayList.setSongList(SongRepository.getInstance(getActivity()).getArtistSongList(mAlbumArtist));
+
 
     }
 
@@ -81,16 +84,15 @@ public class SongListFragment extends Fragment {
      * @param view
      */
     private void initUI(View view) {
-        setUpToolbar(view);
-        mItemCount = view.findViewById(R.id.item_count);
         songRecycler = view.findViewById(R.id.recycler_view);
+        mListTitle = view.findViewById(R.id.list_title);
 
-        view.findViewById(R.id.item_count)
-                .setBackgroundResource(R.drawable.backdrop_background);
-
-        String items = getResources()
-                .getQuantityString(R.plurals.total_songs, PlayList.getSongList().size(), PlayList.getSongList().size());
-        mItemCount.setText(items);
+        if (mQualifier.equals(Qualifier.ALBUM)) {
+            mListTitle.setText(PlayList.getSongList().get(0).getAlbum());
+        }
+        else {
+            mListTitle.setText(PlayList.getSongList().get(0).getArtist());
+        }
 
         mAdapter = new MusicRecyclerAdapter(getActivity(), Qualifier.ALLSONG);
         mAdapter.setList(PlayList.getSongList());
@@ -104,11 +106,4 @@ public class SongListFragment extends Fragment {
      *
      * @param view
      */
-    private void setUpToolbar(View view) {
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        if (activity != null) {
-            activity.setSupportActionBar(toolbar);
-        }
-    }
 }

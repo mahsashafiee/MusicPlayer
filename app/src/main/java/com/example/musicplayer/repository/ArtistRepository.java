@@ -47,15 +47,17 @@ public class ArtistRepository {
         mArtists = new ArrayList<>();
 
         Cursor cursor =mContext.getContentResolver().query(MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI
-                ,new String[]{MediaStore.Audio.Artists.ARTIST_KEY, MediaStore.Audio.Artists.ARTIST},null,null,null);
+                ,new String[]{MediaStore.Audio.Artists.ARTIST_KEY, MediaStore.Audio.Artists.ARTIST, MediaStore.Audio.Artists.NUMBER_OF_TRACKS},null,null,null);
 
         if (cursor != null && cursor.moveToFirst()) {
 
             try {
                 int id = cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST_KEY);
                 int name = cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
+                int numberOfSongs = cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS);
                 do {
                     Artist artist = new Artist(cursor.getLong(id),cursor.getString(name));
+                    artist.setNumberOfSongs(cursor.getString(numberOfSongs));
                     mArtists.add(artist);
                     cursor.moveToNext();
 

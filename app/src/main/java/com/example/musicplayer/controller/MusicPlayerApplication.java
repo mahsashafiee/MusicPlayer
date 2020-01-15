@@ -32,9 +32,8 @@ public class MusicPlayerApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        bindService(new Intent(this,PlayerService.class),mPlayerConnection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, PlayerService.class), mPlayerConnection, Context.BIND_AUTO_CREATE);
         CreateNotificationChannel();
     }
 

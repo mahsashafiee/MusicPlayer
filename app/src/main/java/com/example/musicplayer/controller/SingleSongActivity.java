@@ -50,7 +50,7 @@ public class SingleSongActivity extends AppCompatActivity implements ServiceConn
 
         if (mSavedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, mFragment)
+                    .replace(R.id.container, mFragment)
                     .commit();
         }
     }

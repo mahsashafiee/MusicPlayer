@@ -1,6 +1,7 @@
 package com.example.musicplayer.controller;
 
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
@@ -10,6 +11,8 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -20,14 +23,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
+import com.example.musicplayer.repository.SongRepository;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
+
+import static com.example.musicplayer.Utils.PictureUtils.setBackgroundGradient;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,15 +46,11 @@ public class SingleSongFragment extends Fragment {
     private PlayerService mPlayer;
 
     private CircleImageView mCover;
-    private ImageView mPlayPause;
-    private ImageView mForward;
-    private ImageView mBackward;
-    private ImageView mShuffle;
-    private ImageView mRepeat;
+    private ImageView mPlayPause, mForward, mBackward, mShuffle, mRepeat;
+    private MutableLiveData<Integer> mDominantColor;
     private View mView;
     private CircularSeekBar mSeekBar;
-    private TextView mTitle;
-    private TextView mArtist;
+    private TextView mTitle, mArtist, mAlbum, mDuration, mRealtimeDuration;
 
     private Bitmap mArtwork;
     private Handler mHandler = new Handler();
@@ -56,14 +59,14 @@ public class SingleSongFragment extends Fragment {
     private Drawable playingState;
     private Drawable pauseState;
 
-    private PlayBackBottomBar.ForBackListener mForwardListener = new PlayBackBottomBar.ForBackListener(){
+    private PlayBackBottomBar.ForBackListener mForwardListener = new PlayBackBottomBar.ForBackListener() {
         @Override
         public void run() {
             mPlayer.onFastForward();
             super.run();
         }
     };
-    private PlayBackBottomBar.ForBackListener mBackwardListener = new PlayBackBottomBar.ForBackListener(){
+    private PlayBackBottomBar.ForBackListener mBackwardListener = new PlayBackBottomBar.ForBackListener() {
         @Override
         public void run() {
             mPlayer.onFastBackward();
@@ -96,19 +99,19 @@ public class SingleSongFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mSong = getArguments().getParcelable(ARG_SONG);
+        mDominantColor = SongRepository.getInstance(getActivity()).getDominantColor();
 
         mPlayer.getLiveSong().observe(this, song -> {
-            if(song == null) {
+            if (song == null) {
                 mPlayPause.setImageDrawable(pauseState);
                 mSeekBar.setMax(0);
                 if (mPlayer.isPlaying())
-                    mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey));
+                    mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
                 else
                     mPlayPause.setImageDrawable(pauseState);
 
                 startAnimation(false);
-            }
-            else {
+            } else {
                 mSong = song;
                 initView();
             }
@@ -122,6 +125,7 @@ public class SingleSongFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_single_song, container, false);
         findViews();
         initView();
+        updateSongTime();
         SeekBar();
         Listener();
         return mView;
@@ -133,11 +137,11 @@ public class SingleSongFragment extends Fragment {
     private void setDrawable() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             playingState = getActivity().getDrawable(R.drawable.avd_anim);
-            pauseState = getActivity().getDrawable(R.drawable.avd_anim_reverse);
+            pauseState = getActivity().getDrawable(R.drawable.avd_play_anim);
             startAnimation(mPlayer.isPlaying());
         } else {
-            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause_grey);
-            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow_grey);
+            playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause);
+            pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow);
         }
     }
 
@@ -147,8 +151,7 @@ public class SingleSongFragment extends Fragment {
                 ((Animatable) playingState).start();
             } else
                 ((Animatable) pauseState).start();
-        }
-        else if(pauseState instanceof Animatable)
+        } else if (pauseState instanceof Animatable)
             ((Animatable) pauseState).start();
     }
 
@@ -162,7 +165,10 @@ public class SingleSongFragment extends Fragment {
         mForward = mView.findViewById(R.id.forward);
         mBackward = mView.findViewById(R.id.backward);
         mShuffle = mView.findViewById(R.id.shuffle);
-        mRepeat = mView.findViewById(R.id.repeat);
+        mRepeat = mView.findViewById(R.id.looper);
+        mAlbum = mView.findViewById(R.id.song_album_name);
+        mDuration = mView.findViewById(R.id.song_total_duration);
+        mRealtimeDuration = mView.findViewById(R.id.song_realtime_duration);
 
     }
 
@@ -180,19 +186,41 @@ public class SingleSongFragment extends Fragment {
                 .load(mArtwork)
                 .into(mCover);
 
+        PictureUtils.getDominantColor(mDominantColor, mArtwork);
+        mDominantColor.observe(this, integer -> {
+            PictureUtils.setBackgroundGradient(getActivity(), integer);
+            MusicPreferences.setMusicDominantColor(getActivity(), integer);
+        });
+
         mTitle.setText(mSong.getTitle());
-        mTitle.setSelected(true);
         mArtist.setText(mSong.getArtist());
         mSeekBar.setMax(mPlayer.getDuration());
+        mAlbum.setText(mSong.getAlbum());
+        mDuration.setText(mSong.getDuration());
 
         setDrawable();
 
         if (mPlayer.isPlaying())
-            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause_grey));
+            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
         else
             mPlayPause.setImageDrawable(pauseState);
 
         startAnimation(mPlayer.isPlaying());
+    }
+
+    private void updateSongTime() {
+        Runnable UpdateSongTime = new Runnable() {
+            @Override
+            public void run() {
+                int sTime = mPlayer.getCurrentPosition();
+                int mns = (sTime / 60000) % 60000;
+                int scs = sTime % 60000 / 1000;
+                String songTime = String.format("%02d:%02d", mns, scs);
+                mRealtimeDuration.setText(songTime);
+                mHandler.postDelayed(this, 100);
+            }
+        };
+        getActivity().runOnUiThread(UpdateSongTime);
     }
 
     private void SeekBar() {
@@ -207,6 +235,7 @@ public class SingleSongFragment extends Fragment {
         mHandler.post(mRunnable);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void Listener() {
 
         mPlayPause.setOnClickListener(view -> {

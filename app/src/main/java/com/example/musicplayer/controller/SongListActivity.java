@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
+import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
@@ -20,10 +22,10 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
     private static final String EXTRA_QUALIFIER = "qualifier";
 
 
-    public static Intent newIntent(Context target , String albumName, Qualifier qualifier){
-        Intent intent = new Intent(target,SongListActivity.class);
-        intent.putExtra(EXTRA_STRING,albumName);
-        intent.putExtra(EXTRA_QUALIFIER,qualifier);
+    public static Intent newIntent(Context target, String albumName, Qualifier qualifier) {
+        Intent intent = new Intent(target, SongListActivity.class);
+        intent.putExtra(EXTRA_STRING, albumName);
+        intent.putExtra(EXTRA_QUALIFIER, qualifier);
         return intent;
     }
 
@@ -31,6 +33,8 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song_list);
+
+        PictureUtils.setBackgroundGradient(this, MusicPreferences.getMusicDominantColor(this));
 
         if (savedInstanceState == null) {
             mFragment = SongListFragment.newInstance(
@@ -54,4 +58,9 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PictureUtils.setBackgroundGradient(this, MusicPreferences.getMusicDominantColor(this));
+    }
 }
