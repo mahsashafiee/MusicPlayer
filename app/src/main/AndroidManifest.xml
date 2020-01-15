@@ -21,7 +21,7 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".controller.NavigationActivity"
+        <activity android:name=".controller.CategoryActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -2,12 +2,12 @@
 
     <!-- Base application theme. -->
 
-    <style name="Theme.MusicPlayer" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="Theme.MusicPlayer" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
     </style>
 
     <style name="Theme.MusicPlayer.NoActionBar">
@@ -21,28 +21,22 @@
     <style name="Theme.MusicPlayer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="Widget.MusicPlayer.SeekBar" parent="Widget.AppCompat.SeekBar">
-        <item name="cs_circle_color">#DCE2E2E2</item>
-        <item name="cs_start_angle">180</item>
-        <item name="cs_maintain_equal_circle">false</item>
-        <item name="cs_end_angle">360</item>
-        <item name="cs_circle_progress_color">@color/colorPrimaryDark</item>
-        <item name="cs_circle_stroke_width">3dp</item>
-        <item name="cs_pointer_color">@color/colorPrimaryDark</item>
+        <item name="cs_circle_color">@color/colorOfLine</item>
+        <item name="cs_circle_progress_color">@android:color/primary_text_dark_nodisable</item>
+        <item name="cs_circle_stroke_width">2dp</item>
+        <item name="cs_pointer_color">@android:color/primary_text_dark_nodisable</item>
         <item name="cs_pointer_stroke_width">14dp</item>
     </style>
 
     <style name="Widget.MusicPlayer.TabLayout" parent="Widget.MaterialComponents.TabLayout">
-        <item name="tabTextAppearance">@style/Widget.MusicPlayer.TabLayout.TextAppearance</item>
+        <item name="tabTextAppearance">@style/Widget.MusicPlayer.TextView.Medium</item>
         <item name="android:background">@drawable/tab_bg</item>
         <item name="tabGravity">fill</item>
+        <item name="tabTextColor">@color/colorTabUnselected</item>
         <item name="tabIndicatorColor">@android:color/transparent</item>
         <item name="tabRippleColor">@android:color/transparent</item>
         <item name="tabMode">fixed</item>
-        <item name="tabSelectedTextColor">@android:color/holo_blue_dark</item>
-    </style>
-
-    <style name="Widget.MusicPlayer.TabLayout.TextAppearance" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textStyle">bold</item>
+        <item name="tabSelectedTextColor">@android:color/white</item>
     </style>
 
     <style name="Widget.MusicPlayer.Toolbar" parent="Widget.AppCompat.Toolbar">
@@ -53,9 +47,19 @@
     </style>
 
     <style name="Widget.MusicPlayer.TextView.Medium" parent="Widget.MaterialComponents.TextView">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">15.5sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+    </style>
+
+    <style name="Widget.MusicPlayer.TextView.Medium.Marquee" parent="Widget.MaterialComponents.TextView">
         <item name="android:ellipsize">marquee</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium.Inverse</item>
         <item name="android:singleLine">true</item>
         <item name="android:marqueeRepeatLimit">marquee_forever</item>
         <item name="android:scrollHorizontally">true</item>
@@ -64,8 +68,9 @@
     </style>
 
     <style name="Widget.MusicPlayer.TextView.Small" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Small</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
         <item name="android:singleLine">true</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:ellipsize">end</item>
     </style>
 

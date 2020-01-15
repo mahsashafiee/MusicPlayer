@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +25,6 @@ import com.example.musicplayer.model.Song;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 /**
@@ -38,7 +36,7 @@ public class SingleSongFragment extends Fragment {
     private Song mSong;
     private PlayerService mPlayer;
 
-    private CircleImageView mCover;
+    private ImageView mCover;
     private ImageView mPlayPause;
     private ImageView mForward;
     private ImageView mBackward;
@@ -56,14 +54,14 @@ public class SingleSongFragment extends Fragment {
     private Drawable playingState;
     private Drawable pauseState;
 
-    private PlayBackBottomBar.ForBackListener mForwardListener = new PlayBackBottomBar.ForBackListener() {
+    private PlayBackBottomBar.ForBackListener mForwardListener = new PlayBackBottomBar.ForBackListener(){
         @Override
         public void run() {
             mPlayer.onFastForward();
             super.run();
         }
     };
-    private PlayBackBottomBar.ForBackListener mBackwardListener = new PlayBackBottomBar.ForBackListener() {
+    private PlayBackBottomBar.ForBackListener mBackwardListener = new PlayBackBottomBar.ForBackListener(){
         @Override
         public void run() {
             mPlayer.onFastBackward();
@@ -98,20 +96,19 @@ public class SingleSongFragment extends Fragment {
         mSong = getArguments().getParcelable(ARG_SONG);
 
         mPlayer.getLiveSong().observe(this, song -> {
-            if (song == null) {
-
-                mHandler.removeCallbacks(mRunnable);
+            if(song == null) {
                 mPlayPause.setImageDrawable(pauseState);
+                mSeekBar.setMax(0);
                 if (mPlayer.isPlaying())
                     mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
                 else
                     mPlayPause.setImageDrawable(pauseState);
 
                 startAnimation(false);
-            } else {
+            }
+            else {
                 mSong = song;
                 initView();
-                SeekBar();
             }
         });
     }
@@ -132,9 +129,9 @@ public class SingleSongFragment extends Fragment {
      * Animation handler
      */
     private void setDrawable() {
-
         playingState = getActivity().getResources().getDrawable(R.drawable.ic_pause);
         pauseState = getActivity().getResources().getDrawable(R.drawable.ic_play_arrow);
+        startAnimation(mPlayer.isPlaying());
 
     }
 
@@ -144,7 +141,8 @@ public class SingleSongFragment extends Fragment {
                 ((Animatable) playingState).start();
             } else
                 ((Animatable) pauseState).start();
-        } else if (pauseState instanceof Animatable)
+        }
+        else if(pauseState instanceof Animatable)
             ((Animatable) pauseState).start();
     }
 
@@ -167,19 +165,14 @@ public class SingleSongFragment extends Fragment {
         Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
 
         if (artwork == null)
-            mArtwork = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.music_placeholder);
-        else {
-            try {
-                mArtwork = BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
-            }catch (OutOfMemoryError error){
-                Log.d("Single song fragment", "initView: "+error.getMessage());
-            }
-        }
+            mArtwork = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.song_placeholder);
+        else
+            mArtwork = BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
 
         Glide.with(mView).asDrawable()
-                .placeholder(R.drawable.music_placeholder)
+                .placeholder(R.drawable.song_placeholder)
                 .load(mArtwork)
-                .into(mCover);
+                .into(PictureUtils.getTarget(mCover));
 
         mTitle.setText(mSong.getTitle());
         mTitle.setSelected(true);
@@ -200,7 +193,6 @@ public class SingleSongFragment extends Fragment {
         mRunnable = new Runnable() {
             @Override
             public void run() {
-                mSeekBar.setMax(mPlayer.getDuration());
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
                 mHandler.postDelayed(this, 130);
             }

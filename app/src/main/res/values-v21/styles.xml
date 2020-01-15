@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.MusicPlayer.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="windowNoTitle">true</item>
+    <style name="Theme.MusicPlayer.ActionBar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:colorPrimary">@android:color/transparent</item>
     </style>
 </resources>

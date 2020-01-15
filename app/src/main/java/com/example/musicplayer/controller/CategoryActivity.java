@@ -2,14 +2,9 @@ package com.example.musicplayer.controller;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.ComponentName;
@@ -19,8 +14,12 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.Utils.ChangeStatusBar;
 import com.example.musicplayer.controller.adapter.PagerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
@@ -29,21 +28,25 @@ import com.example.musicplayer.repository.AlbumRepository;
 import com.example.musicplayer.repository.ArtistRepository;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 
-public class NavigationActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection, NavigationFragment.RecyclerScroller {
+public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection {
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
-    private AppBarConfiguration mAppBarConfiguration;
 
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+    private View mIndicator;
+    private int mIndicatorWidth;
+    private PagerAdapter mAdapter;
     private PlayBackBottomBar playBackBottomBar;
 
     private PlayerService mPlayer;
     boolean serviceBound = false;
 
     public static Intent newIntent(Context target) {
-        Intent intent = new Intent(target, NavigationActivity.class);
+        Intent intent = new Intent(target, CategoryActivity.class);
         return intent;
     }
 
@@ -52,11 +55,11 @@ public class NavigationActivity extends AppCompatActivity implements ViewHolders
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (ContextCompat.checkSelfPermission(NavigationActivity.this,
+        if (ContextCompat.checkSelfPermission(CategoryActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(NavigationActivity.this,
+            ActivityCompat.requestPermissions(CategoryActivity.this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     STORAGE_PERMISSION_REQ_CODE);
 
@@ -66,36 +69,55 @@ public class NavigationActivity extends AppCompatActivity implements ViewHolders
 
     private void RunActivity() {
 
-        setContentView(R.layout.activity_navigation);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_all_song, R.id.nav_albums, R.id.nav_artists)
-                .setDrawerLayout(drawerLayout)
-                .build();
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
-
         SongRepository.getInstance(this).findAllSongs();
         AlbumRepository.getInstance(this).findAllAlbum();
         ArtistRepository.getInstance(this).findAllArtist();
 
+        setContentView(R.layout.activity_category);
+
+        initUI();
+
+        mTabLayout.post(() -> {
+            mIndicatorWidth = mTabLayout.getWidth() / mTabLayout.getTabCount();
+
+            FrameLayout.LayoutParams indicatorParams = (FrameLayout.LayoutParams) mIndicator.getLayoutParams();
+            indicatorParams.width = mIndicatorWidth;
+            mIndicator.setLayoutParams(indicatorParams);
+        });
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mIndicator.getLayoutParams();
+
+                //Multiply positionOffset with indicatorWidth to get translation
+
+                float translationOffset = (positionOffset + position) * mIndicatorWidth;
+                params.leftMargin = (int) translationOffset;
+                mIndicator.setLayoutParams(params);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+    private void initUI() {
+        mViewPager = findViewById(R.id.view_pager);
+        mTabLayout = findViewById(R.id.tab_layout);
+        mIndicator = findViewById(R.id.indicator);
 
+        mAdapter = new PagerAdapter(this, getSupportFragmentManager());
+        mViewPager.setAdapter(mAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
     }
 
     /**
@@ -114,7 +136,7 @@ public class NavigationActivity extends AppCompatActivity implements ViewHolders
             } else if (grantResults.length > 0 && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 RunActivity();
             } else {
-                NavigationActivity.this.onBackPressed();
+                CategoryActivity.this.onBackPressed();
             }
         }
     }
@@ -122,7 +144,7 @@ public class NavigationActivity extends AppCompatActivity implements ViewHolders
 
     @Override
     public void PlaySong(Song song) {
-        PlayList.setSongList(SongRepository.getInstance(NavigationActivity.this).getSongs());
+        PlayList.setSongList(SongRepository.getInstance(CategoryActivity.this).getSongs());
         if (serviceBound)
             startService(PlayerService.newIntent(this, song));
         playBackBottomBar = new PlayBackBottomBar(this, mPlayer);
@@ -130,13 +152,7 @@ public class NavigationActivity extends AppCompatActivity implements ViewHolders
 
     @Override
     public void SongList(String albumOrArtist, Qualifier qualifier) {
-        startActivity(SongListActivity.newIntent(NavigationActivity.this, albumOrArtist, qualifier));
-    }
-
-    @Override
-    public void onScrollList(boolean scrolled) {
-        if (playBackBottomBar != null)
-            playBackBottomBar.onScrollList(scrolled);
+        startActivity(SongListActivity.newIntent(CategoryActivity.this, albumOrArtist, qualifier));
     }
 
     @Override

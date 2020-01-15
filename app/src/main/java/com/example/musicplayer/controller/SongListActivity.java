@@ -20,10 +20,10 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
     private static final String EXTRA_QUALIFIER = "qualifier";
 
 
-    public static Intent newIntent(Context target, String albumName, Qualifier qualifier) {
-        Intent intent = new Intent(target, SongListActivity.class);
-        intent.putExtra(EXTRA_STRING, albumName);
-        intent.putExtra(EXTRA_QUALIFIER, qualifier);
+    public static Intent newIntent(Context target , String albumName, Qualifier qualifier){
+        Intent intent = new Intent(target,SongListActivity.class);
+        intent.putExtra(EXTRA_STRING,albumName);
+        intent.putExtra(EXTRA_QUALIFIER,qualifier);
         return intent;
     }
 

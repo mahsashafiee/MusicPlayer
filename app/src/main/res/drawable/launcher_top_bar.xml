@@ -3,7 +3,7 @@
 
     <gradient
         android:endColor="@color/colorPrimary"
-        android:startColor="@color/light_pink"
+        android:startColor="@color/default_background"
         android:type="linear" />
     
     <corners
