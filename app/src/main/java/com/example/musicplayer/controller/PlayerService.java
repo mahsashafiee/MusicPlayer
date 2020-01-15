@@ -17,9 +17,11 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 
@@ -78,7 +80,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         }
     }
 
-    public MutableLiveData<Song> getLiveSong() {
+    public LiveData<Song> getLiveSong() {
         return mLiveSong;
     }
 
@@ -136,15 +138,20 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private void Play(Song song) {
 
+        //check if it's first time using
         if (mSong == null)
             songPlayer(song);
 
+        //check if the current song is paused
         else if (!mMediaPlayer.isPlaying() && mSong.equals(song)) {
             if (isPaused)
                 Pause();
             else
                 songPlayer(song);
-        } else if (!mSong.equals(song))
+        }
+
+        //check if different song has came
+        else if (!mSong.equals(song))
             songPlayer(song);
     }
 
@@ -153,12 +160,10 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         mSong = song;
         mCurrentSongIndex = mPlayList.indexOf(song);
         Play(song.getPath());
+        MusicPreferences.setLastMusic(this,mSong.getSongId());
+
         //observe in single song fragment
         mLiveSong.setValue(song);
-    }
-
-    public Song getmCurrentSongIndex() {
-        return mSong;
     }
 
     private void Play(Uri songPath) {

@@ -5,11 +5,12 @@
     <color name="colorAccent">#FF8045</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="toolbarIconColor">@color/textColorPrimary</color>
-    <color name="default_background">#398885</color>
+    <color name="default_background">#3375A7</color>
 
     <color name="colorTabUnselected">#A6FFFFFF</color>
     <color name="colorOfLine">#59FFFFFF</color>
 
     <color name="colorDarkShadow_400">#1E000000</color>
     <color name="colorDarkShadow_800">#A6000000</color>
+
 </resources>

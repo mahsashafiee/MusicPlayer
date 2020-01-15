@@ -27,7 +27,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public void setList(List list) {
-        mList = list;
+        mList= list;
         notifyDataSetChanged();
     }
 
@@ -40,9 +40,9 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (flag.equals(Qualifier.ALLSONG))
             return viewHolders.new MusicItems(inflater.inflate(R.layout.song_list_item, parent, false));
         else if (flag.equals(Qualifier.ALBUM))
-            return viewHolders.new AlbumItems(inflater.inflate(R.layout.mi_album_item, parent, false));
+            return viewHolders.new AlbumItems(inflater.inflate(R.layout.album_list_item, parent, false));
 
-        return viewHolders.new ArtistItems(inflater.inflate(R.layout.mi_artist_item, parent, false));
+        return viewHolders.new ArtistItems(inflater.inflate(R.layout.artist_list_item, parent, false));
     }
 
     @Override
@@ -55,6 +55,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     public int getItemCount() {
         return mList.size();
     }
+
 
     public interface BindCallBack<O> {
         void bindHolder(O model);

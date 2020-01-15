@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
     tools:context=".controller.CategoryFragment">
 
     <!-- TODO: ViewUpdater blank fragment layout -->
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/category_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/category_recyclerView"
-        tools:listitem="@layout/song_list_item"/>
+        tools:listitem="@layout/song_list_item" />
+
+<!--    <com.reddit.indicatorfastscroll.FastScrollerView
+        android:id="@+id/fast_scroller"
+        android:layout_width="16dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical|end"
+        android:gravity="fill_vertical" />-->
 
 </FrameLayout>

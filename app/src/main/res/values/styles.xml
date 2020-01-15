@@ -28,6 +28,14 @@
         <item name="cs_pointer_stroke_width">14dp</item>
     </style>
 
+    <style name="Widget.MusicPlayer.SeekBar.Small" parent="Widget.AppCompat.SeekBar">
+        <item name="cs_circle_color">@color/colorOfLine</item>
+        <item name="cs_circle_progress_color">@android:color/primary_text_dark_nodisable</item>
+        <item name="cs_circle_stroke_width">1dp</item>
+        <item name="cs_pointer_color">@android:color/primary_text_dark_nodisable</item>
+        <item name="cs_pointer_stroke_width">4dp</item>
+    </style>
+
     <style name="Widget.MusicPlayer.TabLayout" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabTextAppearance">@style/Widget.MusicPlayer.TextView.Medium</item>
         <item name="android:background">@drawable/tab_bg</item>
@@ -56,22 +64,21 @@
         <item name="android:focusableInTouchMode">true</item>
     </style>
 
-    <style name="Widget.MusicPlayer.TextView.Medium.Marquee" parent="Widget.MaterialComponents.TextView">
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Medium.Inverse</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:marqueeRepeatLimit">marquee_forever</item>
-        <item name="android:scrollHorizontally">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:focusableInTouchMode">true</item>
-    </style>
-
     <style name="Widget.MusicPlayer.TextView.Small" parent="Widget.MaterialComponents.TextView">
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="Widget.MusicPlayer.TextView.Small.Marquee" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Small.Inverse</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
     </style>
 
     <style name="TextAppearance.MusicPlayer.Toolbar" parent="TextAppearance.MaterialComponents.Button">

@@ -11,9 +11,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.Utils.ID3Tags;
+import com.example.musicplayer.Utils.PictureUtils;
+import com.example.musicplayer.model.Song;
+import com.example.musicplayer.repository.SongRepository;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
@@ -25,14 +32,15 @@ public class PlayBackBottomBar {
     private RelativeLayout mParentLayout;
     private CircularSeekBar mSeekBar;
     private CircleImageView mCover;
-    private TextView mDuration;
+    private MutableLiveData<Integer> mDominantColor;
+    private TextView mDuration, mSongName, mSongArtist;
     private ImageView mForward;
     private ImageView mPlay;
     private Activity mActivity;
     private PlayerService mPlayer;
     private Handler mHandler = new Handler();
     private Runnable UpdateSongTime;
-    private ForBackListener mForwardListener = new ForBackListener(){
+    private ForBackListener mForwardListener = new ForBackListener() {
         @Override
         public void run() {
             mPlayer.onFastForward();
@@ -43,25 +51,37 @@ public class PlayBackBottomBar {
     public PlayBackBottomBar(Activity activity, PlayerService service) {
         mActivity = activity;
         mPlayer = service;
+        mDominantColor = SongRepository.getInstance(mActivity).getDominantColor();
         initView();
-        setupArtwork();
         BottomAppBarListener();
         UpdateSongTime();
         SeekBar();
+        mPlayer.getLiveSong().observe((LifecycleOwner) activity, song -> {
+            if (song == null) {
+                mPlay.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_play_arrow));
+                mHandler.removeCallbacks(UpdateSongTime);
+            }
+            else {
+                setupArtwork(song);
+                UpdateSongTime();
+            }
+        });
     }
 
-    private void initView(){
+    private void initView() {
         mParentLayout = mActivity.findViewById(R.id.song_bar);
         mCover = mActivity.findViewById(R.id.song_bar_artwork);
         mSeekBar = mActivity.findViewById(R.id.song_bar_seek_bar);
         mDuration = mActivity.findViewById(R.id.song_bar_duration);
         mForward = mActivity.findViewById(R.id.skip);
         mPlay = mActivity.findViewById(R.id.play_pause);
+        mSongArtist = mActivity.findViewById(R.id.song_bar_artist);
+        mSongName = mActivity.findViewById(R.id.song_bar_title);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void BottomAppBarListener() {
-        mParentLayout.setOnClickListener(view -> mActivity.startActivity(SingleSongActivity.newIntent(mActivity, mPlayer.getmCurrentSongIndex())));
+        mParentLayout.setOnClickListener(view -> mActivity.startActivity(SingleSongActivity.newIntent(mActivity, mPlayer.getLiveSong().getValue())));
         mPlay.setOnClickListener(view -> {
             mPlayer.Pause();
             if (!mPlayer.isPlaying())
@@ -78,15 +98,16 @@ public class PlayBackBottomBar {
     }
 
     private void SeekBar() {
+        Handler mSeekHandler = new Handler();
         Runnable mSeekToRun = new Runnable() {
             @Override
             public void run() {
                 mSeekBar.setMax(mPlayer.getDuration());
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
-                mHandler.postDelayed(this, 130);
+                mSeekHandler.postDelayed(this, 130);
             }
         };
-        mActivity.runOnUiThread(mSeekToRun);
+        mSeekHandler.post(mSeekToRun);
 
     }
 
@@ -99,18 +120,15 @@ public class PlayBackBottomBar {
                 int scs = sTime % 60000 / 1000;
                 String songTime = String.format("%02d:%02d", mns, scs);
                 mDuration.setText(songTime);
-                mHandler.postDelayed(this, 100);
+                mHandler.postDelayed(this, 130);
             }
         };
-        mActivity.runOnUiThread(UpdateSongTime);
+        mHandler.post(UpdateSongTime);
     }
 
-    private void setupArtwork(){
+    private void setupArtwork(Song song) {
 
-        if (mPlayer.getmCurrentSongIndex() == null)
-            return;
-
-        Artwork artwork = ID3Tags.getArtwork(mPlayer.getmCurrentSongIndex().getFilePath());
+        Artwork artwork = ID3Tags.getArtwork(song.getFilePath());
         Bitmap bitmap;
 
         if (artwork == null)
@@ -121,7 +139,19 @@ public class PlayBackBottomBar {
         Glide.with(mActivity).asDrawable()
                 .placeholder(R.drawable.song_placeholder)
                 .load(bitmap)
+                .override(100, 100)
                 .into(mCover);
+
+        PictureUtils.getDominantColor(mDominantColor, bitmap);
+
+        mDominantColor.observe((LifecycleOwner) mActivity, integer -> {
+            PictureUtils.setBackgroundGradient(mActivity, integer);
+            MusicPreferences.setMusicDominantColor(mActivity, integer);
+        });
+
+
+        mSongArtist.setText(song.getArtist());
+        mSongName.setText(song.getTitle());
     }
 
     public static class ForBackListener implements View.OnLongClickListener, Runnable, View.OnTouchListener {

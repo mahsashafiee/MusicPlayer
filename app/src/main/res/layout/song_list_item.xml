@@ -9,8 +9,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/item_song_art"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
         android:elevation="8dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -34,7 +34,7 @@
         android:layout_toRightOf="@id/item_song_art"
         android:paddingStart="2dp"
         android:paddingLeft="2dp"
-        android:paddingTop="2dp"
+        android:paddingTop="4dp"
         android:paddingEnd="16dp"
         android:paddingRight="16dp"
         android:paddingBottom="2dp"
@@ -67,7 +67,7 @@
         android:layout_alignParentRight="true"
         android:foregroundGravity="center_vertical"
         android:padding="2dp"
-        app:srcCompat="@drawable/ic_more_vert" />
+        app:srcCompat="@drawable/ic_more_vert_black" />
 
     <TextView
         android:id="@+id/item_song_duration"
