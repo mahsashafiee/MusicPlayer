@@ -20,11 +20,13 @@ public class ModelCursorWrapper extends CursorWrapper {
         String albumArtPath = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART));
         String  Id = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_KEY));
         String artist = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ARTIST));
+        int number = getInt(getColumnIndex(MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS));
 
         Album album = new Album(Id);
         album.setArtworkPath(albumArtPath);
         album.setTitle(title);
         album.setAlbumArtist(artist);
+        album.setSongsNumber(number);
 
         return album;
     }

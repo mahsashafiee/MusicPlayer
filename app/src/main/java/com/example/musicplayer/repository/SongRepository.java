@@ -14,7 +14,6 @@ import com.example.musicplayer.model.Song;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class SongRepository {
 
@@ -85,6 +84,7 @@ public class SongRepository {
                 /*Log.e("MusicPlayer", Objects.requireNonNull(e.getMessage()));*/
             } finally {
                 songWrapper.close();
+                PlayList.setSongList(mSongs);
             }
         }
     }
@@ -92,7 +92,9 @@ public class SongRepository {
     public Song findSongById(Long id){
         ContentResolver musicResolver = mContext.getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        ModelCursorWrapper songWrapper = new ModelCursorWrapper(musicResolver.query(musicUri, null, null, null, null));
+        String selection = MediaStore.Audio.Media._ID + "= ?";
+        String [] selectionArg = new String[]{String.valueOf(id)};
+        ModelCursorWrapper songWrapper = new ModelCursorWrapper(musicResolver.query(musicUri, null, selection, selectionArg, null));
         if (songWrapper != null && songWrapper.moveToFirst()) {
             try {
                 return songWrapper.getSong(ContentUris.withAppendedId(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id));

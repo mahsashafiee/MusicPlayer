@@ -4,10 +4,11 @@ package com.example.musicplayer.model;
 public class Album implements Comparable<Album> {
 
     private String  mId;
-    private String mTitle = "Unknown";
+    private String mTitle;
     private String mArtworkPath;
     private String mAlbumArtist;
     private String mReleaseDate;
+    private int mSongsNumber;
 
     public Album (String id){
         mId = id;
@@ -47,6 +48,14 @@ public class Album implements Comparable<Album> {
 
     public void setReleaseDate(String ReleaseDate) {
         this.mReleaseDate = ReleaseDate;
+    }
+
+    public int getSongsNumber() {
+        return mSongsNumber;
+    }
+
+    public void setSongsNumber(int songsNumber) {
+        mSongsNumber = songsNumber;
     }
 
     @Override

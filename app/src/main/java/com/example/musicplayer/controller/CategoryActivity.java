@@ -14,12 +14,10 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.example.musicplayer.R;
-import com.example.musicplayer.Utils.ChangeStatusBar;
 import com.example.musicplayer.controller.adapter.PagerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
@@ -69,11 +67,12 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
     private void RunActivity() {
 
+        setContentView(R.layout.activity_category);
+        playBackBottomBar = new PlayBackBottomBar(this);
+
         SongRepository.getInstance(this).findAllSongs();
         AlbumRepository.getInstance(this).findAllAlbum();
         ArtistRepository.getInstance(this).findAllArtist();
-
-        setContentView(R.layout.activity_category);
 
         initUI();
 
@@ -147,7 +146,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         PlayList.setSongList(SongRepository.getInstance(CategoryActivity.this).getSongs());
         if (serviceBound)
             startService(PlayerService.newIntent(this, song));
-        playBackBottomBar = new PlayBackBottomBar(this, mPlayer);
     }
 
     @Override
@@ -173,6 +171,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         PlayerService.LocalBinder binder = (PlayerService.LocalBinder) iBinder;
         mPlayer = binder.getService();
+        playBackBottomBar.initService(mPlayer);
         serviceBound = true;
     }
 

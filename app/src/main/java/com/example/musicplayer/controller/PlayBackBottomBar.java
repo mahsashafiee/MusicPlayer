@@ -38,6 +38,7 @@ public class PlayBackBottomBar {
     private ImageView mPlay;
     private Activity mActivity;
     private PlayerService mPlayer;
+    private Song mSong;
     private Handler mHandler = new Handler();
     private Runnable UpdateSongTime;
     private ForBackListener mForwardListener = new ForBackListener() {
@@ -48,24 +49,12 @@ public class PlayBackBottomBar {
         }
     };
 
-    public PlayBackBottomBar(Activity activity, PlayerService service) {
+    public PlayBackBottomBar(Activity activity) {
         mActivity = activity;
-        mPlayer = service;
         mDominantColor = SongRepository.getInstance(mActivity).getDominantColor();
         initView();
-        BottomAppBarListener();
-        UpdateSongTime();
-        SeekBar();
-        mPlayer.getLiveSong().observe((LifecycleOwner) activity, song -> {
-            if (song == null) {
-                mPlay.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_play_arrow));
-                mHandler.removeCallbacks(UpdateSongTime);
-            }
-            else {
-                setupArtwork(song);
-                UpdateSongTime();
-            }
-        });
+        setLastSong();
+        mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_play_arrow));
     }
 
     private void initView() {
@@ -79,11 +68,40 @@ public class PlayBackBottomBar {
         mSongName = mActivity.findViewById(R.id.song_bar_title);
     }
 
+    private void setLastSong() {
+        mSong = SongRepository.getInstance(mActivity).findSongById(MusicPreferences.getLastMusic(mActivity));
+        if (mSong != null)
+            setupArtwork(mSong);
+    }
+
+    public void initService(PlayerService service) {
+        mPlayer = service;
+
+        mPlayer.getLiveSong().observe((LifecycleOwner) mActivity, song -> {
+            if (song == null) {
+                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_play_arrow));
+                mHandler.removeCallbacks(UpdateSongTime);
+            } else {
+                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_pause));
+                setupArtwork(song);
+                UpdateSongTime();
+                SeekBar();
+            }
+        });
+
+        BottomAppBarListener();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private void BottomAppBarListener() {
         mParentLayout.setOnClickListener(view -> mActivity.startActivity(SingleSongActivity.newIntent(mActivity, mPlayer.getLiveSong().getValue())));
         mPlay.setOnClickListener(view -> {
-            mPlayer.Pause();
+            if (mPlayer.isStop()) {
+                mActivity.startService(PlayerService.newIntent(mActivity, mSong));
+                UpdateSongTime();
+                SeekBar();
+            } else
+                mPlayer.Pause();
             if (!mPlayer.isPlaying())
                 mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_play_arrow));
             else

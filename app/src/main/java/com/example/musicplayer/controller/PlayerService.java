@@ -51,7 +51,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private boolean mListLoop;
     private boolean mShuffle;
     private boolean isPaused;
-    private boolean isStop;
+    private boolean isStop = true;
     private int newPosition;
 
     BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
@@ -256,6 +256,10 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     public boolean isListLoop() {
         return mListLoop;
+    }
+
+    public boolean isStop() {
+        return isStop;
     }
 
     public int onFastForward() {
