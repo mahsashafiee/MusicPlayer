@@ -12,20 +12,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.SharedPreferences.MusicPreferences;
@@ -80,11 +70,12 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
     private void RunActivity() {
 
+        setContentView(R.layout.activity_category);
+        playBackBottomBar = new PlayBackBottomBar(this);
+
         SongRepository.getInstance(this).findAllSongs();
         AlbumRepository.getInstance(this).findAllAlbum();
         ArtistRepository.getInstance(this).findAllArtist();
-
-        setContentView(R.layout.activity_category);
 
         initUI();
 
@@ -102,6 +93,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
                 FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mIndicator.getLayoutParams();
 
                 //Multiply positionOffset with indicatorWidth to get translation
+
                 float translationOffset = (positionOffset + position) * mIndicatorWidth;
                 params.leftMargin = (int) translationOffset;
                 mIndicator.setLayoutParams(params);
@@ -128,7 +120,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         mAdapter = new PagerAdapter(this, getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-
     }
 
     /**
@@ -158,7 +149,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         PlayList.setSongList(SongRepository.getInstance(CategoryActivity.this).getSongs());
         if (serviceBound)
             startService(PlayerService.newIntent(this, song));
-        playBackBottomBar = new PlayBackBottomBar(this, mPlayer);
     }
 
     @Override
@@ -184,6 +174,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         PlayerService.LocalBinder binder = (PlayerService.LocalBinder) iBinder;
         mPlayer = binder.getService();
+        playBackBottomBar.initService(mPlayer);
         serviceBound = true;
     }
 

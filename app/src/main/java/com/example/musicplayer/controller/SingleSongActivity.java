@@ -36,6 +36,7 @@ public class SingleSongActivity extends AppCompatActivity implements ServiceConn
         mSavedInstanceState = savedInstanceState;
         mSong = getIntent().getParcelableExtra(SONG_INTENT);
         Intent intent = new Intent(this, PlayerService.class);
+        startService(PlayerService.newIntent(this, mSong));
         bindService(intent, this, Context.BIND_AUTO_CREATE);
     }
 
@@ -44,7 +45,6 @@ public class SingleSongActivity extends AppCompatActivity implements ServiceConn
         PlayerService.LocalBinder binder = (PlayerService.LocalBinder) iBinder;
         mPlayer = binder.getService();
         mServiceConction = true;
-        startService(PlayerService.newIntent(this, mSong));
         mFragment = SingleSongFragment.newInstance(mSong);
         mFragment.setPlayer(mPlayer);
 

@@ -55,6 +55,7 @@ dependencies {
     //palette
     implementation 'androidx.palette:palette:1.0.0'
 
+
 /*
     //fast recycler view
     implementation 'com.reddit:indicator-fast-scroll:1.2.1'*/

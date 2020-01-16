@@ -75,23 +75,24 @@ public class ViewHolders {
 
         }
 
-        private class SetArt extends AsyncTask<Void, Void, byte[]> {
+        private class SetArt extends AsyncTask<Void, Void, byte []> {
 
             @Override
-            protected byte[] doInBackground(Void... voids) {
+            protected byte [] doInBackground(Void... voids) {
                 try {
                     Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
                     return artwork.getBinaryData();
 
-                } catch (OutOfMemoryError error) {
+                }catch (OutOfMemoryError error){
                     return null;
-                } catch (NullPointerException e) {
+                }
+                catch (NullPointerException e){
                     return null;
                 }
             }
 
             @Override
-            protected void onPostExecute(byte[] bytes) {
+            protected void onPostExecute(byte [] bytes) {
                 Glide.with(mIVMusicCover).asDrawable()
                         .load(bytes)
                         .placeholder(R.drawable.song_placeholder)
@@ -132,8 +133,7 @@ public class ViewHolders {
             mArtist.setText(album.getAlbumArtist());
             mAlbumArt.setImageDrawable(mContext.getResources().getDrawable(R.drawable.song_placeholder));
             String items = mContext.getResources()
-                    .getQuantityString(R.plurals.total_songs, Integer.valueOf(mAlbum.getNumberOfSongs()),
-                            Integer.valueOf(mAlbum.getNumberOfSongs()));
+                    .getQuantityString(R.plurals.total_songs, mAlbum.getSongsNumber(), mAlbum.getSongsNumber());
             mNumberOfSongs.setText(items);
 
             Glide.with(mContext).asDrawable()

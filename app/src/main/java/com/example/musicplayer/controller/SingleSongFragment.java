@@ -12,7 +12,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -33,8 +32,6 @@ import org.jaudiotagger.tag.datatype.Artwork;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
-
-import static com.example.musicplayer.Utils.PictureUtils.setBackgroundGradient;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -104,7 +101,7 @@ public class SingleSongFragment extends Fragment {
         mPlayer.getLiveSong().observe(this, song -> {
             if (song == null) {
                 mPlayPause.setImageDrawable(pauseState);
-                mSeekBar.setMax(0);
+                mHandler.removeCallbacks(mRunnable);
                 if (mPlayer.isPlaying())
                     mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
                 else
@@ -114,6 +111,7 @@ public class SingleSongFragment extends Fragment {
             } else {
                 mSong = song;
                 initView();
+                updateSongTime();
             }
         });
     }
@@ -174,6 +172,8 @@ public class SingleSongFragment extends Fragment {
 
     private void initView() {
 
+        mTitle.setSelected(true);
+
         Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
 
         if (artwork == null)
@@ -209,7 +209,7 @@ public class SingleSongFragment extends Fragment {
     }
 
     private void updateSongTime() {
-        Runnable UpdateSongTime = new Runnable() {
+        mRunnable = new Runnable() {
             @Override
             public void run() {
                 int sTime = mPlayer.getCurrentPosition();
@@ -220,19 +220,21 @@ public class SingleSongFragment extends Fragment {
                 mHandler.postDelayed(this, 100);
             }
         };
-        getActivity().runOnUiThread(UpdateSongTime);
+        mHandler.post(mRunnable);
     }
 
     private void SeekBar() {
-        mRunnable = new Runnable() {
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                mSeekBar.setMax(mPlayer.getDuration());
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
-                mHandler.postDelayed(this, 130);
+                handler.postDelayed(this, 130);
             }
         };
 
-        mHandler.post(mRunnable);
+        getActivity().runOnUiThread(runnable);
     }
 
     @SuppressLint("ClickableViewAccessibility")

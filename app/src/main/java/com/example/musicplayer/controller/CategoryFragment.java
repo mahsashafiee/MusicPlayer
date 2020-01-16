@@ -2,13 +2,10 @@ package com.example.musicplayer.controller;
 
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,10 +75,12 @@ public class CategoryFragment extends Fragment {
         mAdapter = new MusicRecyclerAdapter(getActivity(), mQualifier);
 
         if (isAdded()) {
+
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            mRecyclerView.setAdapter(mAdapter);
+        }
 
-
-/*            mFastScrollerView.setupWithRecyclerView(
+        /*            mFastScrollerView.setupWithRecyclerView(
                     mRecyclerView,
                     (position) -> {
                         Album item = data.get(position); // Get your model object
@@ -91,11 +90,8 @@ public class CategoryFragment extends Fragment {
                         ); // Return a text indicator
                     }
             );*/
-            mRecyclerView.setAdapter(mAdapter);
-        }
 
     }
-
 
     private void RepositoryObserver() {
 
@@ -111,4 +107,3 @@ public class CategoryFragment extends Fragment {
                     mAdapter.setList(artists));
     }
 }
-
