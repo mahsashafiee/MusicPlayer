@@ -55,6 +55,9 @@ dependencies {
     //palette
     implementation 'androidx.palette:palette:1.0.0'
 
+    //glide transformation
+    implementation 'jp.wasabeef:glide-transformations:4.0.0'
+
 
 /*
     //fast recycler view

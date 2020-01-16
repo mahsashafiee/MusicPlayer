@@ -26,6 +26,7 @@ import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,10 +47,10 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private AudioManager mAudioManager;
     private List<Song> mPlayList;
     private Song mSong;
+    private MutableLiveData<Boolean> mListLoop = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mShuffle = new MutableLiveData<>();
     private MutableLiveData<Song> mLiveSong = new MutableLiveData<>();
     private int mCurrentSongIndex;
-    private boolean mListLoop;
-    private boolean mShuffle;
     private boolean isPaused;
     private boolean isStop = true;
     private int newPosition;
@@ -92,11 +93,14 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         //what should happen after
         mMediaPlayer.setOnCompletionListener(this::onCompletion);
         registerReceiver(becomingNoisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
+        mShuffle.setValue(MusicPreferences.getIsShuffle(this));
+        mListLoop.setValue(MusicPreferences.getIsListLoop(this));
+        singleLoop(!mListLoop.getValue());
     }
 
     private void setPlayList() {
-        mPlayList = PlayList.getSongList();
-        if (mShuffle)
+        mPlayList = new ArrayList<>(PlayList.getSongList());
+        if (mShuffle.getValue())
             Collections.shuffle(mPlayList);
     }
 
@@ -119,14 +123,14 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        if (mCurrentSongIndex == mPlayList.size() - 1 && !mListLoop) {
+        if (mCurrentSongIndex == mPlayList.size() - 1 && !mListLoop.getValue()) {
             Stop();
             isStop = true;
             mLiveSong.setValue(null);
             return;
         }
         //List loop handler
-        if (!mListLoop) {
+        if (!mListLoop.getValue()) {
             mCurrentSongIndex++;
         } else {
             mCurrentSongIndex = (mCurrentSongIndex + 1) % mPlayList.size();
@@ -140,9 +144,9 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
         //check if it's first time using
         if (mSong == null)
-            return;
+            songPlayer(song);
 
-        //check if the current song is paused
+            //check if the current song is paused
         else if (!mMediaPlayer.isPlaying() && mSong.equals(song)) {
             if (isPaused)
                 Pause();
@@ -162,7 +166,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         mSong = song;
         mCurrentSongIndex = mPlayList.indexOf(song);
         Play(song.getPath());
-        MusicPreferences.setLastMusic(this,mSong.getSongId());
+        MusicPreferences.setLastMusic(this, mSong.getSongId());
 
         //observe in single song fragment
         mLiveSong.setValue(song);
@@ -212,23 +216,27 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         removeAudioFocus();
     }
 
-    public void SingleLoop(boolean loop) {
+    public void singleLoop(boolean loop) {
         mMediaPlayer.setLooping(loop);
     }
 
-    public void ListLoop() {
-        mListLoop = !mListLoop;
+    public void listLoop() {
+        singleLoop(mListLoop.getValue());
+        mListLoop.setValue(!mListLoop.getValue());
+        MusicPreferences.setMusicIsListLoop(this, mListLoop.getValue());
     }
 
-    public void Shuffle() {
-        mShuffle = !mShuffle;
+    public void shuffle() {
+        mShuffle.setValue(!mShuffle.getValue());
 
-        if (mShuffle)
+        if (mShuffle.getValue())
             Collections.shuffle(mPlayList);
         else {
             mPlayList = PlayList.getSongList();
             mCurrentSongIndex = mPlayList.indexOf(mSong);
         }
+
+        MusicPreferences.setMusicIsShuffleOn(this, mShuffle.getValue());
 
     }
 
@@ -253,11 +261,11 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     }
 
     public boolean isShuffle() {
-        return mShuffle;
+        return mShuffle.getValue();
     }
 
     public boolean isListLoop() {
-        return mListLoop;
+        return mListLoop.getValue();
     }
 
     public boolean isStop() {
@@ -294,7 +302,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             case AudioManager.AUDIOFOCUS_GAIN:
                 if (mMediaPlayer == null) initMediaPlayer();
 
-                else if (!mMediaPlayer.isPlaying() && pauseFocus){
+                else if (!mMediaPlayer.isPlaying() && pauseFocus) {
                     volume = 0f;
                     Pause();
                     pauseFocus = false;
@@ -306,8 +314,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
                     public void run() {
                         mMediaPlayer.setVolume(volume, volume);
                         volume += 0.1;
-                        if(volume <= 1)
-                            handler.postDelayed(this::run,250);
+                        if (volume <= 1)
+                            handler.postDelayed(this::run, 250);
                     }
                 });
                 break;
@@ -341,7 +349,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         return AudioManager.AUDIOFOCUS_REQUEST_GRANTED == mAudioManager.abandonAudioFocus(this);
     }
 
-    private Notification getNotification(){
+    private Notification getNotification() {
         return new NotificationCompat
                 .Builder(this, getString(R.string.notification_channel_id))
                 .setContentIntent(PendingIntent.getActivity(
@@ -349,5 +357,13 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
                         PENDING_INTENT_REQUEST_CODE,
                         SingleSongActivity.newIntent(this, mSong), PENDING_INTENT_FLAG))
                 .build();
+    }
+
+    public MutableLiveData<Boolean> getShuffle() {
+        return mShuffle;
+    }
+
+    public MutableLiveData<Boolean> getListLoop() {
+        return mListLoop;
     }
 }

@@ -11,15 +11,15 @@
 
     <TextView
         android:id="@+id/list_title"
+        style="@style/Widget.MusicPlayer.TextView.Medium"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        style="@style/Widget.MusicPlayer.TextView.Medium"
         android:ellipsize="end"
+        android:gravity="center"
         android:paddingStart="@dimen/activity_horizontal_margin"
         android:paddingEnd="@dimen/activity_horizontal_margin"
-        tools:text="@tools:sample/lorem/random"
-        android:gravity="center"
-        android:singleLine="true" />
+        android:singleLine="true"
+        tools:text="@tools:sample/lorem/random" />
 
     <View
         android:layout_width="match_parent"

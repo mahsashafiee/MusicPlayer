@@ -1,12 +1,18 @@
 package com.example.musicplayer.Utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,6 +83,7 @@ public class PictureUtils {
     }
 
     public static void setBackgroundGradient(Activity context, int dominantColor) {
+
         View layout = context.findViewById(R.id.container);
 
         GradientDrawable gd = new GradientDrawable(
@@ -84,12 +91,13 @@ public class PictureUtils {
                 new int[]{dominantColor, Color.BLACK});
         gd.setCornerRadius(0f);
 
-        layout.setBackgroundDrawable(gd);
+        layout.setBackground(gd);
     }
 
-    /*        List<Palette.Swatch> swatchesTemp = Palette.from(bitmap).generate().getSwatches();
+    /*List<Palette.Swatch> swatchesTemp = Palette.from(bitmap).generate().getSwatches();
         List<Palette.Swatch> swatches = new ArrayList<>(swatchesTemp);
         Collections.sort(swatches, (swatch1, swatch2) -> swatch2.getPopulation() - swatch1.getPopulation());
         return swatches.size() > 0 ? swatches.get(0).getRgb() : getRandomColor();*/
-
 }
+
+

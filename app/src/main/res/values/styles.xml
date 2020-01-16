@@ -23,7 +23,7 @@
     <style name="Widget.MusicPlayer.SeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="cs_circle_color">@color/colorOfLine</item>
         <item name="cs_circle_progress_color">@android:color/primary_text_dark_nodisable</item>
-        <item name="cs_circle_stroke_width">2dp</item>
+        <item name="cs_circle_stroke_width">4dp</item>
         <item name="cs_pointer_color">@android:color/primary_text_dark_nodisable</item>
         <item name="cs_pointer_stroke_width">14dp</item>
     </style>
@@ -38,7 +38,7 @@
 
     <style name="Widget.MusicPlayer.TabLayout" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabTextAppearance">@style/Widget.MusicPlayer.TextView.Medium</item>
-        <item name="android:background">@drawable/tab_bg</item>
+        <item name="android:background">@android:color/transparent</item>
         <item name="tabGravity">fill</item>
         <item name="tabTextColor">@color/colorTabUnselected</item>
         <item name="tabIndicatorColor">@android:color/transparent</item>

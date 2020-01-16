@@ -32,7 +32,7 @@ public class Artist implements Comparable<Artist> {
         mId = id;
     }
 
-    public Artist(long id, String name){
+    public Artist(long id, String name) {
         this.mId = id;
         this.mName = name;
     }

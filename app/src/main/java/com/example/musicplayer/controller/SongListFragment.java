@@ -89,8 +89,7 @@ public class SongListFragment extends Fragment {
 
         if (mQualifier.equals(Qualifier.ALBUM)) {
             mListTitle.setText(PlayList.getSongList().get(0).getAlbum());
-        }
-        else {
+        } else {
             mListTitle.setText(PlayList.getSongList().get(0).getArtist());
         }
 

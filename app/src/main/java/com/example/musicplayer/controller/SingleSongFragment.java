@@ -114,6 +114,8 @@ public class SingleSongFragment extends Fragment {
                 updateSongTime();
             }
         });
+
+
     }
 
     @Override
@@ -126,6 +128,20 @@ public class SingleSongFragment extends Fragment {
         updateSongTime();
         SeekBar();
         Listener();
+
+        mPlayer.getShuffle().observe(this, isShuffle -> {
+            if (isShuffle)
+                mShuffle.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_shuffle_on));
+            else
+                mShuffle.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_shuffle_off));
+
+        });
+        mPlayer.getListLoop().observe(this, isListLoop -> {
+            if (isListLoop)
+                mRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_all));
+            else
+                mRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_one));
+        });
         return mView;
     }
 
@@ -172,8 +188,6 @@ public class SingleSongFragment extends Fragment {
 
     private void initView() {
 
-        mTitle.setSelected(true);
-
         Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
 
         if (artwork == null)
@@ -187,6 +201,8 @@ public class SingleSongFragment extends Fragment {
                 .into(mCover);
 
         PictureUtils.getDominantColor(mDominantColor, mArtwork);
+
+
         mDominantColor.observe(this, integer -> {
             PictureUtils.setBackgroundGradient(getActivity(), integer);
             MusicPreferences.setMusicDominantColor(getActivity(), integer);
@@ -257,9 +273,9 @@ public class SingleSongFragment extends Fragment {
         mForward.setOnLongClickListener(mForwardListener);
         mBackward.setOnLongClickListener(mBackwardListener);
 
-        mShuffle.setOnClickListener(view -> mPlayer.Shuffle());
+        mShuffle.setOnClickListener(view -> mPlayer.shuffle());
 
-        mRepeat.setOnClickListener(view -> mPlayer.ListLoop());
+        mRepeat.setOnClickListener(view -> mPlayer.listLoop());
 
         mSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override

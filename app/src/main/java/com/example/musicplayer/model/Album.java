@@ -3,14 +3,14 @@ package com.example.musicplayer.model;
 
 public class Album implements Comparable<Album> {
 
-    private String  mId;
+    private String mId;
     private String mTitle;
     private String mArtworkPath;
     private String mAlbumArtist;
     private String mReleaseDate;
     private int mSongsNumber;
 
-    public Album (String id){
+    public Album(String id) {
         mId = id;
     }
 
@@ -59,5 +59,7 @@ public class Album implements Comparable<Album> {
     }
 
     @Override
-    public int compareTo(Album album) { return this.getTitle().compareTo(album.getTitle()); }
+    public int compareTo(Album album) {
+        return this.getTitle().compareTo(album.getTitle());
+    }
 }

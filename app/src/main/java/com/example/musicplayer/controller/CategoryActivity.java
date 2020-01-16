@@ -18,10 +18,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.example.musicplayer.R;
-import com.example.musicplayer.SharedPreferences.MusicPreferences;
-import com.example.musicplayer.Utils.ChangeStatusBar;
-import com.example.musicplayer.Utils.PictureUtils;
-import com.example.musicplayer.controller.adapter.PagerAdapter;
+import com.example.musicplayer.controller.adapter.ListPagerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
@@ -40,7 +37,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     private TabLayout mTabLayout;
     private View mIndicator;
     private int mIndicatorWidth;
-    private PagerAdapter mAdapter;
+    private ListPagerAdapter mAdapter;
     private PlayBackBottomBar playBackBottomBar;
 
     private PlayerService mPlayer;
@@ -117,7 +114,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         mTabLayout = findViewById(R.id.tab_layout);
         mIndicator = findViewById(R.id.indicator);
 
-        mAdapter = new PagerAdapter(this, getSupportFragmentManager());
+        mAdapter = new ListPagerAdapter(this, getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
     }
@@ -182,12 +179,5 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     public void onServiceDisconnected(ComponentName componentName) {
         mPlayer = null;
         serviceBound = false;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        PictureUtils.setBackgroundGradient(this, MusicPreferences.getMusicDominantColor(this));
-
     }
 }

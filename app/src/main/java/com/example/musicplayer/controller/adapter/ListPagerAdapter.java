@@ -15,7 +15,7 @@ import com.example.musicplayer.model.Qualifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PagerAdapter extends FragmentStatePagerAdapter {
+public class ListPagerAdapter extends FragmentStatePagerAdapter {
 
     private Context mContext;
     private List<Fragment> mFragments = new ArrayList<>();
@@ -24,7 +24,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
 
 
-    public PagerAdapter(Context context, @NonNull FragmentManager fm) {
+    public ListPagerAdapter(Context context, @NonNull FragmentManager fm) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         mContext = context;
 

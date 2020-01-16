@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/default_gradient_background"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:background="@drawable/default_gradient_background"
     tools:context=".controller.MainActivity">
 
     <include layout="@layout/layout_launcher_song" />
 
-    <include layout="@layout/layout_launcher_bottom"/>
+    <include layout="@layout/layout_launcher_bottom" />
 
 </LinearLayout>

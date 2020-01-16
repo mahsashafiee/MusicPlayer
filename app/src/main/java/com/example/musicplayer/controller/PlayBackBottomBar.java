@@ -27,8 +27,6 @@ import org.jaudiotagger.tag.datatype.Artwork;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
-import static com.example.musicplayer.Utils.PictureUtils.setBackgroundGradient;
-
 public class PlayBackBottomBar {
 
     private RelativeLayout mParentLayout;
@@ -72,8 +70,11 @@ public class PlayBackBottomBar {
 
     private void setLastSong() {
         mSong = SongRepository.getInstance(mActivity).findSongById(MusicPreferences.getLastMusic(mActivity));
-        if (mSong != null)
+        if (mSong != null) {
             setupArtwork(mSong);
+            mParentLayout.setVisibility(View.VISIBLE);
+        } else
+            mParentLayout.setVisibility(View.GONE);
     }
 
     public void initService(PlayerService service) {
@@ -88,6 +89,7 @@ public class PlayBackBottomBar {
                 setupArtwork(song);
                 UpdateSongTime();
                 SeekBar();
+                mParentLayout.setVisibility(View.VISIBLE);
             }
         });
 
@@ -173,6 +175,7 @@ public class PlayBackBottomBar {
         mSongArtist.setText(song.getArtist());
         mSongName.setText(song.getTitle());
     }
+
 
     public static class ForBackListener implements View.OnLongClickListener, Runnable, View.OnTouchListener {
 

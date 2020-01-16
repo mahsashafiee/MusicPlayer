@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,25 +8,28 @@
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:padding="@dimen/activity_spacing"
     tools:background="@drawable/default_gradient_background"
     tools:context=".controller.SingleSongFragment">
 
     <include
         android:id="@+id/layout_seekBar"
-        layout="@layout/layout_seek_bar_single_song" />
-
-    <include layout="@layout/media_player_info"
+        layout="@layout/media_player_seek_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layout_seekBar"/>
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <include
+        android:id="@+id/layout_info"
+        layout="@layout/media_player_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 
     <include
         layout="@layout/media_player_controller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom" />
 
 
-</RelativeLayout>
+</LinearLayout>

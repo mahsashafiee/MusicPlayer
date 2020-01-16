@@ -20,7 +20,6 @@ import org.jaudiotagger.tag.datatype.Artwork;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
 public class ViewHolders {
 
     private CallBacks callBacks;
@@ -75,26 +74,26 @@ public class ViewHolders {
 
         }
 
-        private class SetArt extends AsyncTask<Void, Void, byte []> {
+        private class SetArt extends AsyncTask<Void, Void, byte[]> {
 
             @Override
-            protected byte [] doInBackground(Void... voids) {
+            protected byte[] doInBackground(Void... voids) {
                 try {
                     Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
                     return artwork.getBinaryData();
 
-                }catch (OutOfMemoryError error){
+                } catch (OutOfMemoryError error) {
                     return null;
-                }
-                catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     return null;
                 }
             }
 
             @Override
-            protected void onPostExecute(byte [] bytes) {
+            protected void onPostExecute(byte[] bytes) {
                 Glide.with(mIVMusicCover).asDrawable()
                         .load(bytes)
+                        .override(100, 100)
                         .placeholder(R.drawable.song_placeholder)
                         .into(mIVMusicCover);
             }
@@ -139,7 +138,7 @@ public class ViewHolders {
             Glide.with(mContext).asDrawable()
                     .load(album.getArtworkPath())
                     .placeholder(R.drawable.song_placeholder)
-                    .override(300, 300)
+                    .override(100, 100)
                     .into(mAlbumArt);
 
         }

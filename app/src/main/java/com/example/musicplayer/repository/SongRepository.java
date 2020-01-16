@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.model.Song;
 
 import java.util.ArrayList;
@@ -168,4 +169,5 @@ public class SongRepository {
     public MutableLiveData<Integer> getDominantColor() {
         return mDominantColor;
     }
+
 }
