@@ -70,8 +70,12 @@ public class PlayBackBottomBar {
 
     private void setLastSong() {
         mSong = SongRepository.getInstance(mActivity).findSongById(MusicPreferences.getLastMusic(mActivity));
-        if (mSong != null)
+        if (mSong != null) {
             setupArtwork(mSong);
+            mParentLayout.setVisibility(View.VISIBLE);
+        }
+        else
+            mParentLayout.setVisibility(View.GONE);
     }
 
     public void initService(PlayerService service) {
@@ -86,6 +90,7 @@ public class PlayBackBottomBar {
                 setupArtwork(song);
                 UpdateSongTime();
                 SeekBar();
+                mParentLayout.setVisibility(View.VISIBLE);
             }
         });
 

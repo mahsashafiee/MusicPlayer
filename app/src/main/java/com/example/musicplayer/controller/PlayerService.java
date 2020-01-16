@@ -26,6 +26,7 @@ import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private static int PENDING_INTENT_FLAG = 0;
     private String TAG = "PlayerService";
     private static final String SONG_EXTRA = "song";
-    private final int SKIP_TIME = 5000;
+    private final int SKIP_TIME = 3000;
     private float volume;
     private boolean pauseFocus = false;
 
@@ -95,7 +96,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     }
 
     private void setPlayList() {
-        mPlayList = PlayList.getSongList();
+        mPlayList = new ArrayList<>();
+        mPlayList.addAll(PlayList.getSongList());
         if (mShuffle)
             Collections.shuffle(mPlayList);
     }

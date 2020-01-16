@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
+import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
@@ -42,6 +44,8 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
                     .commit();
         }
 
+        PictureUtils.setBackgroundGradient(this, MusicPreferences.getMusicDominantColor(this));
+
     }
 
     @Override
@@ -54,4 +58,9 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PictureUtils.setBackgroundGradient(this, MusicPreferences.getMusicDominantColor(this));
+    }
 }
