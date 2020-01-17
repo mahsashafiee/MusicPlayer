@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.controller.adapter.ListPagerAdapter;
+import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
@@ -29,7 +30,7 @@ import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.tabs.TabLayout;
 
 
-public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection {
+public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection, SongRecyclerAdapter.CallBacks {
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
 

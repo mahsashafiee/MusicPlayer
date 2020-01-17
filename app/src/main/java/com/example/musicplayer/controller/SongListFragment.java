@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.controller.adapter.MusicRecyclerAdapter;
+import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
@@ -28,7 +29,7 @@ import com.example.musicplayer.repository.SongRepository;
 public class SongListFragment extends Fragment {
 
     private RecyclerView songRecycler;
-    private MusicRecyclerAdapter mAdapter;
+    private SongRecyclerAdapter mAdapter;
     private String mAlbumArtist;
     private TextView mListTitle;
 
@@ -93,8 +94,8 @@ public class SongListFragment extends Fragment {
             mListTitle.setText(PlayList.getSongList().get(0).getArtist());
         }
 
-        mAdapter = new MusicRecyclerAdapter(getActivity(), Qualifier.ALLSONG);
-        mAdapter.setList(PlayList.getSongList());
+        mAdapter = new SongRecyclerAdapter(getActivity());
+        mAdapter.setSongs(PlayList.getSongList());
         songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         songRecycler.setAdapter(mAdapter);
 

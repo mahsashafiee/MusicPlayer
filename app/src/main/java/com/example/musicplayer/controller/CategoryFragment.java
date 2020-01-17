@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.controller.adapter.MusicRecyclerAdapter;
+import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.repository.AlbumRepository;
 import com.example.musicplayer.repository.ArtistRepository;
@@ -33,6 +34,7 @@ public class CategoryFragment extends Fragment {
     private ArtistRepository mArtistRepository;
     private SongRepository mSongRepository;
     private MusicRecyclerAdapter mAdapter;
+    private SongRecyclerAdapter mSongAdapter;
 
 
     public CategoryFragment() {
@@ -74,12 +76,18 @@ public class CategoryFragment extends Fragment {
     private void setupRecyclerView() {
 
         mRecyclerView = mView.findViewById(R.id.category_recyclerView);
+        mSongAdapter = new SongRecyclerAdapter(getActivity());
         mAdapter = new MusicRecyclerAdapter(getActivity(), mQualifier);
 
         if (isAdded()) {
 
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            mRecyclerView.setAdapter(mAdapter);
+
+            if (mQualifier.equals(Qualifier.ALLSONG))
+                mRecyclerView.setAdapter(mSongAdapter);
+            else
+                mRecyclerView.setAdapter(mAdapter);
+
         }
 
         /*            mFastScrollerView.setupWithRecyclerView(
@@ -99,7 +107,7 @@ public class CategoryFragment extends Fragment {
 
         if (mQualifier.equals(Qualifier.ALLSONG))
             mSongRepository.getLiveSong().observe(this, Song ->
-                    mAdapter.setList(Song));
+                    mSongAdapter.setSongs(Song));
 
         else if (mQualifier.equals(Qualifier.ALBUM))
             mAlbumRepository.getLiveAlbum().observe(this, albums ->

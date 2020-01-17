@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.lifecycle.LifecycleOwner;
@@ -25,16 +26,15 @@ import com.example.musicplayer.repository.SongRepository;
 import org.jaudiotagger.tag.datatype.Artwork;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 public class PlayBackBottomBar {
 
     private RelativeLayout mParentLayout;
-    private CircularSeekBar mSeekBar;
+    private SeekBar mSeekBar;
     private CircleImageView mCover;
     private MutableLiveData<Integer> mDominantColor;
-    private TextView mDuration, mSongName, mSongArtist;
-    private ImageView mForward;
+    private TextView mSongName, mSongArtist;
+    private ImageView mForward, mBackward;
     private ImageView mPlay;
     private Activity mActivity;
     private PlayerService mPlayer;
@@ -45,6 +45,13 @@ public class PlayBackBottomBar {
         @Override
         public void run() {
             mPlayer.onFastForward();
+            super.run();
+        }
+    };
+    private ForBackListener mBackwardListener = new ForBackListener() {
+        @Override
+        public void run() {
+            mPlayer.onFastBackward();
             super.run();
         }
     };
@@ -60,9 +67,9 @@ public class PlayBackBottomBar {
     private void initView() {
         mParentLayout = mActivity.findViewById(R.id.song_bar);
         mCover = mActivity.findViewById(R.id.song_bar_artwork);
-        mSeekBar = mActivity.findViewById(R.id.song_bar_seek_bar);
-        mDuration = mActivity.findViewById(R.id.song_bar_duration);
-        mForward = mActivity.findViewById(R.id.skip);
+        mSeekBar = mActivity.findViewById(R.id.seekBar);
+        mForward = mActivity.findViewById(R.id.songBar_skip_next);
+        mBackward = mActivity.findViewById(R.id.songBar_skip_previous);
         mPlay = mActivity.findViewById(R.id.play_pause);
         mSongArtist = mActivity.findViewById(R.id.song_bar_artist);
         mSongName = mActivity.findViewById(R.id.song_bar_title);
@@ -87,7 +94,6 @@ public class PlayBackBottomBar {
             } else {
                 mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_pause));
                 setupArtwork(song);
-                UpdateSongTime();
                 SeekBar();
                 mParentLayout.setVisibility(View.VISIBLE);
             }
@@ -102,21 +108,26 @@ public class PlayBackBottomBar {
         mPlay.setOnClickListener(view -> {
             if (mPlayer.isStop()) {
                 mActivity.startService(PlayerService.newIntent(mActivity, mSong));
-                UpdateSongTime();
                 SeekBar();
             } else
                 mPlayer.Pause();
-            if (!mPlayer.isPlaying())
-                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_play_arrow));
-            else
+        });
+
+        mPlayer.getIsPlaying().observe((LifecycleOwner) mActivity, isPlaying -> {
+            if (isPlaying)
                 mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_pause));
+            else
+                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_play_arrow));
         });
 
         mForward.setOnClickListener(view -> mPlayer.goForward());
+        mBackward.setOnClickListener(view -> mPlayer.goBackward());
 
         mForward.setOnTouchListener(mForwardListener);
+        mBackward.setOnTouchListener(mBackwardListener);
 
         mForward.setOnLongClickListener(mForwardListener);
+        mBackward.setOnLongClickListener(mBackwardListener);
     }
 
     private void SeekBar() {
@@ -133,7 +144,7 @@ public class PlayBackBottomBar {
 
     }
 
-    private void UpdateSongTime() {
+/*    private void UpdateSongTime() {
         UpdateSongTime = new Runnable() {
             @Override
             public void run() {
@@ -141,12 +152,11 @@ public class PlayBackBottomBar {
                 int mns = (sTime / 60000) % 60000;
                 int scs = sTime % 60000 / 1000;
                 String songTime = String.format("%02d:%02d", mns, scs);
-                mDuration.setText(songTime);
                 mHandler.postDelayed(this, 130);
             }
         };
         mHandler.post(UpdateSongTime);
-    }
+    }*/
 
     private void setupArtwork(Song song) {
 

@@ -58,6 +58,9 @@ dependencies {
     //glide transformation
     implementation 'jp.wasabeef:glide-transformations:4.0.0'
 
+    //equalizer
+    implementation 'com.github.claucookie.miniequalizer:library:1.0.0'
+
 
 /*
     //fast recycler view

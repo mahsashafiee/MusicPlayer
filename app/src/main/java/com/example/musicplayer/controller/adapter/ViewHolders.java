@@ -3,6 +3,7 @@ package com.example.musicplayer.controller.adapter;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,69 +36,6 @@ public class ViewHolders {
         void PlaySong(Song song);
 
         void SongList(String albumOrArtist, Qualifier qualifier);
-    }
-
-    /**
-     * SONG VIEW HOLDER CLASS
-     */
-
-    public class MusicItems extends RecyclerView.ViewHolder implements MusicRecyclerAdapter.BindCallBack<Song> {
-
-        private TextView mTVMusicName, mTVMusicArtist, mDuration;
-        private CircleImageView mIVMusicCover;
-        private Song mSong;
-
-        public MusicItems(@NonNull View itemView) {
-            super(itemView);
-
-            mIVMusicCover = itemView.findViewById(R.id.item_song_art);
-            mTVMusicArtist = itemView.findViewById(R.id.item_song_artist);
-            mTVMusicName = itemView.findViewById(R.id.item_song_title);
-            mDuration = itemView.findViewById(R.id.item_song_duration);
-
-            itemView.setOnClickListener(view -> callBacks.PlaySong(mSong));
-
-        }
-
-        @Override
-        public void bindHolder(Song song) {
-
-            mSong = song;
-
-            mTVMusicArtist.setText(mSong.getArtist());
-            mTVMusicName.setText(mSong.getTitle());
-            mDuration.setText(mSong.getDuration());
-            mIVMusicCover.setImageDrawable(mContext.getResources().getDrawable(R.drawable.song_placeholder));
-
-            SetArt art = new SetArt();
-            art.execute();
-
-        }
-
-        private class SetArt extends AsyncTask<Void, Void, byte[]> {
-
-            @Override
-            protected byte[] doInBackground(Void... voids) {
-                try {
-                    Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
-                    return artwork.getBinaryData();
-
-                } catch (OutOfMemoryError error) {
-                    return null;
-                } catch (NullPointerException e) {
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(byte[] bytes) {
-                Glide.with(mIVMusicCover).asDrawable()
-                        .load(bytes)
-                        .override(100, 100)
-                        .placeholder(R.drawable.song_placeholder)
-                        .into(mIVMusicCover);
-            }
-        }
     }
 
 

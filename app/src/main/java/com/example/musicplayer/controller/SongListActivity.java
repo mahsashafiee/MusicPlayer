@@ -9,12 +9,13 @@ import android.os.Bundle;
 import com.example.musicplayer.R;
 import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.Utils.PictureUtils;
+import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
 
 
-public class SongListActivity extends AppCompatActivity implements ViewHolders.CallBacks {
+public class SongListActivity extends AppCompatActivity implements ViewHolders.CallBacks, SongRecyclerAdapter.CallBacks {
 
     private SongListFragment mFragment;
 

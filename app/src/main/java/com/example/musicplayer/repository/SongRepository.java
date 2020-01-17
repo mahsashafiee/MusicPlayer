@@ -25,9 +25,11 @@ public class SongRepository {
     private String TAG = "Album exception";
     private MutableLiveData<List<Song>> mLiveSong = new MutableLiveData<>();
     private MutableLiveData<Integer> mDominantColor = new MutableLiveData<>();
+    private MutableLiveData<Integer> mSongPosition = new MutableLiveData<>();
 
     private SongRepository(Context context) {
         mContext = context;
+        mSongPosition.setValue(-1);
     }
 
     public static SongRepository getInstance(Context context) {
@@ -170,4 +172,7 @@ public class SongRepository {
         return mDominantColor;
     }
 
+    public MutableLiveData<Integer> getSongPosition() {
+        return mSongPosition;
+    }
 }

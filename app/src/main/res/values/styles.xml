@@ -23,17 +23,9 @@
     <style name="Widget.MusicPlayer.SeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="cs_circle_color">@color/colorOfLine</item>
         <item name="cs_circle_progress_color">@android:color/primary_text_dark_nodisable</item>
-        <item name="cs_circle_stroke_width">4dp</item>
+        <item name="cs_circle_stroke_width">3dp</item>
         <item name="cs_pointer_color">@android:color/primary_text_dark_nodisable</item>
         <item name="cs_pointer_stroke_width">14dp</item>
-    </style>
-
-    <style name="Widget.MusicPlayer.SeekBar.Small" parent="Widget.AppCompat.SeekBar">
-        <item name="cs_circle_color">@color/colorOfLine</item>
-        <item name="cs_circle_progress_color">@android:color/primary_text_dark_nodisable</item>
-        <item name="cs_circle_stroke_width">1dp</item>
-        <item name="cs_pointer_color">@android:color/primary_text_dark_nodisable</item>
-        <item name="cs_pointer_stroke_width">4dp</item>
     </style>
 
     <style name="Widget.MusicPlayer.TabLayout" parent="Widget.MaterialComponents.TabLayout">

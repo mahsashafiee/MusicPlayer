@@ -7,38 +7,39 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
-    <View
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/seekBar"
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@color/colorOfLine" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@android:color/transparent"
+        android:max="100"
+        android:maxHeight="2dp"
+        android:minHeight="2dp"
+        android:padding="0dp"
+        android:progress="0"
+        android:progressDrawable="@drawable/progress_bar_drawable"
+        android:secondaryProgress="0"
+        android:thumb="@drawable/progress_thumb"
+        android:thumbOffset="0dp" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/song_bar_artwork"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_alignStart="@id/song_bar_seek_bar"
-        android:layout_alignLeft="@id/song_bar_seek_bar"
-        android:layout_alignTop="@id/song_bar_seek_bar"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_below="@id/seekBar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="6dp"
         android:background="@android:color/transparent"
         android:elevation="8dp"
         app:civ_border_color="@color/colorOfLine"
         app:civ_border_width="1px"
         tools:src="@tools:sample/avatars" />
-
-    <me.tankery.lib.circularseekbar.CircularSeekBar
-
-        android:id="@+id/song_bar_seek_bar"
-        style="@style/Widget.MusicPlayer.SeekBar.Small"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="4dp" />
 
     <TextView
         android:id="@+id/song_bar_title"
@@ -46,10 +47,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/song_bar_artwork"
-        android:layout_toStartOf="@id/song_bar_duration"
-        android:layout_toLeftOf="@id/song_bar_duration"
-        android:layout_toEndOf="@id/song_bar_seek_bar"
-        android:layout_toRightOf="@id/song_bar_seek_bar"
+        android:layout_marginTop="3dp"
+        android:layout_toStartOf="@id/songBar_skip_previous"
+        android:layout_toLeftOf="@id/songBar_skip_previous"
+        android:layout_toEndOf="@id/song_bar_artwork"
+        android:layout_toRightOf="@id/song_bar_artwork"
         android:paddingStart="2dp"
         android:paddingLeft="2dp"
         android:paddingTop="2dp"
@@ -65,10 +67,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/song_bar_title"
         android:layout_marginBottom="4dp"
-        android:layout_toStartOf="@id/song_bar_duration"
-        android:layout_toLeftOf="@id/song_bar_duration"
-        android:layout_toEndOf="@id/song_bar_seek_bar"
-        android:layout_toRightOf="@id/song_bar_seek_bar"
+        android:layout_toStartOf="@id/songBar_skip_previous"
+        android:layout_toLeftOf="@id/songBar_skip_previous"
+        android:layout_toEndOf="@id/song_bar_artwork"
+        android:layout_toRightOf="@id/song_bar_artwork"
         android:paddingStart="2dp"
         android:paddingLeft="2dp"
         android:paddingEnd="16dp"
@@ -76,17 +78,17 @@
         tools:text="@tools:sample/first_names" />
 
     <ImageView
-        android:id="@+id/skip"
+        android:id="@+id/songBar_skip_next"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_alignTop="@id/song_bar_artwork"
         android:layout_alignBottom="@id/song_bar_artwork"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/activity_spacing"
         android:layout_marginRight="@dimen/activity_spacing"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/circular_button"
         android:foregroundGravity="center_vertical"
         android:padding="11dp"
@@ -98,30 +100,32 @@
         android:layout_height="36dp"
         android:layout_alignTop="@id/song_bar_artwork"
         android:layout_alignBottom="@id/song_bar_artwork"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:layout_toStartOf="@id/skip"
-        android:layout_toLeftOf="@id/skip"
+        android:layout_marginBottom="5dp"
+        android:layout_toStartOf="@id/songBar_skip_next"
+        android:layout_toLeftOf="@id/songBar_skip_next"
+        android:background="@drawable/circular_button"
+        android:foregroundGravity="center_vertical"
+        android:padding="8dp"
+        app:srcCompat="@drawable/ic_pause" />
+
+    <ImageView
+        android:id="@+id/songBar_skip_previous"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@id/song_bar_artwork"
+        android:layout_alignBottom="@id/song_bar_artwork"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="8dp"
+        android:layout_toStartOf="@id/play_pause"
+        android:layout_toLeftOf="@id/play_pause"
         android:background="@drawable/circular_button"
         android:foregroundGravity="center_vertical"
         android:padding="11dp"
-        app:srcCompat="@drawable/ic_pause" />
-
-    <TextView
-        android:id="@+id/song_bar_duration"
-        style="@style/TextAppearance.MaterialComponents.Caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/song_bar_artwork"
-        android:layout_alignBottom="@id/song_bar_artwork"
-        android:layout_toStartOf="@id/play_pause"
-        android:layout_toLeftOf="@id/play_pause"
-        android:foregroundGravity="center_vertical"
-        android:gravity="center_vertical"
-        android:padding="8dp"
-        android:textColor="@android:color/white"
-        tools:text="04:32" />
+        app:srcCompat="@drawable/ic_skip_previous" />
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,14 +12,14 @@
         android:id="@+id/item_song_art"
         android:layout_width="54dp"
         android:layout_height="54dp"
-        android:elevation="8dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
         android:layout_margin="6dp"
-        app:civ_border_width="1px"
-        app:civ_border_color="@color/colorOfLine"
         android:background="@android:color/transparent"
+        android:elevation="8dp"
+        app:civ_border_color="@color/colorOfLine"
+        app:civ_border_width="1px"
         tools:src="@tools:sample/avatars" />
 
     <TextView
@@ -27,9 +28,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/item_song_art"
-        android:layout_marginTop="2.2dp"
-        android:layout_toStartOf="@id/item_song_duration"
-        android:layout_toLeftOf="@id/item_song_duration"
+        android:layout_marginTop="4dp"
+        android:layout_toStartOf="@id/equalizer"
+        android:layout_toLeftOf="@id/equalizer"
         android:layout_toEndOf="@id/item_song_art"
         android:layout_toRightOf="@id/item_song_art"
         android:paddingStart="2dp"
@@ -47,8 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/item_song_title"
         android:layout_marginBottom="4dp"
-        android:layout_toStartOf="@id/item_song_duration"
-        android:layout_toLeftOf="@id/item_song_duration"
+        android:layout_toStartOf="@id/equalizer"
+        android:layout_toLeftOf="@id/equalizer"
         android:layout_toEndOf="@id/item_song_art"
         android:layout_toRightOf="@id/item_song_art"
         android:paddingStart="2dp"
@@ -57,32 +58,35 @@
         android:paddingRight="16dp"
         tools:text="@tools:sample/first_names" />
 
-    <ImageView
-        android:id="@+id/more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/item_song_art"
-        android:layout_alignBottom="@id/item_song_art"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:foregroundGravity="center_vertical"
-        android:padding="2dp"
-        app:srcCompat="@drawable/ic_more_vert_black" />
-
     <TextView
         android:id="@+id/item_song_duration"
         style="@style/TextAppearance.MaterialComponents.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/item_song_art"
-        android:layout_alignBottom="@id/item_song_art"
-        android:layout_toStartOf="@id/more"
-        android:layout_toLeftOf="@id/more"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
         android:foregroundGravity="center_vertical"
         android:gravity="center_vertical"
-        android:padding="6dp"
+        android:padding="8dp"
         android:textColor="@android:color/white"
         tools:text="04:32" />
+
+    <es.claucookie.miniequalizerlibrary.EqualizerView
+        android:id="@+id/equalizer"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/item_song_duration"
+        android:layout_toLeftOf="@id/item_song_duration"
+        android:background="@android:color/transparent"
+        android:foregroundGravity="center_vertical"
+        android:gravity="center"
+        android:padding="2dp"
+        custom:animDuration="2000"
+        custom:foregroundColor="@android:color/white" />
 
     <View
         android:layout_width="match_parent"

@@ -28,8 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/item_album_cover"
         android:layout_marginTop="2.2dp"
-        android:layout_toStartOf="@id/more"
-        android:layout_toLeftOf="@id/more"
+        android:layout_toStartOf="@id/equalizer"
+        android:layout_toLeftOf="@id/equalizer"
         android:layout_toEndOf="@id/item_album_cover"
         android:layout_toRightOf="@id/item_album_cover"
         android:paddingStart="2dp"
@@ -47,8 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/item_album_title"
         android:layout_marginBottom="4dp"
-        android:layout_toStartOf="@id/more"
-        android:layout_toLeftOf="@id/more"
+        android:layout_toStartOf="@id/equalizer"
+        android:layout_toLeftOf="@id/equalizer"
         android:layout_toEndOf="@id/item_total_songs"
         android:layout_toRightOf="@id/item_total_songs"
         android:paddingStart="4dp"
@@ -71,7 +71,7 @@
 
 
     <ImageView
-        android:id="@+id/more"
+        android:id="@+id/equalizer"
         android:layout_width="38dp"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/item_album_cover"

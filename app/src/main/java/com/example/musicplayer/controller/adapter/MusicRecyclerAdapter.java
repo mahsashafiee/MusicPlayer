@@ -37,9 +37,7 @@ public class MusicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
 
-        if (flag.equals(Qualifier.ALLSONG))
-            return viewHolders.new MusicItems(inflater.inflate(R.layout.song_list_item, parent, false));
-        else if (flag.equals(Qualifier.ALBUM))
+         if (flag.equals(Qualifier.ALBUM))
             return viewHolders.new AlbumItems(inflater.inflate(R.layout.album_list_item, parent, false));
 
         return viewHolders.new ArtistItems(inflater.inflate(R.layout.artist_list_item, parent, false));

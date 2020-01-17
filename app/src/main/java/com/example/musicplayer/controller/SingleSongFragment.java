@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -149,6 +150,7 @@ public class SingleSongFragment extends Fragment {
      * Animation handler
      */
     private void setDrawable() {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             playingState = getActivity().getDrawable(R.drawable.avd_anim);
             pauseState = getActivity().getDrawable(R.drawable.avd_play_anim);
@@ -215,13 +217,14 @@ public class SingleSongFragment extends Fragment {
         mDuration.setText(mSong.getDuration());
 
         setDrawable();
+        mPlayer.getIsPlaying().observe(getActivity(), isPlaying -> {
+            if (isPlaying)
+                mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
+            else
+                mPlayPause.setImageDrawable(pauseState);
+            startAnimation(mPlayer.isPlaying());
+        });
 
-        if (mPlayer.isPlaying())
-            mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
-        else
-            mPlayPause.setImageDrawable(pauseState);
-
-        startAnimation(mPlayer.isPlaying());
     }
 
     private void updateSongTime() {

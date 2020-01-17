@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 public class PlayerService extends Service implements MediaPlayer.OnCompletionListener,
         AudioManager.OnAudioFocusChangeListener {
 
@@ -47,6 +48,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private AudioManager mAudioManager;
     private List<Song> mPlayList;
     private Song mSong;
+    private MutableLiveData<Boolean> mIsPlaying = new MutableLiveData<>();
     private MutableLiveData<Boolean> mListLoop = new MutableLiveData<>();
     private MutableLiveData<Boolean> mShuffle = new MutableLiveData<>();
     private MutableLiveData<Song> mLiveSong = new MutableLiveData<>();
@@ -95,6 +97,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         registerReceiver(becomingNoisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
         mShuffle.setValue(MusicPreferences.getIsShuffle(this));
         mListLoop.setValue(MusicPreferences.getIsListLoop(this));
+        mIsPlaying.setValue(false);
         singleLoop(!mListLoop.getValue());
     }
 
@@ -159,6 +162,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             songPlayer(song);
 
         MusicPreferences.setLastMusic(this, song.getSongId());
+        mIsPlaying.setValue(true);
     }
 
     private void songPlayer(Song song) {
@@ -192,11 +196,13 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             if (isStop) {
                 goForward();
                 isPaused = false;
+                mIsPlaying.setValue(!isPaused);
                 return;
             }
             mMediaPlayer.start();
             isPaused = false;
         }
+        mIsPlaying.setValue(!isPaused);
     }
 
     public void Stop() {
@@ -365,5 +371,9 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     public MutableLiveData<Boolean> getListLoop() {
         return mListLoop;
+    }
+
+    public MutableLiveData<Boolean> getIsPlaying() {
+        return mIsPlaying;
     }
 }
