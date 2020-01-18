@@ -68,6 +68,10 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
     private void RunActivity() {
 
+        // Bind to LocalService
+        Intent intent = new Intent(this, PlayerService.class);
+        bindService(intent, this, Context.BIND_AUTO_CREATE);
+
         setContentView(R.layout.activity_category);
         playBackBottomBar = new PlayBackBottomBar(this);
 
@@ -155,16 +159,8 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        // Bind to LocalService
-        Intent intent = new Intent(this, PlayerService.class);
-        bindService(intent, this, Context.BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         unbindService(this);
     }
 

@@ -47,11 +47,14 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
                     .commit();
         }
 
+        PictureUtils.setBackgroundGradient(this, MusicPreferences.getMusicDominantColor(this));
+
     }
 
     @Override
     public void PlaySong(Song song) {
         startActivity(SingleSongActivity.newIntent(SongListActivity.this, song));
+        startService(PlayerService.newIntent(this, song));
     }
 
     @Override

@@ -12,7 +12,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -77,6 +76,12 @@ public class SingleSongFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * FRAGMENT FACTORY
+     *
+     * @param song
+     * @return
+     */
     public static SingleSongFragment newInstance(Song song) {
 
         Bundle args = new Bundle();
@@ -92,33 +97,28 @@ public class SingleSongFragment extends Fragment {
         this.mPlayer = mPlayer;
     }
 
+    /**
+     * FRAGMENT CREATION
+     *
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mSong = getArguments().getParcelable(ARG_SONG);
         mDominantColor = SongRepository.getInstance(getActivity()).getDominantColor();
-
-        mPlayer.getLiveSong().observe(this, song -> {
-            if (song == null) {
-                mPlayPause.setImageDrawable(pauseState);
-                mHandler.removeCallbacks(mRunnable);
-                if (mPlayer.isPlaying())
-                    mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
-                else
-                    mPlayPause.setImageDrawable(pauseState);
-
-                startAnimation(false);
-            } else {
-                mSong = song;
-                initView();
-                updateSongTime();
-            }
-        });
-
-
+        liveDataObservers();
     }
 
+    /**
+     * FRAGMENT VIEW CREATION
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -129,20 +129,6 @@ public class SingleSongFragment extends Fragment {
         updateSongTime();
         SeekBar();
         Listener();
-
-        mPlayer.getShuffle().observe(this, isShuffle -> {
-            if (isShuffle)
-                mShuffle.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_shuffle_on));
-            else
-                mShuffle.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_shuffle_off));
-
-        });
-        mPlayer.getListLoop().observe(this, isListLoop -> {
-            if (isListLoop)
-                mRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_all));
-            else
-                mRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_one));
-        });
         return mView;
     }
 
@@ -150,7 +136,6 @@ public class SingleSongFragment extends Fragment {
      * Animation handler
      */
     private void setDrawable() {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             playingState = getActivity().getDrawable(R.drawable.avd_anim);
             pauseState = getActivity().getDrawable(R.drawable.avd_play_anim);
@@ -171,8 +156,10 @@ public class SingleSongFragment extends Fragment {
             ((Animatable) pauseState).start();
     }
 
+    /**
+     * UI COMPONENT FIND
+     */
     private void findViews() {
-
         mCover = mView.findViewById(R.id.album_cover);
         mSeekBar = mView.findViewById(R.id.seekBar);
         mTitle = mView.findViewById(R.id.song_title);
@@ -185,8 +172,11 @@ public class SingleSongFragment extends Fragment {
         mAlbum = mView.findViewById(R.id.song_album_name);
         mDuration = mView.findViewById(R.id.song_total_duration);
         mRealtimeDuration = mView.findViewById(R.id.song_realtime_duration);
-
     }
+
+    /**
+     * UI COMPONENT VALUE
+     */
 
     private void initView() {
 
@@ -217,31 +207,82 @@ public class SingleSongFragment extends Fragment {
         mDuration.setText(mSong.getDuration());
 
         setDrawable();
-        mPlayer.getIsPlaying().observe(getActivity(), isPlaying -> {
-            if (isPlaying)
-                mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
-            else
-                mPlayPause.setImageDrawable(pauseState);
-            startAnimation(mPlayer.isPlaying());
-        });
-
+        startAnimation(mPlayer.isPlaying());
     }
 
+    /**
+     * LIVE DATA OBSERVER
+     */
+    private void liveDataObservers() {
+
+        mPlayer.getLiveSong().observe(this, song -> {
+            if (song == null) {
+                mPlayPause.setImageDrawable(pauseState);
+                mHandler.removeCallbacks(mRunnable);
+                startAnimation(false);
+            } else {
+                mSong = song;
+                initView();
+                updateSongTime();
+            }
+        });
+
+        mPlayer.isShuffle().observe(this, aBoolean -> {
+            if (aBoolean)
+                mShuffle.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_shuffle_on));
+            else
+                mShuffle.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_shuffle_off));
+        });
+
+        mPlayer.isListLoop().observe(this, aBoolean -> {
+            if (aBoolean)
+                mRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_all));
+        });
+
+        mPlayer.isSingleLoop().observe(this, aBoolean -> {
+            if (aBoolean)
+                mRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_one));
+            else if (!mPlayer.isListLoop().getValue())
+                mRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_none));
+        });
+
+        mPlayer.isPaused().observe(this, aBoolean -> {
+            if (!aBoolean)
+                mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
+            else {
+                mPlayPause.setImageDrawable(pauseState);
+                startAnimation(false);
+            }
+        });
+    }
+
+    /**
+     * SONG CURRENT DURATION
+     */
     private void updateSongTime() {
         mRunnable = new Runnable() {
             @Override
             public void run() {
                 int sTime = mPlayer.getCurrentPosition();
+                String songTime;
+
+                int hrs = (sTime / 3600000);
                 int mns = (sTime / 60000) % 60000;
                 int scs = sTime % 60000 / 1000;
-                String songTime = String.format("%02d:%02d", mns, scs);
+                if (hrs == 0) {
+                    songTime = String.format("%02d:%02d", mns, scs);
+                } else
+                    songTime = String.format("%02d:%02d:%02d", hrs, mns, scs);
                 mRealtimeDuration.setText(songTime);
-                mHandler.postDelayed(this, 100);
+                mHandler.postDelayed(this, 500);
             }
         };
         mHandler.post(mRunnable);
     }
 
+    /**
+     * SEEK BAR
+     */
     private void SeekBar() {
         Handler handler = new Handler();
         Runnable runnable = new Runnable() {
@@ -249,13 +290,16 @@ public class SingleSongFragment extends Fragment {
             public void run() {
                 mSeekBar.setMax(mPlayer.getDuration());
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
-                handler.postDelayed(this, 130);
+                handler.postDelayed(this, 140);
             }
         };
 
         getActivity().runOnUiThread(runnable);
     }
 
+    /**
+     * UI LISTENER
+     */
     @SuppressLint("ClickableViewAccessibility")
     private void Listener() {
 
@@ -278,7 +322,15 @@ public class SingleSongFragment extends Fragment {
 
         mShuffle.setOnClickListener(view -> mPlayer.shuffle());
 
-        mRepeat.setOnClickListener(view -> mPlayer.listLoop());
+        mRepeat.setOnClickListener(view -> {
+            if (mPlayer.isListLoop().getValue()) {
+                mPlayer.listLoop();
+                mPlayer.singleLoop();
+            } else if (mPlayer.isSingleLoop().getValue()) {
+                mPlayer.singleLoop();
+            } else
+                mPlayer.listLoop();
+        });
 
         mSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
