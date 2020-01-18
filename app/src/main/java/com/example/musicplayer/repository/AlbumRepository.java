@@ -4,6 +4,7 @@ import android.content.Context;
 import android.provider.MediaStore;
 
 import androidx.lifecycle.MutableLiveData;
+
 import com.example.musicplayer.model.Album;
 
 import java.util.ArrayList;
@@ -16,30 +17,30 @@ public class AlbumRepository {
     private List<Album> mAlbums;
     private MutableLiveData<List<Album>> mLiveAlbum = new MutableLiveData<>();
 
-    private AlbumRepository(Context context){
+    private AlbumRepository(Context context) {
         mContext = context;
     }
 
-    public static AlbumRepository getInstance(Context context){
-        if(instance==null)
+    public static AlbumRepository getInstance(Context context) {
+        if (instance == null)
             instance = new AlbumRepository(context);
         return instance;
     }
 
-    public List<Album> getAlbums(){
+    public List<Album> getAlbums() {
         Collections.sort(mAlbums);
         return mAlbums;
     }
 
-    public MutableLiveData<List<Album>> getLiveAlbum(){
+    public MutableLiveData<List<Album>> getLiveAlbum() {
         return mLiveAlbum;
     }
 
-    public void findAllAlbum(){
+    public void findAllAlbum() {
         new Thread(this::findAlbum).start();
     }
 
-    private void findAlbum(){
+    private void findAlbum() {
 //        mAlbums = Collections.synchronizedList(new ArrayList<>());
         mAlbums = new ArrayList<>();
 
@@ -54,7 +55,7 @@ public class AlbumRepository {
                     mAlbums.add(cursor.getAlbum());
                     cursor.moveToNext();
 
-                }while (!cursor.isAfterLast());
+                } while (!cursor.isAfterLast());
 
             } finally {
                 mLiveAlbum.postValue(getAlbums());

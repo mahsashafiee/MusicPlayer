@@ -49,11 +49,13 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private Song mSong;
     private MutableLiveData<Song> mLiveSong = new MutableLiveData<>();
     private int mCurrentSongIndex;
-    private boolean mListLoop;
-    private boolean mShuffle;
-    private boolean isPaused;
-    private boolean isStop = true;
     private int newPosition;
+
+    private MutableLiveData<Boolean> mListLoop = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mSingleLoop = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mShuffle = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isPaused = new MutableLiveData<>();
+    private boolean isStop = true;
 
     BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
         @Override
@@ -72,6 +74,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     @Override
     public void onCreate() {
         super.onCreate();
+        setLiveDatas();
         initMediaPlayer();
     }
 
@@ -86,6 +89,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     }
 
     private void initMediaPlayer() {
+        setPlayList();
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
@@ -98,8 +102,22 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private void setPlayList() {
         mPlayList = new ArrayList<>();
         mPlayList.addAll(PlayList.getSongList());
-        if (mShuffle)
+        if (mShuffle.getValue())
             Collections.shuffle(mPlayList);
+    }
+
+    private void setLiveDatas() {
+
+        mShuffle.setValue(MusicPreferences.getIsShuffle(this));
+        if (mShuffle == null)
+            mShuffle.setValue(false);
+        mListLoop.setValue(MusicPreferences.getIsListLoop(this));
+        if (mListLoop == null)
+            mListLoop.setValue(false);
+        mSingleLoop.setValue(MusicPreferences.getIsSingleLoop(this));
+        if (mSingleLoop == null)
+            mSingleLoop.setValue(false);
+        isPaused.setValue(true);
     }
 
     @Override
@@ -109,6 +127,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             initMediaPlayer();
         if (!requestAudioFocus())
             stopSelf();
+        if(mShuffle.getValue())
+            shuffle();
         Play((Song) intent.getParcelableExtra(SONG_EXTRA));
         startForeground(1, getNotification());
         return START_NOT_STICKY;
@@ -121,18 +141,18 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        if (mCurrentSongIndex == mPlayList.size() - 1 && !mListLoop) {
+        if (mCurrentSongIndex == mPlayList.size() - 1 && !mSingleLoop.getValue() && !mListLoop.getValue()) {
             Stop();
-            isStop = true;
+            isPaused.setValue(true);
             mLiveSong.setValue(null);
             return;
         }
-        //List loop handler
-        if (!mListLoop) {
-            mCurrentSongIndex++;
-        } else {
+        //loop handler
+        if (mListLoop.getValue() && !mSingleLoop.getValue())
             mCurrentSongIndex = (mCurrentSongIndex + 1) % mPlayList.size();
-        }
+
+        else if (!mListLoop.getValue() && !mSingleLoop.getValue())
+            mCurrentSongIndex++;
 
         //plays the song that is referred by "mCurrentSongIndex"
         songPlayer(mPlayList.get(mCurrentSongIndex));
@@ -144,9 +164,9 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         if (mSong == null)
             songPlayer(song);
 
-        //check if the current song is paused
+            //check if the current song is paused
         else if (!mMediaPlayer.isPlaying() && mSong.equals(song)) {
-            if (isPaused)
+            if (isPaused.getValue())
                 Pause();
             else
                 songPlayer(song);
@@ -162,7 +182,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         mSong = song;
         mCurrentSongIndex = mPlayList.indexOf(song);
         Play(song.getPath());
-        MusicPreferences.setLastMusic(this,mSong.getSongId());
+        MusicPreferences.setLastMusic(this, mSong.getSongId());
 
         //observe in single song fragment
         mLiveSong.setValue(song);
@@ -175,29 +195,32 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             mMediaPlayer.prepare();
             mMediaPlayer.start();
             isStop = false;
+            isPaused.setValue(false);
         } catch (IOException e) {
             Log.d(TAG, "Play: " + e.getMessage());
         }
     }
 
     public void Pause() {
+
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
-            isPaused = true;
+            isPaused.setValue(true);
         } else if (!mMediaPlayer.isPlaying()) {
             if (isStop) {
                 goForward();
-                isPaused = false;
+                isPaused.setValue(false);
                 return;
             }
             mMediaPlayer.start();
-            isPaused = false;
+            isPaused.setValue(false);
         }
     }
 
     public void Stop() {
         mMediaPlayer.stop();
         mMediaPlayer.reset();
+        isStop = true;
     }
 
     public void Seek(int msec) {
@@ -212,24 +235,31 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         removeAudioFocus();
     }
 
-    public void SingleLoop(boolean loop) {
-        mMediaPlayer.setLooping(loop);
+    public void singleLoop() {
+        mSingleLoop.setValue(!mSingleLoop.getValue());
+        MusicPreferences.setMusicIsSingleLoop(this, mSingleLoop.getValue());
     }
 
-    public void ListLoop() {
-        mListLoop = !mListLoop;
+    public void listLoop() {
+        mListLoop.setValue(!mListLoop.getValue());
+        MusicPreferences.setMusicIsListLoop(this, mListLoop.getValue());
     }
 
-    public void Shuffle() {
-        mShuffle = !mShuffle;
+    public void shuffle() {
+        mShuffle.setValue(!mShuffle.getValue());
 
-        if (mShuffle)
+        if (mShuffle.getValue()) {
             Collections.shuffle(mPlayList);
+            mCurrentSongIndex = mPlayList.indexOf(mSong);
+            mPlayList.set(mCurrentSongIndex,mPlayList.get(0));
+            mPlayList.set(0,mSong);
+        }
         else {
             mPlayList = PlayList.getSongList();
             mCurrentSongIndex = mPlayList.indexOf(mSong);
         }
 
+        MusicPreferences.setMusicIsShuffleOn(this, mShuffle.getValue());
     }
 
     public int getCurrentPosition() {
@@ -252,12 +282,20 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         songPlayer(mPlayList.get((mCurrentSongIndex - 1 + mPlayList.size()) % mPlayList.size()));
     }
 
-    public boolean isShuffle() {
+    public LiveData<Boolean> isShuffle() {
         return mShuffle;
     }
 
-    public boolean isListLoop() {
+    public LiveData<Boolean> isListLoop() {
         return mListLoop;
+    }
+
+    public LiveData<Boolean> isSingleLoop() {
+        return mSingleLoop;
+    }
+
+    public LiveData<Boolean> isPaused() {
+        return isPaused;
     }
 
     public boolean isStop() {
@@ -294,7 +332,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             case AudioManager.AUDIOFOCUS_GAIN:
                 if (mMediaPlayer == null) initMediaPlayer();
 
-                else if (!mMediaPlayer.isPlaying() && pauseFocus){
+                else if (!mMediaPlayer.isPlaying() && pauseFocus) {
                     volume = 0f;
                     Pause();
                     pauseFocus = false;
@@ -306,8 +344,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
                     public void run() {
                         mMediaPlayer.setVolume(volume, volume);
                         volume += 0.1;
-                        if(volume <= 1)
-                            handler.postDelayed(this::run,250);
+                        if (volume <= 1)
+                            handler.postDelayed(this::run, 250);
                     }
                 });
                 break;
@@ -341,7 +379,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         return AudioManager.AUDIOFOCUS_REQUEST_GRANTED == mAudioManager.abandonAudioFocus(this);
     }
 
-    private Notification getNotification(){
+    private Notification getNotification() {
         return new NotificationCompat
                 .Builder(this, getString(R.string.notification_channel_id))
                 .setContentIntent(PendingIntent.getActivity(

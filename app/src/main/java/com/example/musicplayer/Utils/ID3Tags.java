@@ -68,8 +68,8 @@ public class ID3Tags {
             if (mp3Tag != null)
                 return mp3Tag.getFirstArtwork();
 
-        }catch (Exception e){
-            Log.d(TAG, "getArtwork: "+e.getMessage());
+        } catch (Exception e) {
+            Log.d(TAG, "getArtwork: " + e.getMessage());
         }
         return null;
     }

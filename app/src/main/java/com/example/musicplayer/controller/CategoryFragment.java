@@ -2,10 +2,12 @@ package com.example.musicplayer.controller;
 
 
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +81,17 @@ public class CategoryFragment extends Fragment {
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             mRecyclerView.setAdapter(mAdapter);
         }
+
+        /*            mFastScrollerView.setupWithRecyclerView(
+                    mRecyclerView,
+                    (position) -> {
+                        Album item = data.get(position); // Get your model object
+                        // or fetch the section at [position] from your database
+                        return new FastScrollItemIndicator.Text(
+                                item.getTitle().substring(0, 1).toUpperCase() // Grab the first letter and capitalize it
+                        ); // Return a text indicator
+                    }
+            );*/
 
     }
 

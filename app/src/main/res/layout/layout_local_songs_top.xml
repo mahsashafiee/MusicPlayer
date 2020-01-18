@@ -25,8 +25,8 @@
         android:layout_weight="5"
         android:gravity="center"
         android:padding="14dp"
-        android:textColor="@android:color/white"
         android:text="@string/local_songs"
+        android:textColor="@android:color/white"
         android:textStyle="bold" />
 
     <ImageView

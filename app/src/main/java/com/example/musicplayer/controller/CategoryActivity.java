@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.example.musicplayer.R;
-import com.example.musicplayer.controller.adapter.PagerAdapter;
+import com.example.musicplayer.controller.adapter.ListPagerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
@@ -37,7 +37,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     private TabLayout mTabLayout;
     private View mIndicator;
     private int mIndicatorWidth;
-    private PagerAdapter mAdapter;
+    private ListPagerAdapter mAdapter;
     private PlayBackBottomBar playBackBottomBar;
 
     private PlayerService mPlayer;
@@ -66,6 +66,10 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     private void RunActivity() {
+
+        // Bind to LocalService
+        Intent intent = new Intent(this, PlayerService.class);
+        bindService(intent, this, Context.BIND_AUTO_CREATE);
 
         setContentView(R.layout.activity_category);
         playBackBottomBar = new PlayBackBottomBar(this);
@@ -114,7 +118,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         mTabLayout = findViewById(R.id.tab_layout);
         mIndicator = findViewById(R.id.indicator);
 
-        mAdapter = new PagerAdapter(this, getSupportFragmentManager());
+        mAdapter = new ListPagerAdapter(this, getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
     }
@@ -154,16 +158,8 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        // Bind to LocalService
-        Intent intent = new Intent(this, PlayerService.class);
-        bindService(intent, this, Context.BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         unbindService(this);
     }
 

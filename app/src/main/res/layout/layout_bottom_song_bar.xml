@@ -8,9 +8,9 @@
     android:gravity="center_vertical">
 
     <View
-        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="1px"
+        android:layout_alignParentTop="true"
         android:background="@color/colorOfLine" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -32,9 +32,9 @@
     <me.tankery.lib.circularseekbar.CircularSeekBar
 
         android:id="@+id/song_bar_seek_bar"
+        style="@style/Widget.MusicPlayer.SeekBar.Small"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        style="@style/Widget.MusicPlayer.SeekBar.Small"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -98,10 +98,10 @@
         android:layout_height="36dp"
         android:layout_alignTop="@id/song_bar_artwork"
         android:layout_alignBottom="@id/song_bar_artwork"
-        android:layout_marginEnd="10dp"
         android:layout_marginTop="3dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"
         android:layout_toStartOf="@id/skip"
         android:layout_toLeftOf="@id/skip"
         android:background="@drawable/circular_button"

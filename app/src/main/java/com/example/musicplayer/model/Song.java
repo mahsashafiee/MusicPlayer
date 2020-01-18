@@ -5,7 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 
-public class Song implements Comparable<Song> , Parcelable {
+public class Song implements Comparable<Song>, Parcelable {
 
     private Long mSongId;
     private String mTitle;
@@ -16,7 +16,7 @@ public class Song implements Comparable<Song> , Parcelable {
     private String mLyrics;
     private String mFilePath;
 
-    public Song(Uri path , Long id) {
+    public Song(Uri path, Long id) {
         mPath = path;
         mSongId = id;
     }
@@ -45,15 +45,21 @@ public class Song implements Comparable<Song> , Parcelable {
         return mPath;
     }
 
-    public String getLyrics(){ return mLyrics; }
+    public String getLyrics() {
+        return mLyrics;
+    }
 
-    public String getFilePath(){ return mFilePath; }
+    public String getFilePath() {
+        return mFilePath;
+    }
 
     public void setTitle(String Title) {
         this.mTitle = Title;
     }
 
-    public void setPath(Uri Path) { this.mPath = Path; }
+    public void setPath(Uri Path) {
+        this.mPath = Path;
+    }
 
     public void setArtist(String Artist) {
         this.mArtist = Artist;
@@ -73,14 +79,18 @@ public class Song implements Comparable<Song> , Parcelable {
             this.mDuration = String.format("%02d:%02d:%02d", hrs, mns, scs);
     }
 
-    public void setLyrics(String lyrics) {this.mLyrics = lyrics; }
+    public void setLyrics(String lyrics) {
+        this.mLyrics = lyrics;
+    }
 
-    public void setFilePath(String FilePath) {this.mFilePath = FilePath; }
+    public void setFilePath(String FilePath) {
+        this.mFilePath = FilePath;
+    }
 
 
     @Override
     public int compareTo(Song song) {
-        return this.getTitle().compareTo( song.getTitle());
+        return this.getTitle().compareTo(song.getTitle());
     }
 
     @Override
@@ -91,7 +101,6 @@ public class Song implements Comparable<Song> , Parcelable {
         return mSongId.equals(song.mSongId) &&
                 mFilePath.equals(song.mFilePath);
     }
-
 
 
     @Override

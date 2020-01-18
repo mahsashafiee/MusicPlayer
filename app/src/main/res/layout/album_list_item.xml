@@ -50,24 +50,24 @@
         android:layout_toStartOf="@id/more"
         android:layout_toLeftOf="@id/more"
         android:layout_toEndOf="@id/item_total_songs"
+        android:layout_toRightOf="@id/item_total_songs"
         android:paddingStart="4dp"
         android:paddingLeft="4dp"
         android:paddingEnd="16dp"
         android:paddingRight="16dp"
-        tools:text="@tools:sample/first_names"
-        android:layout_toRightOf="@id/item_total_songs" />
+        tools:text="@tools:sample/first_names" />
 
     <TextView
         android:id="@+id/item_total_songs"
         style="@style/Widget.MusicPlayer.TextView.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="2dp"
-        android:paddingEnd="2dp"
-        tools:text="2 songs"
         android:layout_below="@id/item_album_title"
         android:layout_toEndOf="@id/item_album_cover"
-        android:layout_toRightOf="@id/item_album_cover" />
+        android:layout_toRightOf="@id/item_album_cover"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        tools:text="2 songs" />
 
 
     <ImageView

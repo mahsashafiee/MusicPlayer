@@ -22,8 +22,8 @@
     <string name="search">Search…</string>
 
     <plurals name="total_songs">
-        <item quantity="one">%1$d song</item>
-        <item quantity="other">%1$d songs</item>
+        <item quantity="one">%1$d Song</item>
+        <item quantity="other">%1$d Songs</item>
     </plurals>
 
     <!-- TODO: Remove or change this placeholder text -->

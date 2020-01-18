@@ -74,26 +74,26 @@ public class ViewHolders {
 
         }
 
-        private class SetArt extends AsyncTask<Void, Void, byte []> {
+        private class SetArt extends AsyncTask<Void, Void, byte[]> {
 
             @Override
-            protected byte [] doInBackground(Void... voids) {
+            protected byte[] doInBackground(Void... voids) {
                 try {
                     Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
                     return artwork.getBinaryData();
 
-                }catch (OutOfMemoryError error){
+                } catch (OutOfMemoryError error) {
                     return null;
-                }
-                catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     return null;
                 }
             }
 
             @Override
-            protected void onPostExecute(byte [] bytes) {
+            protected void onPostExecute(byte[] bytes) {
                 Glide.with(mIVMusicCover).asDrawable()
                         .load(bytes)
+                        .override(100, 100)
                         .placeholder(R.drawable.song_placeholder)
                         .into(mIVMusicCover);
             }
@@ -110,6 +110,7 @@ public class ViewHolders {
         private TextView mTitle;
         private TextView mArtist;
         private Album mAlbum;
+        private TextView mNumberOfSongs;
 
 
         public AlbumItems(@NonNull View itemView) {
@@ -118,6 +119,7 @@ public class ViewHolders {
             mAlbumArt = itemView.findViewById(R.id.item_album_cover);
             mTitle = itemView.findViewById(R.id.item_album_title);
             mArtist = itemView.findViewById(R.id.item_album_artist);
+            mNumberOfSongs = itemView.findViewById(R.id.item_total_songs);
             itemView.setOnClickListener(view ->
                     callBacks.SongList(mAlbum.getTitle(), Qualifier.ALBUM));
 
@@ -129,11 +131,14 @@ public class ViewHolders {
             mTitle.setText(album.getTitle());
             mArtist.setText(album.getAlbumArtist());
             mAlbumArt.setImageDrawable(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+            String items = mContext.getResources()
+                    .getQuantityString(R.plurals.total_songs, mAlbum.getSongsNumber(), mAlbum.getSongsNumber());
+            mNumberOfSongs.setText(items);
 
             Glide.with(mContext).asDrawable()
                     .load(album.getArtworkPath())
                     .placeholder(R.drawable.song_placeholder)
-                    .override(300, 300)
+                    .override(100, 100)
                     .into(mAlbumArt);
 
         }
@@ -149,12 +154,14 @@ public class ViewHolders {
         private CircleImageView mImage;
         private TextView mName;
         private Artist mArtist;
+        private TextView mNumberOfSongs;
 
         public ArtistItems(@NonNull View itemView) {
             super(itemView);
 
             mName = itemView.findViewById(R.id.item_song_artist);
             mImage = itemView.findViewById(R.id.item_artist_art);
+            mNumberOfSongs = itemView.findViewById(R.id.item_total_songs);
 
             itemView.setOnClickListener(view -> callBacks.SongList(mArtist.getName(), Qualifier.ARTIST));
 
@@ -164,6 +171,10 @@ public class ViewHolders {
         public void bindHolder(Artist artist) {
             mArtist = artist;
             mName.setText(artist.getName());
+            String items = mContext.getResources()
+                    .getQuantityString(R.plurals.total_songs, Integer.valueOf(mArtist.getNumberOfSongs()),
+                            Integer.valueOf(mArtist.getNumberOfSongs()));
+            mNumberOfSongs.setText(items);
         }
     }
 }

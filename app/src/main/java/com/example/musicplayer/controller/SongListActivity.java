@@ -22,10 +22,10 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
     private static final String EXTRA_QUALIFIER = "qualifier";
 
 
-    public static Intent newIntent(Context target , String albumName, Qualifier qualifier){
-        Intent intent = new Intent(target,SongListActivity.class);
-        intent.putExtra(EXTRA_STRING,albumName);
-        intent.putExtra(EXTRA_QUALIFIER,qualifier);
+    public static Intent newIntent(Context target, String albumName, Qualifier qualifier) {
+        Intent intent = new Intent(target, SongListActivity.class);
+        intent.putExtra(EXTRA_STRING, albumName);
+        intent.putExtra(EXTRA_QUALIFIER, qualifier);
         return intent;
     }
 
@@ -33,6 +33,8 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song_list);
+
+        PictureUtils.setBackgroundGradient(this, MusicPreferences.getMusicDominantColor(this));
 
         if (savedInstanceState == null) {
             mFragment = SongListFragment.newInstance(
@@ -51,6 +53,7 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
     @Override
     public void PlaySong(Song song) {
         startActivity(SingleSongActivity.newIntent(SongListActivity.this, song));
+        startService(PlayerService.newIntent(this, song));
     }
 
     @Override

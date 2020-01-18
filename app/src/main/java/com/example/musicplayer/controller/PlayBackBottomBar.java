@@ -71,7 +71,7 @@ public class PlayBackBottomBar {
     private void setLastSong() {
         mSong = SongRepository.getInstance(mActivity).findSongById(MusicPreferences.getLastMusic(mActivity));
         if (mSong != null) {
-            setupArtwork(mSong);
+            setupArtwork();
             mParentLayout.setVisibility(View.VISIBLE);
         }
         else
@@ -83,15 +83,21 @@ public class PlayBackBottomBar {
 
         mPlayer.getLiveSong().observe((LifecycleOwner) mActivity, song -> {
             if (song == null) {
-                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_play_arrow));
                 mHandler.removeCallbacks(UpdateSongTime);
             } else {
-                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_pause));
-                setupArtwork(song);
+                mSong = song;
+                setupArtwork();
                 UpdateSongTime();
                 SeekBar();
                 mParentLayout.setVisibility(View.VISIBLE);
             }
+        });
+
+        mPlayer.isPaused().observe((LifecycleOwner) mActivity, aBoolean -> {
+            if(aBoolean)
+                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_play_arrow));
+            else
+                mPlay.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_pause));
         });
 
         BottomAppBarListener();
@@ -99,7 +105,7 @@ public class PlayBackBottomBar {
 
     @SuppressLint("ClickableViewAccessibility")
     private void BottomAppBarListener() {
-        mParentLayout.setOnClickListener(view -> mActivity.startActivity(SingleSongActivity.newIntent(mActivity, mPlayer.getLiveSong().getValue())));
+        mParentLayout.setOnClickListener(view -> mActivity.startActivity(SingleSongActivity.newIntent(mActivity, mSong)));
         mPlay.setOnClickListener(view -> {
             if (mPlayer.isStop()) {
                 mActivity.startService(PlayerService.newIntent(mActivity, mSong));
@@ -139,19 +145,26 @@ public class PlayBackBottomBar {
             @Override
             public void run() {
                 int sTime = mPlayer.getCurrentPosition();
+                String songTime;
+
+                int hrs = (sTime / 3600000);
                 int mns = (sTime / 60000) % 60000;
                 int scs = sTime % 60000 / 1000;
-                String songTime = String.format("%02d:%02d", mns, scs);
+                if (hrs == 0) {
+                    songTime = String.format("%02d:%02d", mns, scs);
+                } else
+                    songTime = String.format("%02d:%02d:%02d", hrs, mns, scs);
+
                 mDuration.setText(songTime);
-                mHandler.postDelayed(this, 130);
+                mHandler.postDelayed(this, 500);
             }
         };
         mHandler.post(UpdateSongTime);
     }
 
-    private void setupArtwork(Song song) {
+    private void setupArtwork() {
 
-        Artwork artwork = ID3Tags.getArtwork(song.getFilePath());
+        Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
         Bitmap bitmap;
 
         if (artwork == null)
@@ -173,8 +186,8 @@ public class PlayBackBottomBar {
         });
 
 
-        mSongArtist.setText(song.getArtist());
-        mSongName.setText(song.getTitle());
+        mSongArtist.setText(mSong.getArtist());
+        mSongName.setText(mSong.getTitle());
     }
 
     public static class ForBackListener implements View.OnLongClickListener, Runnable, View.OnTouchListener {

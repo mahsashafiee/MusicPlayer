@@ -31,7 +31,7 @@ public class MusicPlayerApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        bindService(new Intent(this,PlayerService.class),mPlayerConnection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, PlayerService.class), mPlayerConnection, Context.BIND_AUTO_CREATE);
         CreateNotificationChannel();
     }
 

@@ -14,11 +14,11 @@ public class ModelCursorWrapper extends CursorWrapper {
         super(cursor);
     }
 
-    public Album getAlbum(){
+    public Album getAlbum() {
 
         String title = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM));
         String albumArtPath = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_ART));
-        String  Id = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_KEY));
+        String Id = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ALBUM_KEY));
         String artist = getString(getColumnIndex(MediaStore.Audio.AlbumColumns.ARTIST));
         int number = getInt(getColumnIndex(MediaStore.Audio.AlbumColumns.NUMBER_OF_SONGS));
 
@@ -31,16 +31,16 @@ public class ModelCursorWrapper extends CursorWrapper {
         return album;
     }
 
-    public Song getSong(Uri path){
+    public Song getSong(Uri path) {
 
         long id = getLong(getColumnIndex(MediaStore.Audio.Media._ID));
-        String  FilePath = getString(getColumnIndex(MediaStore.Audio.Media.DATA));
+        String FilePath = getString(getColumnIndex(MediaStore.Audio.Media.DATA));
         String Title = getString(getColumnIndex(MediaStore.Audio.Media.TITLE));
-        String Artist =getString(getColumnIndex(MediaStore.Audio.Media.ARTIST));
+        String Artist = getString(getColumnIndex(MediaStore.Audio.Media.ARTIST));
         String Album = getString(getColumnIndex(MediaStore.Audio.Media.ALBUM));
         int Duration = getInt(getColumnIndex(MediaStore.Audio.Media.DURATION));
 
-        Song song = new Song(path,id);
+        Song song = new Song(path, id);
         song.setTitle(Title);
         song.setAlbum(Album);
         song.setArtist(Artist);
