@@ -26,6 +26,9 @@
         <item quantity="other">%1$d Songs</item>
     </plurals>
 
+
+    <string name="playing_song" translatable="false">&lt;b>%1s&lt;/b>&lt;br/>%2s</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

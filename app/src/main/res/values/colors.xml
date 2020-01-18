@@ -9,6 +9,7 @@
 
     <color name="colorTabUnselected">#A6FFFFFF</color>
     <color name="colorOfLine">#59FFFFFF</color>
+    <color name="colorOfSeekBar">#34FFFFFF</color>
 
     <color name="colorDarkShadow_400">#1E000000</color>
     <color name="colorDarkShadow_800">#A6000000</color>

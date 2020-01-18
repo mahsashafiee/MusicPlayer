@@ -10,8 +10,10 @@
     <application
         android:name=".controller.MusicPlayerApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="false"
         android:theme="@style/Theme.MusicPlayer.NoActionBar">
@@ -21,7 +23,8 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".controller.CategoryActivity"
+        <activity
+            android:name=".controller.CategoryActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,14 +32,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.SingleSongActivity"
+        <activity
+            android:name=".controller.SingleSongActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <category android:name="android.intent.category.APP_MUSIC" />
             </intent-filter>
         </activity>
-        <activity android:name=".controller.SongListActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".controller.SongListActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

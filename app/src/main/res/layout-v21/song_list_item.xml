@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:id="@+id/item_container"
     android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
@@ -65,21 +66,21 @@
         android:layout_alignParentRight="true"
         android:foregroundGravity="center_vertical"
         android:gravity="center_vertical"
-        android:padding="8dp"
+        android:padding="@dimen/activity_spacing"
         android:textColor="@android:color/white"
         tools:text="04:32"/>
 
     <es.claucookie.miniequalizerlibrary.EqualizerView
         android:id="@+id/equalizer"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_margin="6dp"
         android:layout_centerVertical="true"
         android:layout_toStartOf="@id/item_song_duration"
         android:layout_toLeftOf="@id/item_song_duration"
         android:background="@android:color/transparent"
         android:foregroundGravity="center_vertical"
         android:gravity="center"
-        android:padding="2dp"
         custom:animDuration="2000"
         custom:foregroundColor="@android:color/white" />
 

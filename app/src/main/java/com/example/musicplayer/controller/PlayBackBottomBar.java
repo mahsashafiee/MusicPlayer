@@ -168,6 +168,7 @@ public class PlayBackBottomBar {
         else
             bitmap = BitmapFactory.decodeByteArray(artwork.getBinaryData(), 0, artwork.getBinaryData().length);
 
+
         Glide.with(mActivity).asDrawable()
                 .placeholder(R.drawable.song_placeholder)
                 .load(bitmap)
