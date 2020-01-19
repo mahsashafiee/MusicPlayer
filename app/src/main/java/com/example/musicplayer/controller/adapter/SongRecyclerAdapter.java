@@ -6,22 +6,21 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
-import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.model.Song;
-import com.example.musicplayer.repository.SongRepository;
+import com.example.musicplayer.repository.PlayList;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
@@ -36,24 +35,16 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
     private Context mContext;
     private List<Song> mSongs = new ArrayList<>();
     private CallBacks mCallBack;
-    private MutableLiveData<Integer> mSelectedItem;
+    private int mSelectedItem = -1;
     private RecyclerView mRecyclerView;
 
     public SongRecyclerAdapter(Context context) {
         mContext = context;
         mCallBack = (CallBacks) context;
-        mSelectedItem = SongRepository.getInstance(context).getSongPosition();
     }
 
     public void setSongs(List<Song> songs) {
         mSongs = songs;
-/*        for (int i = 0; i < songs.size(); i++) {
-            if (songs.get(i).getSongId().equals(MusicPreferences.getLastMusic(mContext))) {
-                mSelectedItem.setValue(i);
-                return;
-            } else
-                mSelectedItem.setValue(-1);
-        }*/
         notifyDataSetChanged();
 
     }
@@ -84,14 +75,14 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
     }
 
     private boolean tryMoveSelection(RecyclerView.LayoutManager lm, int direction) {
-        int nextSelectItem = mSelectedItem.getValue() + direction;
+        int nextSelectItem = mSelectedItem + direction;
 
         // If still within valid bounds, move the selection, notify to redraw, and scroll
         if (nextSelectItem >= 0 && nextSelectItem < getItemCount()) {
-            notifyItemChanged(mSelectedItem.getValue());
-            mSelectedItem.setValue(nextSelectItem);
-            notifyItemChanged(mSelectedItem.getValue());
-            lm.scrollToPosition(mSelectedItem.getValue());
+            notifyItemChanged(mSelectedItem);
+            mSelectedItem = nextSelectItem;
+            notifyItemChanged(mSelectedItem);
+            lm.scrollToPosition(mSelectedItem);
             return true;
         }
 
@@ -107,7 +98,7 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
-        holder.itemView.setSelected(mSelectedItem.getValue() == position);
+        holder.itemView.setSelected(mSelectedItem == position);
         holder.bindHolder(mSongs.get(position));
     }
 
@@ -116,14 +107,14 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
         return mSongs.size();
     }
 
-    public class SongViewHolder extends RecyclerView.ViewHolder {
+    class SongViewHolder extends RecyclerView.ViewHolder {
 
         private TextView mTVMusicName, mTVMusicArtist, mDuration;
         private CircleImageView mIVMusicCover;
         private EqualizerView mEqualizer;
         private Song mSong;
 
-        public SongViewHolder(@NonNull View itemView) {
+        SongViewHolder(@NonNull View itemView) {
             super(itemView);
 
             mIVMusicCover = itemView.findViewById(R.id.item_song_art);
@@ -134,21 +125,26 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
 
             itemView.setOnClickListener(view -> {
                 mCallBack.PlaySong(mSong);
-                notifyItemChanged(mSelectedItem.getValue());
-                mSelectedItem.setValue(mRecyclerView.getChildPosition(view));
-                notifyItemChanged(mSelectedItem.getValue());
+                notifyItemChanged(mSelectedItem);
+                mSelectedItem = mRecyclerView.getChildPosition(view);
+                notifyItemChanged(mSelectedItem);
             });
 
-/*            mSelectedItem.observe((LifecycleOwner) mContext, integer -> mRecyclerView.post(() -> {
-                if (integer > 1)
-                    notifyItemChanged(integer - 1);
-                notifyItemChanged(integer);
-            }));*/
+            PlayList.getLiveSong().observe((LifecycleOwner) mContext, song -> {
+                mSelectedItem = mSongs.indexOf(song);
+
+                mRecyclerView.post(() -> {
+                    notifyItemChanged(mSelectedItem);
+                    notifyItemChanged((mSelectedItem - 1 + mSongs.size()) % mSongs.size());
+                    notifyItemChanged((mSelectedItem + 1) % mSongs.size());
+                });
+
+            });
 
         }
 
 
-        public void bindHolder(Song song) {
+        void bindHolder(Song song) {
 
             mSong = song;
 
@@ -156,10 +152,6 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
             mTVMusicName.setText(mSong.getTitle());
             mDuration.setText(mSong.getDuration());
             mIVMusicCover.setImageDrawable(mContext.getResources().getDrawable(R.drawable.song_placeholder));
-
-
-            mIVMusicCover.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_transition_animation));
-            itemView.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_scale_animation));
 
             if (itemView.isSelected()) {
                 mEqualizer.setVisibility(View.VISIBLE);
@@ -173,6 +165,7 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
             art.execute();
 
         }
+
 
         private class SetArt extends AsyncTask<Void, Void, byte[]> {
 

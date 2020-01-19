@@ -47,7 +47,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private AudioManager mAudioManager;
     private List<Song> mPlayList;
     private Song mSong;
-    private MutableLiveData<Song> mLiveSong = new MutableLiveData<>();
+    //private MutableLiveData<Song> mLiveSong = new MutableLiveData<>();
     private int mCurrentSongIndex;
     private int newPosition;
 
@@ -61,7 +61,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         @Override
         public void onReceive(Context context, Intent intent) {
             Pause();
-            mLiveSong.setValue(null);
         }
     };
 
@@ -82,10 +81,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         public PlayerService getService() {
             return PlayerService.this;
         }
-    }
-
-    public LiveData<Song> getLiveSong() {
-        return mLiveSong;
     }
 
     private void initMediaPlayer() {
@@ -144,7 +139,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         if (mCurrentSongIndex == mPlayList.size() - 1 && !mSingleLoop.getValue() && !mListLoop.getValue()) {
             Stop();
             isPaused.setValue(true);
-            mLiveSong.setValue(null);
             return;
         }
         //loop handler
@@ -185,7 +179,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         MusicPreferences.setLastMusic(this, mSong.getSongId());
 
         //observe in single song fragment
-        mLiveSong.setValue(song);
+        PlayList.getLiveSong().setValue(song);
     }
 
     private void Play(Uri songPath) {

@@ -61,7 +61,6 @@ dependencies {
     //equalizer
     implementation 'com.github.claucookie.miniequalizer:library:1.0.0'
 
-
 /*
     //fast recycler view
     implementation 'com.reddit:indicator-fast-scroll:1.2.1'*/

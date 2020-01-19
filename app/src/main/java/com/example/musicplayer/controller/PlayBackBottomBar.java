@@ -21,7 +21,9 @@ import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
+import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
@@ -31,7 +33,7 @@ public class PlayBackBottomBar {
 
     private RelativeLayout mParentLayout;
     private SeekBar mSeekBar;
-    private CircleImageView mCover;
+    private RoundedImageView mCover;
     private MutableLiveData<Integer> mDominantColor;
     private TextView mSongName, mSongArtist;
     private ImageView mForward, mBackward;
@@ -39,8 +41,6 @@ public class PlayBackBottomBar {
     private Activity mActivity;
     private PlayerService mPlayer;
     private Song mSong;
-    private Handler mHandler = new Handler();
-    private Runnable UpdateSongTime;
     private ForBackListener mForwardListener = new ForBackListener() {
         @Override
         public void run() {
@@ -80,6 +80,7 @@ public class PlayBackBottomBar {
         if (mSong != null) {
             setupArtwork();
             mParentLayout.setVisibility(View.VISIBLE);
+            PlayList.getLiveSong().setValue(mSong);
         }
         else
             mParentLayout.setVisibility(View.GONE);
@@ -88,10 +89,8 @@ public class PlayBackBottomBar {
     public void initService(PlayerService service) {
         mPlayer = service;
 
-        mPlayer.getLiveSong().observe((LifecycleOwner) mActivity, song -> {
-            if (song == null) {
-                mHandler.removeCallbacks(UpdateSongTime);
-            } else {
+        PlayList.getLiveSong().observe((LifecycleOwner) mActivity, song -> {
+            if (song != null) {
                 mSong = song;
                 setupArtwork();
                 SeekBar();
@@ -148,20 +147,6 @@ public class PlayBackBottomBar {
 
     }
 
-/*    private void UpdateSongTime() {
-        UpdateSongTime = new Runnable() {
-            @Override
-            public void run() {
-                int sTime = mPlayer.getCurrentPosition();
-                int mns = (sTime / 60000) % 60000;
-                int scs = sTime % 60000 / 1000;
-                String songTime = String.format("%02d:%02d", mns, scs);
-                mHandler.postDelayed(this, 130);
-            }
-        };
-        mHandler.post(UpdateSongTime);
-    }*/
-
     private void setupArtwork() {
 
         Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
@@ -178,11 +163,10 @@ public class PlayBackBottomBar {
                 .override(100, 100)
                 .into(mCover);
 
-        PictureUtils.getDominantColor(mDominantColor, bitmap);
+        PictureUtils.getDominantColor(mActivity, mDominantColor, bitmap);
 
         mDominantColor.observe((LifecycleOwner) mActivity, integer -> {
             PictureUtils.setBackgroundGradient(mActivity, integer);
-            MusicPreferences.setMusicDominantColor(mActivity, integer);
         });
 
 

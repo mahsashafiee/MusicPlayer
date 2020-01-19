@@ -1,8 +1,10 @@
 package com.example.musicplayer.Utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
@@ -16,6 +18,7 @@ import androidx.palette.graphics.Palette;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,13 +48,14 @@ public class PictureUtils {
         return color;
     }
 
-    public static void getDominantColor(MutableLiveData<Integer> data, Bitmap bitmap) {
+    public static void getDominantColor(Context context, MutableLiveData<Integer> data, Bitmap bitmap) {
         Palette.generateAsync(bitmap, palette -> {
             assert palette != null;
             List<Palette.Swatch> swatches = new ArrayList<>(palette.getSwatches());
             Collections.sort(swatches, (swatch1, swatch2) -> swatch2.getPopulation() - swatch1.getPopulation());
             data.setValue(swatches.size() > 0 ? swatches.get(0).getRgb() : getRandomColor());
-
+            MusicPreferences.setMusicDominantColor(context, data.getValue());
+            bitmap.recycle();
         });
 
 
@@ -80,13 +84,25 @@ public class PictureUtils {
     public static void setBackgroundGradient(Activity context, int dominantColor) {
 
         View layout = context.findViewById(R.id.container);
+        int firstColor= MusicPreferences.getMusicDominantColor(context);
 
-        GradientDrawable gd = new GradientDrawable(
+        GradientDrawable gdF = new GradientDrawable(
+                GradientDrawable.Orientation.TL_BR,
+                new int[]{firstColor, Color.BLACK});
+        gdF.setCornerRadius(0f);
+
+        GradientDrawable gdE = new GradientDrawable(
                 GradientDrawable.Orientation.TL_BR,
                 new int[]{dominantColor, Color.BLACK});
-        gd.setCornerRadius(0f);
+        gdE.setCornerRadius(0f);
 
-        layout.setBackground(gd);
+        AnimationDrawable animation = new AnimationDrawable();
+        animation.addFrame(gdF, 500);
+        animation.addFrame(gdE, 500);
+        animation.setExitFadeDuration(800);
+        animation.setOneShot(true);
+        layout.setBackgroundDrawable(animation);
+        animation.start();
     }
 }
 

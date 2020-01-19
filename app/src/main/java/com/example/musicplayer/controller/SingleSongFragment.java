@@ -26,6 +26,7 @@ import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
+import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
 
 import org.jaudiotagger.tag.datatype.Artwork;
@@ -192,12 +193,11 @@ public class SingleSongFragment extends Fragment {
                 .load(mArtwork)
                 .into(mCover);
 
-        PictureUtils.getDominantColor(mDominantColor, mArtwork);
+        PictureUtils.getDominantColor(getActivity(),mDominantColor, mArtwork);
 
 
         mDominantColor.observe(this, integer -> {
             PictureUtils.setBackgroundGradient(getActivity(), integer);
-            MusicPreferences.setMusicDominantColor(getActivity(), integer);
         });
 
         mTitle.setText(mSong.getTitle());
@@ -215,12 +215,8 @@ public class SingleSongFragment extends Fragment {
      */
     private void liveDataObservers() {
 
-        mPlayer.getLiveSong().observe(this, song -> {
-            if (song == null) {
-                mPlayPause.setImageDrawable(pauseState);
-                mHandler.removeCallbacks(mRunnable);
-                startAnimation(false);
-            } else {
+        PlayList.getLiveSong().observe(this, song -> {
+            if (song != null) {
                 mSong = song;
                 initView();
                 updateSongTime();

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.musicplayer.R;
 import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.model.Song;
 
@@ -25,11 +26,10 @@ public class SongRepository {
     private String TAG = "Album exception";
     private MutableLiveData<List<Song>> mLiveSong = new MutableLiveData<>();
     private MutableLiveData<Integer> mDominantColor = new MutableLiveData<>();
-    private MutableLiveData<Integer> mSongPosition = new MutableLiveData<>();
 
     private SongRepository(Context context) {
         mContext = context;
-        mSongPosition.setValue(-1);
+        mDominantColor.setValue(context.getResources().getColor(R.color.default_background));
     }
 
     public static SongRepository getInstance(Context context) {
@@ -170,9 +170,5 @@ public class SongRepository {
 
     public MutableLiveData<Integer> getDominantColor() {
         return mDominantColor;
-    }
-
-    public MutableLiveData<Integer> getSongPosition() {
-        return mSongPosition;
     }
 }

@@ -74,8 +74,8 @@ public class ViewHolders {
                     .getQuantityString(R.plurals.total_songs, mAlbum.getSongsNumber(), mAlbum.getSongsNumber());
             mNumberOfSongs.setText(items);
 
-            mAlbumArt.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_transition_animation));
-            itemView.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_scale_animation));
+/*            mAlbumArt.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_transition_animation));
+            itemView.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_scale_animation));*/
 
             Glide.with(mContext).asDrawable()
                     .load(album.getArtworkPath())
@@ -118,9 +118,6 @@ public class ViewHolders {
                     .getQuantityString(R.plurals.total_songs, Integer.valueOf(mArtist.getNumberOfSongs()),
                             Integer.valueOf(mArtist.getNumberOfSongs()));
             mNumberOfSongs.setText(items);
-
-            mImage.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_transition_animation));
-            itemView.setAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_scale_animation));
         }
     }
 }
