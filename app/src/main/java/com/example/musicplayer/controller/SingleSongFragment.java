@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -193,18 +194,17 @@ public class SingleSongFragment extends Fragment {
                 .load(mArtwork)
                 .into(mCover);
 
-        PictureUtils.getDominantColor(getActivity(),mDominantColor, mArtwork);
+        PictureUtils.getDominantColor(getActivity(), mDominantColor, mArtwork);
 
 
-        mDominantColor.observe(this, integer -> {
-            PictureUtils.setBackgroundGradient(getActivity(), integer);
-        });
+        mDominantColor.observe(this, integer -> PictureUtils.setBackgroundGradient(getActivity(), integer));
 
         mTitle.setText(mSong.getTitle());
         mArtist.setText(mSong.getArtist());
         mSeekBar.setMax(mPlayer.getDuration());
         mAlbum.setText(mSong.getAlbum());
         mDuration.setText(mSong.getDuration());
+        mCover.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_animation));
 
         setDrawable();
         startAnimation(mPlayer.isPlaying());
@@ -223,27 +223,27 @@ public class SingleSongFragment extends Fragment {
             }
         });
 
-        mPlayer.isShuffle().observe(this, aBoolean -> {
-            if (aBoolean)
+        mPlayer.isShuffle().observe(this, isShuffle -> {
+            if (isShuffle)
                 mShuffle.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_shuffle_on));
             else
                 mShuffle.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_shuffle_off));
         });
 
-        mPlayer.isListLoop().observe(this, aBoolean -> {
-            if (aBoolean)
+        mPlayer.isListLoop().observe(this, isLoop -> {
+            if (isLoop)
                 mRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_all));
         });
 
-        mPlayer.isSingleLoop().observe(this, aBoolean -> {
-            if (aBoolean)
+        mPlayer.isSingleLoop().observe(this, isSingleLoop -> {
+            if (isSingleLoop)
                 mRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_one));
             else if (!mPlayer.isListLoop().getValue())
                 mRepeat.setImageDrawable(getResources().getDrawable(R.drawable.ic_repeat_none));
         });
 
-        mPlayer.isPaused().observe(this, aBoolean -> {
-            if (!aBoolean)
+        mPlayer.isPaused().observe(this, isPaused -> {
+            if (!isPaused)
                 mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
             else {
                 mPlayPause.setImageDrawable(pauseState);
@@ -345,5 +345,11 @@ public class SingleSongFragment extends Fragment {
             public void onStartTrackingTouch(CircularSeekBar seekBar) {
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mCover.clearAnimation();
     }
 }
