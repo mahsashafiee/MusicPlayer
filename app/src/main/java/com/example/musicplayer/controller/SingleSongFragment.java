@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
-import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
@@ -270,7 +269,7 @@ public class SingleSongFragment extends Fragment {
                 } else
                     songTime = String.format("%02d:%02d:%02d", hrs, mns, scs);
                 mRealtimeDuration.setText(songTime);
-                mHandler.postDelayed(this, 500);
+                mHandler.postDelayed(this, 300);
             }
         };
         mHandler.post(mRunnable);
@@ -300,6 +299,10 @@ public class SingleSongFragment extends Fragment {
     private void Listener() {
 
         mPlayPause.setOnClickListener(view -> {
+            if(mPlayer.isStop()==null) {
+                getActivity().startService(PlayerService.newIntent(getActivity(), mSong));
+                return;
+            }
             mPlayer.Pause();
             if (!mPlayer.isPlaying())
                 mPlayPause.setImageDrawable(pauseState);

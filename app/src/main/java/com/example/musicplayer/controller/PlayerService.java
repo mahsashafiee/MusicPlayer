@@ -44,10 +44,10 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private boolean pauseFocus = false;
 
     private MediaPlayer mMediaPlayer;
+    private MediaPlayer.OnCompletionListener mCompletionListener;
     private AudioManager mAudioManager;
     private List<Song> mPlayList;
     private Song mSong;
-    //private MutableLiveData<Song> mLiveSong = new MutableLiveData<>();
     private int mCurrentSongIndex;
     private int newPosition;
 
@@ -55,7 +55,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private MutableLiveData<Boolean> mSingleLoop = new MutableLiveData<>();
     private MutableLiveData<Boolean> mShuffle = new MutableLiveData<>();
     private MutableLiveData<Boolean> isPaused = new MutableLiveData<>();
-    private boolean isStop = true;
+    private Boolean isStop;
 
     BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
         @Override
@@ -89,8 +89,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
         mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        //what should happen after
-        mMediaPlayer.setOnCompletionListener(this::onCompletion);
         registerReceiver(becomingNoisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
     }
 
@@ -124,6 +122,11 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             stopSelf();
         if(mShuffle.getValue())
             shuffle();
+        //what should happen after
+        if(mCompletionListener == null){
+            mCompletionListener = this::onCompletion;
+            mMediaPlayer.setOnCompletionListener(mCompletionListener);
+        }
         Play((Song) intent.getParcelableExtra(SONG_EXTRA));
         startForeground(1, getNotification());
         return START_NOT_STICKY;
@@ -154,6 +157,9 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private void Play(Song song) {
 
+        if(song == null)
+            return;
+
         //check if it's first time using
         if (mSong == null)
             songPlayer(song);
@@ -176,6 +182,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         mSong = song;
         mCurrentSongIndex = mPlayList.indexOf(song);
         Play(song.getPath());
+
         MusicPreferences.setLastMusic(this, mSong.getSongId());
 
         //observe in single song fragment
@@ -292,7 +299,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         return isPaused;
     }
 
-    public boolean isStop() {
+    public Boolean isStop() {
         return isStop;
     }
 
