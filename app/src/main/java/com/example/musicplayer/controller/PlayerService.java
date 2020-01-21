@@ -55,7 +55,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private MutableLiveData<Boolean> mSingleLoop = new MutableLiveData<>();
     private MutableLiveData<Boolean> mShuffle = new MutableLiveData<>();
     private MutableLiveData<Boolean> isPaused = new MutableLiveData<>();
-    private Boolean isStop;
+    private boolean isStop = true;
 
     BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
         @Override

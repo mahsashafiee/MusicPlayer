@@ -299,7 +299,7 @@ public class SingleSongFragment extends Fragment {
     private void Listener() {
 
         mPlayPause.setOnClickListener(view -> {
-            if(mPlayer.isStop()==null) {
+            if(mPlayer.isStop()) {
                 getActivity().startService(PlayerService.newIntent(getActivity(), mSong));
                 return;
             }
