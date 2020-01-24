@@ -72,6 +72,14 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
 
             return false;
         });
+
+        PlayList.getLiveSong().observe((LifecycleOwner) mContext, song -> recyclerView.post(() -> {
+            notifyItemChanged(mSelectedItem);
+            mSelectedItem = mSongs.indexOf(song);
+            notifyItemChanged(mSelectedItem);
+            notifyItemChanged((mSelectedItem - 1 + mSongs.size()) % mSongs.size());
+            notifyItemChanged((mSelectedItem + 1) % mSongs.size());
+        }));
     }
 
     private boolean tryMoveSelection(RecyclerView.LayoutManager lm, int direction) {
@@ -128,17 +136,6 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
                 notifyItemChanged(mSelectedItem);
                 mSelectedItem = mRecyclerView.getChildPosition(view);
                 notifyItemChanged(mSelectedItem);
-            });
-
-            PlayList.getLiveSong().observe((LifecycleOwner) mContext, song -> {
-                mSelectedItem = mSongs.indexOf(song);
-
-                mRecyclerView.post(() -> {
-                    notifyItemChanged(mSelectedItem);
-                    notifyItemChanged((mSelectedItem - 1 + mSongs.size()) % mSongs.size());
-                    notifyItemChanged((mSelectedItem + 1) % mSongs.size());
-                });
-
             });
 
         }

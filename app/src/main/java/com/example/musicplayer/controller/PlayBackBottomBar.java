@@ -86,6 +86,7 @@ public class PlayBackBottomBar {
 
     public void initService(PlayerService service) {
         mPlayer = service;
+        mPlayer.setIndex(PlayList.getSongList().indexOf(mSong));
 
         PlayList.getLiveSong().observe((LifecycleOwner) mActivity, song -> {
             if (song != null) {

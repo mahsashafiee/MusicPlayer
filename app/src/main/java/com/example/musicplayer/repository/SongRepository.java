@@ -21,6 +21,7 @@ public class SongRepository {
     private List<Song> mSongs;
     private List<Song> mBasedSongs;
     private Context mContext;
+    private ManageActivity mSplashActivity;
     private static SongRepository instance;
     private String TAG = "Album exception";
     private MutableLiveData<List<Song>> mLiveSong = new MutableLiveData<>();
@@ -28,6 +29,7 @@ public class SongRepository {
 
     private SongRepository(Context context) {
         mContext = context;
+        mSplashActivity = (ManageActivity) context;
         mDominantColor.setValue(context.getResources().getColor(R.color.default_background));
     }
 
@@ -87,6 +89,7 @@ public class SongRepository {
             } finally {
                 songWrapper.close();
                 PlayList.setSongList(mSongs);
+                mSplashActivity.startCategory();
             }
         }
     }
@@ -169,5 +172,9 @@ public class SongRepository {
 
     public MutableLiveData<Integer> getDominantColor() {
         return mDominantColor;
+    }
+
+    public interface ManageActivity{
+        void startCategory();
     }
 }
