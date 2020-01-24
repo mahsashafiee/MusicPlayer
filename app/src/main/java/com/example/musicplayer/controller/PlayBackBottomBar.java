@@ -27,8 +27,6 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class PlayBackBottomBar {
 
     private RelativeLayout mParentLayout;
