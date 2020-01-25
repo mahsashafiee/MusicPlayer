@@ -27,8 +27,6 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class PlayBackBottomBar {
 
     private RelativeLayout mParentLayout;
@@ -88,6 +86,7 @@ public class PlayBackBottomBar {
 
     public void initService(PlayerService service) {
         mPlayer = service;
+        mPlayer.setIndex(PlayList.getSongList().indexOf(mSong));
 
         PlayList.getLiveSong().observe((LifecycleOwner) mActivity, song -> {
             if (song != null) {

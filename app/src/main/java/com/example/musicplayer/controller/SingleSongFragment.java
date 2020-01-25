@@ -52,7 +52,8 @@ public class SingleSongFragment extends Fragment {
 
     private Bitmap mArtwork;
     private Handler mHandler = new Handler();
-    private Runnable mRunnable;
+    private Runnable timeRunnable;
+    private Runnable seekRunnable;
 
     private Drawable playingState;
     private Drawable pauseState;
@@ -219,6 +220,7 @@ public class SingleSongFragment extends Fragment {
                 mSong = song;
                 initView();
                 updateSongTime();
+                SeekBar();
             }
         });
 
@@ -242,11 +244,16 @@ public class SingleSongFragment extends Fragment {
         });
 
         mPlayer.isPaused().observe(this, isPaused -> {
-            if (!isPaused)
+            if (!isPaused){
                 mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
+                mHandler.removeCallbacks(seekRunnable);
+                mHandler.removeCallbacks(timeRunnable);
+            }
             else {
                 mPlayPause.setImageDrawable(pauseState);
                 startAnimation(false);
+                updateSongTime();
+                SeekBar();
             }
         });
     }
@@ -255,12 +262,13 @@ public class SingleSongFragment extends Fragment {
      * SONG CURRENT DURATION
      */
     private void updateSongTime() {
-        mRunnable = new Runnable() {
+        timeRunnable = new Runnable() {
             @Override
             public void run() {
                 int sTime = mPlayer.getCurrentPosition();
                 String songTime;
-
+                if (mPlayer.isStop())
+                    sTime = 0;
                 int hrs = (sTime / 3600000);
                 int mns = (sTime / 60000) % 60000;
                 int scs = sTime % 60000 / 1000;
@@ -269,27 +277,26 @@ public class SingleSongFragment extends Fragment {
                 } else
                     songTime = String.format("%02d:%02d:%02d", hrs, mns, scs);
                 mRealtimeDuration.setText(songTime);
-                mHandler.postDelayed(this, 300);
+                    mHandler.postDelayed(this, 150);
             }
         };
-        mHandler.post(mRunnable);
+        mHandler.post(timeRunnable);
     }
 
     /**
      * SEEK BAR
      */
     private void SeekBar() {
-        Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
+        seekRunnable = new Runnable() {
             @Override
             public void run() {
                 mSeekBar.setMax(mPlayer.getDuration());
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
-                handler.postDelayed(this, 140);
+                mHandler.postDelayed(this, 140);
             }
         };
 
-        getActivity().runOnUiThread(runnable);
+        mHandler.post(seekRunnable);
     }
 
     /**
@@ -299,7 +306,7 @@ public class SingleSongFragment extends Fragment {
     private void Listener() {
 
         mPlayPause.setOnClickListener(view -> {
-            if(mPlayer.isStop()) {
+            if (mPlayer.isStop()) {
                 getActivity().startService(PlayerService.newIntent(getActivity(), mSong));
                 return;
             }

@@ -189,6 +189,11 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         PlayList.getLiveSong().setValue(song);
     }
 
+    public void setIndex(int songIndex) {
+        setPlayList();
+        mCurrentSongIndex = songIndex;
+    }
+
     private void Play(Uri songPath) {
         try {
             mMediaPlayer.reset();
