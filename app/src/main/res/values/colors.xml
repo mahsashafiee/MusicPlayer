@@ -5,7 +5,7 @@
     <color name="colorAccent">#E6FCFBF7</color>
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="toolbarIconColor">@color/textColorPrimary</color>
-    <color name="default_background">#3375A7</color>
+    <color name="default_background">#319FD3</color>
 
     <color name="colorTabUnselected">#A6FFFFFF</color>
     <color name="colorOfLine">#59FFFFFF</color>
