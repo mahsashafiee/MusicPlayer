@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.controller.adapter.ListPagerAdapter;
 import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
@@ -44,12 +45,12 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_category);
+        playBackBottomBar = new PlayBackBottomBar(this);
+
         // Bind to LocalService
         Intent intent = new Intent(this, PlayerService.class);
         bindService(intent, this, Context.BIND_AUTO_CREATE);
-
-        setContentView(R.layout.activity_category);
-        playBackBottomBar = new PlayBackBottomBar(this);
 
         initUI();
 
@@ -100,6 +101,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     @Override
     public void PlaySong(Song song) {
         PlayList.setSongList(SongRepository.getInstance(CategoryActivity.this).getSongs());
+        MusicPreferences.setLastList(this, Qualifier.ALLSONG, "song");
         if (serviceBound)
             startService(PlayerService.newIntent(this, song));
     }
@@ -107,6 +109,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     @Override
     public void SongList(String albumOrArtist, Qualifier qualifier) {
         startActivity(SongListActivity.newIntent(CategoryActivity.this, albumOrArtist, qualifier));
+        MusicPreferences.setLastList(this, qualifier, albumOrArtist);
     }
 
     @Override

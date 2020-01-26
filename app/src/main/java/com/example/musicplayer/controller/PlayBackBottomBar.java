@@ -82,6 +82,9 @@ public class PlayBackBottomBar {
         }
         else
             mParentLayout.setVisibility(View.GONE);
+
+        if(PlayList.getSongList() == null)
+            PlayList.setSongList(SongRepository.getInstance(mActivity).getLiveSong().getValue());
     }
 
     public void initService(PlayerService service) {

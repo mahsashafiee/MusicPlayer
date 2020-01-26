@@ -11,19 +11,27 @@ import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
+import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.repository.AlbumRepository;
 import com.example.musicplayer.repository.ArtistRepository;
+import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static com.example.musicplayer.Utils.Utils.setWindowFlag;
 
 public class MainActivity extends AppCompatActivity implements SongRepository.ManageActivity {
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
+    private final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements SongRepository.Ma
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     STORAGE_PERMISSION_REQ_CODE);
-        }else
+        } else
             RunActivity();
 
     }
@@ -67,6 +75,22 @@ public class MainActivity extends AppCompatActivity implements SongRepository.Ma
         SongRepository.getInstance(this).findAllSongs();
         AlbumRepository.getInstance(this).findAllAlbum();
         ArtistRepository.getInstance(this).findAllArtist();
+
+        try {
+            List strings = MusicPreferences.getLastList(this);
+            if (strings != null && strings.size() != 0) {
+                if (strings.contains(Qualifier.ALBUM.toString())) {
+                    int index = strings.size() % strings.indexOf(Qualifier.ALBUM.toString());
+                    PlayList.setSongList(SongRepository.getInstance(this).getAlbumSongList(strings.get(index).toString()));
+                }
+                if (strings.contains(Qualifier.ARTIST.toString())) {
+                    int index = strings.size() % strings.indexOf(Qualifier.ALBUM.toString());
+                    PlayList.setSongList(SongRepository.getInstance(this).getArtistSongList(strings.get(index).toString()));
+                }
+            }
+        } catch (NullPointerException e) {
+            Log.d(TAG, "RunActivity: ");
+        }
     }
 
     /**

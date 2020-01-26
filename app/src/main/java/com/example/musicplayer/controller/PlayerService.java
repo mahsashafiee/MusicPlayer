@@ -84,7 +84,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     }
 
     private void initMediaPlayer() {
-        setPlayList();
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
@@ -92,11 +91,15 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         registerReceiver(becomingNoisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
     }
 
-    private void setPlayList() {
-        mPlayList = new ArrayList<>();
-        mPlayList.addAll(PlayList.getSongList());
+    public void setPlayList() {
+        mPlayList = new ArrayList<>(PlayList.getSongList());
         if (mShuffle.getValue())
             Collections.shuffle(mPlayList);
+    }
+
+    public void setIndex(int songIndex) {
+        setPlayList();
+        mCurrentSongIndex = songIndex;
     }
 
     private void setLiveDatas() {
@@ -187,11 +190,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
         //observe in single song fragment
         PlayList.getLiveSong().setValue(song);
-    }
-
-    public void setIndex(int songIndex) {
-        setPlayList();
-        mCurrentSongIndex = songIndex;
     }
 
     private void Play(Uri songPath) {
