@@ -23,7 +23,6 @@ import com.example.musicplayer.repository.ArtistRepository;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static com.example.musicplayer.Utils.Utils.setWindowFlag;
@@ -31,6 +30,7 @@ import static com.example.musicplayer.Utils.Utils.setWindowFlag;
 public class MainActivity extends AppCompatActivity implements SongRepository.ManageActivity {
 
     private static int STORAGE_PERMISSION_REQ_CODE = 1;
+    private int page = 0;
     private final String TAG = "MainActivity";
 
     @Override
@@ -80,11 +80,21 @@ public class MainActivity extends AppCompatActivity implements SongRepository.Ma
             List strings = MusicPreferences.getLastList(this);
             if (strings != null && strings.size() != 0) {
                 if (strings.contains(Qualifier.ALBUM.toString())) {
-                    int index = strings.size() % strings.indexOf(Qualifier.ALBUM.toString());
+                    page = 1;
+                    int index;
+                    if (strings.indexOf(Qualifier.ALBUM.toString()) == 0)
+                        index = 1;
+                    else
+                        index = 0;
                     PlayList.setSongList(SongRepository.getInstance(this).getAlbumSongList(strings.get(index).toString()));
                 }
                 if (strings.contains(Qualifier.ARTIST.toString())) {
-                    int index = strings.size() % strings.indexOf(Qualifier.ALBUM.toString());
+                    page = 2;
+                    int index;
+                    if (strings.indexOf(Qualifier.ALBUM.toString()) == 0)
+                        index = 1;
+                    else
+                        index = 0;
                     PlayList.setSongList(SongRepository.getInstance(this).getArtistSongList(strings.get(index).toString()));
                 }
             }
@@ -116,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements SongRepository.Ma
 
     @Override
     public void startCategory() {
-        startActivity(CategoryActivity.newIntent(this));
+        startActivity(CategoryActivity.newIntent(this, page));
         finish();
     }
 }

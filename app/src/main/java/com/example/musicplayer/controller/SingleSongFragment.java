@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.Utils.PictureUtils;
 import com.example.musicplayer.model.Song;
@@ -128,8 +129,6 @@ public class SingleSongFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_single_song, container, false);
         findViews();
         initView();
-        updateSongTime();
-        SeekBar();
         Listener();
         return mView;
     }
@@ -208,6 +207,10 @@ public class SingleSongFragment extends Fragment {
 
         setDrawable();
         startAnimation(mPlayer.isPlaying());
+
+        mSeekBar.setMax(mSong.getIntDuration());
+        mSeekBar.setProgress(MusicPreferences.getMusicPosition(getActivity()));
+        mRealtimeDuration.setText(currentDuration(MusicPreferences.getMusicPosition(getActivity())));
     }
 
     /**
@@ -219,8 +222,6 @@ public class SingleSongFragment extends Fragment {
             if (song != null) {
                 mSong = song;
                 initView();
-                updateSongTime();
-                SeekBar();
             }
         });
 
@@ -244,18 +245,36 @@ public class SingleSongFragment extends Fragment {
         });
 
         mPlayer.isPaused().observe(this, isPaused -> {
-            if (!isPaused){
+            //media player is playing a song
+            if (!isPaused) {
                 mPlayPause.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_pause));
-                mHandler.removeCallbacks(seekRunnable);
-                mHandler.removeCallbacks(timeRunnable);
+                updateSongTime();
+                SeekBar();
+                mCover.startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_animation));
             }
+            //media player is in pause state
             else {
                 mPlayPause.setImageDrawable(pauseState);
                 startAnimation(false);
-                updateSongTime();
-                SeekBar();
+                if (mCover.getAnimation() != null)
+                    mCover.getAnimation().cancel();
             }
         });
+    }
+
+    /**
+     * Duration computer
+     */
+
+    private String currentDuration(int position) {
+
+        int hrs = (position / 3600000);
+        int mns = (position / 60000) % 60000;
+        int scs = position % 60000 / 1000;
+        if (hrs == 0) {
+            return String.format("%02d:%02d", mns, scs);
+        } else
+            return String.format("%02d:%02d:%02d", hrs, mns, scs);
     }
 
     /**
@@ -266,18 +285,10 @@ public class SingleSongFragment extends Fragment {
             @Override
             public void run() {
                 int sTime = mPlayer.getCurrentPosition();
-                String songTime;
                 if (mPlayer.isStop())
                     sTime = 0;
-                int hrs = (sTime / 3600000);
-                int mns = (sTime / 60000) % 60000;
-                int scs = sTime % 60000 / 1000;
-                if (hrs == 0) {
-                    songTime = String.format("%02d:%02d", mns, scs);
-                } else
-                    songTime = String.format("%02d:%02d:%02d", hrs, mns, scs);
-                mRealtimeDuration.setText(songTime);
-                    mHandler.postDelayed(this, 150);
+                mRealtimeDuration.setText(currentDuration(sTime));
+                mHandler.postDelayed(this, 150);
             }
         };
         mHandler.post(timeRunnable);
@@ -291,7 +302,10 @@ public class SingleSongFragment extends Fragment {
             @Override
             public void run() {
                 mSeekBar.setMax(mPlayer.getDuration());
-                mSeekBar.setProgress(mPlayer.getCurrentPosition());
+                if (mPlayer.isStop())
+                    mSeekBar.setProgress(0);
+                else
+                    mSeekBar.setProgress(mPlayer.getCurrentPosition());
                 mHandler.postDelayed(this, 140);
             }
         };

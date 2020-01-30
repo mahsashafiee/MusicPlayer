@@ -26,6 +26,7 @@ import com.google.android.material.tabs.TabLayout;
 
 public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection, SongRecyclerAdapter.CallBacks {
 
+    public static final String EXTRA_CURRENT_PAGE = "current_page";
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private View mIndicator;
@@ -36,8 +37,9 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     private PlayerService mPlayer;
     boolean serviceBound = false;
 
-    public static Intent newIntent(Context target) {
+    public static Intent newIntent(Context target, int currentPage) {
         Intent intent = new Intent(target, CategoryActivity.class);
+        intent.putExtra(EXTRA_CURRENT_PAGE, currentPage);
         return intent;
     }
 
@@ -94,6 +96,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
         mAdapter = new ListPagerAdapter(this, getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
+        mViewPager.setCurrentItem(getIntent().getIntExtra(EXTRA_CURRENT_PAGE,0));
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
@@ -109,7 +112,6 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     @Override
     public void SongList(String albumOrArtist, Qualifier qualifier) {
         startActivity(SongListActivity.newIntent(CategoryActivity.this, albumOrArtist, qualifier));
-        MusicPreferences.setLastList(this, qualifier, albumOrArtist);
     }
 
     @Override

@@ -60,7 +60,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Pause();
+            if (mMediaPlayer.isPlaying())
+                Pause();
         }
     };
 
@@ -123,10 +124,10 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             initMediaPlayer();
         if (!requestAudioFocus())
             stopSelf();
-        if(mShuffle.getValue())
+        if (mShuffle.getValue())
             shuffle();
         //what should happen after
-        if(mCompletionListener == null){
+        if (mCompletionListener == null) {
             mCompletionListener = this::onCompletion;
             mMediaPlayer.setOnCompletionListener(mCompletionListener);
         }
@@ -160,7 +161,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private void Play(Song song) {
 
-        if(song == null)
+        if (song == null)
             return;
 
         //check if it's first time using
@@ -182,9 +183,9 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private void songPlayer(Song song) {
 
+        Play(song.getPath());
         mSong = song;
         mCurrentSongIndex = mPlayList.indexOf(song);
-        Play(song.getPath());
 
         MusicPreferences.setLastMusic(this, mSong.getSongId());
 
@@ -197,6 +198,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             mMediaPlayer.reset();
             mMediaPlayer.setDataSource(this, songPath);
             mMediaPlayer.prepare();
+            if(mSong == null)
+                Seek(MusicPreferences.getMusicPosition(this));
             mMediaPlayer.start();
             isStop = false;
             isPaused.setValue(false);
@@ -255,10 +258,9 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         if (mShuffle.getValue()) {
             Collections.shuffle(mPlayList);
             mCurrentSongIndex = mPlayList.indexOf(mSong);
-            mPlayList.set(mCurrentSongIndex,mPlayList.get(0));
-            mPlayList.set(0,mSong);
-        }
-        else {
+            mPlayList.set(mCurrentSongIndex, mPlayList.get(0));
+            mPlayList.set(0, mSong);
+        } else {
             mPlayList = PlayList.getSongList();
             mCurrentSongIndex = mPlayList.indexOf(mSong);
         }

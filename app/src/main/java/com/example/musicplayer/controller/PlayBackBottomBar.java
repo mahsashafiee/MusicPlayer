@@ -79,6 +79,8 @@ public class PlayBackBottomBar {
             setupArtwork();
             mParentLayout.setVisibility(View.VISIBLE);
             PlayList.getLiveSong().setValue(mSong);
+            mSeekBar.setMax(mSong.getIntDuration());
+            mSeekBar.setProgress(MusicPreferences.getMusicPosition(mActivity));
         }
         else
             mParentLayout.setVisibility(View.GONE);
@@ -140,8 +142,11 @@ public class PlayBackBottomBar {
         Runnable mSeekToRun = new Runnable() {
             @Override
             public void run() {
+                if(mPlayer.isStop())
+                    return;
                 mSeekBar.setMax(mPlayer.getDuration());
                 mSeekBar.setProgress(mPlayer.getCurrentPosition());
+                MusicPreferences.setMusicPosition(mActivity, mPlayer.getCurrentPosition());
                 mSeekHandler.postDelayed(this, 130);
             }
         };

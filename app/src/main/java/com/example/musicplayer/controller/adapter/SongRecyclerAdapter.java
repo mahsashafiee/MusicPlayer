@@ -153,12 +153,13 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
                 mEqualizer.setVisibility(View.INVISIBLE);
                 mEqualizer.stopBars();
             }
-
-            SetArt art = new SetArt();
-            art.execute();
-
+            setImage();
         }
 
+        public void setImage(){
+            SetArt art = new SetArt();
+            art.execute();
+        }
 
         private class SetArt extends AsyncTask<Void, Void, byte[]> {
 
