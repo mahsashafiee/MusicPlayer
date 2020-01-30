@@ -183,7 +183,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private void songPlayer(Song song) {
 
-        Play(song.getPath());
+        MediaPlay(song);
         mSong = song;
         mCurrentSongIndex = mPlayList.indexOf(song);
 
@@ -193,12 +193,12 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         PlayList.getLiveSong().setValue(song);
     }
 
-    private void Play(Uri songPath) {
+    private void MediaPlay(Song song) {
         try {
             mMediaPlayer.reset();
-            mMediaPlayer.setDataSource(this, songPath);
+            mMediaPlayer.setDataSource(this, song.getPath());
             mMediaPlayer.prepare();
-            if(mSong == null)
+            if(mSong == null && song.getSongId().equals(MusicPreferences.getLastMusic(this)))
                 Seek(MusicPreferences.getMusicPosition(this));
             mMediaPlayer.start();
             isStop = false;

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.example.musicplayer.R;
 import com.example.musicplayer.SharedPreferences.MusicPreferences;
@@ -19,6 +20,8 @@ import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
+import com.example.musicplayer.repository.AlbumRepository;
+import com.example.musicplayer.repository.ArtistRepository;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.tabs.TabLayout;
@@ -30,6 +33,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private View mIndicator;
+    private ImageView mRefresh;
     private int mIndicatorWidth;
     private ListPagerAdapter mAdapter;
     private PlayBackBottomBar playBackBottomBar;
@@ -86,6 +90,12 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
             }
         });
+
+        mRefresh.setOnClickListener(view -> {
+            SongRepository.getInstance(this).findAllSongs();
+            AlbumRepository.getInstance(this).findAllAlbum();
+            ArtistRepository.getInstance(this).findAllArtist();
+        });
     }
 
 
@@ -93,6 +103,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         mViewPager = findViewById(R.id.view_pager);
         mTabLayout = findViewById(R.id.tab_layout);
         mIndicator = findViewById(R.id.indicator);
+        mRefresh = findViewById(R.id.refresh);
 
         mAdapter = new ListPagerAdapter(this, getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
