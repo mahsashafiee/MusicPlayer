@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import com.example.musicplayer.R;
 import com.example.musicplayer.model.Qualifier;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;

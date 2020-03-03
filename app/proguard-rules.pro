@@ -19,3 +19,14 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keepattributes *Annotation*
+-keep class org.jaudiotagger.test.**{*;}
+-keep class org.jaudiotagger.fix.**{*;}
+-keep class org.jaudiotagger.audio.mp4.**{*;}
+-keep class org.jaudiotagger.tag.datatype.**{*;}
+-keep class org.jaudiotagger.tag.**{*;}
+-keep class org.jaudiotagger.tag.asf.**{*;}
+-keep class org.jaudiotagger.tag.flac.**{*;}
+-keep class org.jaudiotagger.logging.**{*;}
+-keep class org.jaudiotagger.tag.vorbiscomment.**{*;}
