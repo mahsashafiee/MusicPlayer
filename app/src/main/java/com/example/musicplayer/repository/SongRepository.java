@@ -88,7 +88,6 @@ public class SongRepository {
                 /*Log.e("MusicPlayer", Objects.requireNonNull(e.getMessage()));*/
             } finally {
                 songWrapper.close();
-                PlayList.setSongList(mSongs);
                 mSplashActivity.startCategory();
             }
         }

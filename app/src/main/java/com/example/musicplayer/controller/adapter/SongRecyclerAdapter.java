@@ -2,14 +2,11 @@ package com.example.musicplayer.controller.adapter;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,7 +22,9 @@ import com.example.musicplayer.repository.PlayList;
 import org.jaudiotagger.tag.datatype.Artwork;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import es.claucookie.miniequalizerlibrary.EqualizerView;
@@ -37,6 +36,8 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
     private CallBacks mCallBack;
     private int mSelectedItem = -1;
     private RecyclerView mRecyclerView;
+    private Map<CircleImageView, String> mImageMap = new HashMap<>();
+    private Handler handler;
 
     public SongRecyclerAdapter(Context context) {
         mContext = context;
@@ -158,37 +159,55 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
                 mEqualizer.stopBars();
             }
 
-            SetArt art = new SetArt();
+            mImageMap.put(mIVMusicCover, mSong.getFilePath());
+        }
+
+    }
+
+    public void setImage() {
+
+        if(mImageMap.size() == 0){
+            if(handler != null)
+                return;
+            handler = new Handler();
+            handler.postDelayed(this::setImage, 2000);
+        }
+        for (CircleImageView iView : mImageMap.keySet()) {
+            if(!iView.getDrawable().getConstantState().equals(mContext.getResources().getDrawable(R.drawable.song_placeholder).getConstantState()))
+                continue;
+            SetArt art = new SetArt(iView);
             art.execute();
+        }
+    }
 
+    private class SetArt extends AsyncTask<Void, Void, byte[]> {
+        private CircleImageView mImageView;
+
+        public SetArt(CircleImageView imageView) {
+            mImageView = imageView;
         }
 
+        @Override
+        protected byte[] doInBackground(Void... voids) {
+            try {
+                Artwork artwork = ID3Tags.getArtwork(mImageMap.get(mImageView));
+                return artwork.getBinaryData();
 
-        private class SetArt extends AsyncTask<Void, Void, byte[]> {
-
-            @Override
-            protected byte[] doInBackground(Void... voids) {
-                try {
-                    Artwork artwork = ID3Tags.getArtwork(mSong.getFilePath());
-                    return artwork.getBinaryData();
-
-                } catch (OutOfMemoryError error) {
-                    return null;
-                } catch (NullPointerException e) {
-                    return null;
-                }
-            }
-
-            @Override
-            protected void onPostExecute(byte[] bytes) {
-                Glide.with(mIVMusicCover).asDrawable()
-                        .load(bytes)
-                        .override(100, 100)
-                        .placeholder(R.drawable.song_placeholder)
-                        .into(mIVMusicCover);
+            } catch (OutOfMemoryError error) {
+                return null;
+            } catch (NullPointerException e) {
+                return null;
             }
         }
 
+        @Override
+        protected void onPostExecute(byte[] bytes) {
+            Glide.with(mImageView).asDrawable()
+                    .load(bytes)
+                    .override(100, 100)
+                    .placeholder(R.drawable.song_placeholder)
+                    .into(mImageView);
+        }
     }
 
 }

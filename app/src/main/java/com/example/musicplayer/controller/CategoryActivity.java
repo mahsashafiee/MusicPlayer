@@ -11,13 +11,17 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.SharedPreferences.MusicPreferences;
 import com.example.musicplayer.controller.adapter.ListPagerAdapter;
 import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
+import com.example.musicplayer.repository.AlbumRepository;
+import com.example.musicplayer.repository.ArtistRepository;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
 import com.google.android.material.tabs.TabLayout;
@@ -25,9 +29,11 @@ import com.google.android.material.tabs.TabLayout;
 
 public class CategoryActivity extends AppCompatActivity implements ViewHolders.CallBacks, ServiceConnection, SongRecyclerAdapter.CallBacks {
 
+    public static final String EXTRA_CURRENT_PAGE = "current_page";
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private View mIndicator;
+    private ImageView mRefresh;
     private int mIndicatorWidth;
     private ListPagerAdapter mAdapter;
     private PlayBackBottomBar playBackBottomBar;
@@ -35,8 +41,9 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     private PlayerService mPlayer;
     boolean serviceBound = false;
 
-    public static Intent newIntent(Context target) {
+    public static Intent newIntent(Context target, int currentPage) {
         Intent intent = new Intent(target, CategoryActivity.class);
+        intent.putExtra(EXTRA_CURRENT_PAGE, currentPage);
         return intent;
     }
 
@@ -44,12 +51,12 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_category);
+        playBackBottomBar = new PlayBackBottomBar(this);
+
         // Bind to LocalService
         Intent intent = new Intent(this, PlayerService.class);
         bindService(intent, this, Context.BIND_AUTO_CREATE);
-
-        setContentView(R.layout.activity_category);
-        playBackBottomBar = new PlayBackBottomBar(this);
 
         initUI();
 
@@ -83,6 +90,12 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
 
             }
         });
+
+        mRefresh.setOnClickListener(view -> {
+            SongRepository.getInstance(this).findAllSongs();
+            AlbumRepository.getInstance(this).findAllAlbum();
+            ArtistRepository.getInstance(this).findAllArtist();
+        });
     }
 
 
@@ -90,9 +103,11 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
         mViewPager = findViewById(R.id.view_pager);
         mTabLayout = findViewById(R.id.tab_layout);
         mIndicator = findViewById(R.id.indicator);
+        mRefresh = findViewById(R.id.refresh);
 
         mAdapter = new ListPagerAdapter(this, getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);
+        mViewPager.setCurrentItem(getIntent().getIntExtra(EXTRA_CURRENT_PAGE,0));
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
@@ -100,6 +115,7 @@ public class CategoryActivity extends AppCompatActivity implements ViewHolders.C
     @Override
     public void PlaySong(Song song) {
         PlayList.setSongList(SongRepository.getInstance(CategoryActivity.this).getSongs());
+        MusicPreferences.setLastList(this, Qualifier.ALLSONG, "song");
         if (serviceBound)
             startService(PlayerService.newIntent(this, song));
     }

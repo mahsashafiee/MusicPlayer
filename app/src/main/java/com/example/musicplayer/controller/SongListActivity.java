@@ -53,6 +53,7 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
 
     @Override
     public void PlaySong(Song song) {
+        MusicPreferences.setLastList(this, (Qualifier) getIntent().getSerializableExtra(EXTRA_QUALIFIER), getIntent().getStringExtra(EXTRA_STRING));
         startActivity(SingleSongActivity.newIntent(SongListActivity.this, song));
         startService(PlayerService.newIntent(this, song));
     }

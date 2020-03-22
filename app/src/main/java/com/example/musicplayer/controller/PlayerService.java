@@ -60,7 +60,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     BroadcastReceiver becomingNoisyReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Pause();
+            if (mMediaPlayer.isPlaying())
+                Pause();
         }
     };
 
@@ -84,7 +85,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     }
 
     private void initMediaPlayer() {
-        setPlayList();
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         mMediaPlayer = new MediaPlayer();
         mMediaPlayer.setWakeMode(this, PowerManager.PARTIAL_WAKE_LOCK);
@@ -92,11 +92,15 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         registerReceiver(becomingNoisyReceiver, new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY));
     }
 
-    private void setPlayList() {
-        mPlayList = new ArrayList<>();
-        mPlayList.addAll(PlayList.getSongList());
+    public void setPlayList() {
+        mPlayList = new ArrayList<>(PlayList.getSongList());
         if (mShuffle.getValue())
             Collections.shuffle(mPlayList);
+    }
+
+    public void setIndex(int songIndex) {
+        setPlayList();
+        mCurrentSongIndex = songIndex;
     }
 
     private void setLiveDatas() {
@@ -120,10 +124,10 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             initMediaPlayer();
         if (!requestAudioFocus())
             stopSelf();
-        if(mShuffle.getValue())
+        if (mShuffle.getValue())
             shuffle();
         //what should happen after
-        if(mCompletionListener == null){
+        if (mCompletionListener == null) {
             mCompletionListener = this::onCompletion;
             mMediaPlayer.setOnCompletionListener(mCompletionListener);
         }
@@ -157,7 +161,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private void Play(Song song) {
 
-        if(song == null)
+        if (song == null)
             return;
 
         //check if it's first time using
@@ -179,9 +183,9 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private void songPlayer(Song song) {
 
+        MediaPlay(song);
         mSong = song;
         mCurrentSongIndex = mPlayList.indexOf(song);
-        Play(song.getPath());
 
         MusicPreferences.setLastMusic(this, mSong.getSongId());
 
@@ -189,16 +193,13 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         PlayList.getLiveSong().setValue(song);
     }
 
-    public void setIndex(int songIndex) {
-        setPlayList();
-        mCurrentSongIndex = songIndex;
-    }
-
-    private void Play(Uri songPath) {
+    private void MediaPlay(Song song) {
         try {
             mMediaPlayer.reset();
-            mMediaPlayer.setDataSource(this, songPath);
+            mMediaPlayer.setDataSource(this, song.getPath());
             mMediaPlayer.prepare();
+            if(mSong == null && song.getSongId().equals(MusicPreferences.getLastMusic(this)))
+                Seek(MusicPreferences.getMusicPosition(this));
             mMediaPlayer.start();
             isStop = false;
             isPaused.setValue(false);
@@ -257,10 +258,9 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         if (mShuffle.getValue()) {
             Collections.shuffle(mPlayList);
             mCurrentSongIndex = mPlayList.indexOf(mSong);
-            mPlayList.set(mCurrentSongIndex,mPlayList.get(0));
-            mPlayList.set(0,mSong);
-        }
-        else {
+            mPlayList.set(mCurrentSongIndex, mPlayList.get(0));
+            mPlayList.set(0, mSong);
+        } else {
             mPlayList = PlayList.getSongList();
             mCurrentSongIndex = mPlayList.indexOf(mSong);
         }

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class PlayList {
 
-    private static List<Song> songList = new ArrayList<>();
+    private static List<Song> songList;
 
     private static MutableLiveData<Song> mSong = new MutableLiveData<>();
 

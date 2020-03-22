@@ -1,10 +1,7 @@
 package com.example.musicplayer.controller.adapter;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,13 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
-import com.example.musicplayer.Utils.ID3Tags;
 import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
-
-import org.jaudiotagger.tag.datatype.Artwork;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

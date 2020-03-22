@@ -4,8 +4,6 @@ package com.example.musicplayer.controller;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.musicplayer.R;
-import com.example.musicplayer.controller.adapter.MusicRecyclerAdapter;
 import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.repository.PlayList;
@@ -99,11 +96,24 @@ public class SongListFragment extends Fragment {
         songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         songRecycler.setAdapter(mAdapter);
 
-    }
+        /*songRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
 
-    /**
-     * Toolbar Handler
-     *
-     * @param view
-     */
+                switch (newState) {
+                    case RecyclerView.SCROLL_STATE_IDLE:
+
+                        //System.out.println("The RecyclerView is not scrolling");
+                        break;
+                    case RecyclerView.SCROLL_STATE_DRAGGING:
+                        //System.out.println("Scrolling now");
+                        break;
+                    case RecyclerView.SCROLL_STATE_SETTLING:
+                        //System.out.println("Scroll Settling");
+                        break;
+                }
+            }
+        });*/
+    }
 }

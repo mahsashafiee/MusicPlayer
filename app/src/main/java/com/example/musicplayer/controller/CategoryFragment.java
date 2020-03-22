@@ -3,6 +3,7 @@ package com.example.musicplayer.controller;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -69,6 +70,7 @@ public class CategoryFragment extends Fragment {
 
         setupRecyclerView();
         RepositoryObserver();
+        RecyclerScroll();
 
         return mView;
     }
@@ -83,9 +85,9 @@ public class CategoryFragment extends Fragment {
 
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-            if (mQualifier.equals(Qualifier.ALLSONG))
+            if (mQualifier.equals(Qualifier.ALLSONG)) {
                 mRecyclerView.setAdapter(mSongAdapter);
-            else
+            } else
                 mRecyclerView.setAdapter(mAdapter);
 
         }
@@ -115,5 +117,24 @@ public class CategoryFragment extends Fragment {
         else
             mArtistRepository.getLiveArtist().observe(this, artists ->
                     mAdapter.setList(artists));
+    }
+
+    private void RecyclerScroll() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && mRecyclerView.getAdapter() instanceof SongRecyclerAdapter) {
+                    mSongAdapter.setImage();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mQualifier.equals(Qualifier.ALLSONG))
+            mSongAdapter.setImage();
     }
 }

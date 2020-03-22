@@ -11,7 +11,7 @@ public class Song implements Comparable<Song>, Parcelable {
     private String mTitle;
     private String mArtist;
     private String mAlbum;
-    private String mDuration;
+    private int mDuration;
     private Uri mPath;
     private String mLyrics;
     private String mFilePath;
@@ -38,6 +38,16 @@ public class Song implements Comparable<Song>, Parcelable {
     }
 
     public String getDuration() {
+        int hrs = (mDuration / 3600000);
+        int mns = (mDuration / 60000) % 60000;
+        int scs = mDuration % 60000 / 1000;
+        if (hrs == 0) {
+            return String.format("%02d:%02d", mns, scs);
+        } else
+            return String.format("%02d:%02d:%02d", hrs, mns, scs);
+    }
+
+    public int getIntDuration(){
         return mDuration;
     }
 
@@ -70,13 +80,7 @@ public class Song implements Comparable<Song>, Parcelable {
     }
 
     public void setDuration(int Duration) {
-        int hrs = (Duration / 3600000);
-        int mns = (Duration / 60000) % 60000;
-        int scs = Duration % 60000 / 1000;
-        if (hrs == 0) {
-            this.mDuration = String.format("%02d:%02d", mns, scs);
-        } else
-            this.mDuration = String.format("%02d:%02d:%02d", hrs, mns, scs);
+        this.mDuration = Duration;
     }
 
     public void setLyrics(String lyrics) {
@@ -114,7 +118,7 @@ public class Song implements Comparable<Song>, Parcelable {
         dest.writeString(this.mTitle);
         dest.writeString(this.mArtist);
         dest.writeString(this.mAlbum);
-        dest.writeString(this.mDuration);
+        dest.writeInt(this.mDuration);
         dest.writeParcelable(this.mPath, flags);
         dest.writeString(this.mLyrics);
         dest.writeString(this.mFilePath);
@@ -125,7 +129,7 @@ public class Song implements Comparable<Song>, Parcelable {
         this.mTitle = in.readString();
         this.mArtist = in.readString();
         this.mAlbum = in.readString();
-        this.mDuration = in.readString();
+        this.mDuration = in.readInt();
         this.mPath = in.readParcelable(Uri.class.getClassLoader());
         this.mLyrics = in.readString();
         this.mFilePath = in.readString();

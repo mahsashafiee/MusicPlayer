@@ -4,6 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.musicplayer.R;
+import com.example.musicplayer.model.Qualifier;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class MusicPreferences {
 
@@ -12,6 +18,8 @@ public class MusicPreferences {
     private static final String MUSIC_IS_SHUFFLE_ON = "music_is_shuffle_on";
     private static final String MUSIC_IS_LIST_LOOP = "music_is_list_loop";
     private static final String MUSIC_IS_SINGLE_LOOP = "music_is_single_loop";
+    public static final String LAST_LIST = "last_list";
+    public static final String MUSIC_POSITION = "music_position";
 
     public static Long getLastMusic(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
@@ -61,5 +69,28 @@ public class MusicPreferences {
     public static void setMusicDominantColor(Context context, int dominantColor) {
         SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
         prefs.edit().putInt(MUSIC_DOMINANT_COLOR, dominantColor).apply();
+    }
+
+    public static void setLastList(Context context, Qualifier qualifier, String name){
+        Set<String> strings = new HashSet<>();
+        strings.add(qualifier.toString());
+        strings.add(name);
+        SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        prefs.edit().putStringSet(LAST_LIST, strings).apply();
+    }
+
+    public static List getLastList(Context context) throws NullPointerException{
+        SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        return Arrays.asList(prefs.getStringSet(LAST_LIST, null).toArray());
+    }
+
+    public static void setMusicPosition(Context context, int position){
+        SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        prefs.edit().putInt(MUSIC_POSITION, position).apply();
+    }
+
+    public static int getMusicPosition(Context context){
+        SharedPreferences prefs = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+        return prefs.getInt(MUSIC_POSITION,0);
     }
 }
