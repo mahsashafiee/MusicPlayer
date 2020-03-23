@@ -17,13 +17,18 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="false"
         android:theme="@style/Theme.MusicPlayer.NoActionBar">
+        <receiver
+            android:name=".controller.MediaNotificationReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
 
         <service
             android:name=".controller.PlayerService"
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".controller.MainActivity"
+        <activity
+            android:name=".controller.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,11 +36,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".controller.CategoryActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".controller.SingleSongActivity"
             android:screenOrientation="portrait">

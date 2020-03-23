@@ -1,4 +1,4 @@
-package com.example.musicplayer.Utils;
+package com.example.musicplayer.utils;
 
 import android.app.Activity;
 import android.os.Build;

@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.example.musicplayer.R;
-import com.example.musicplayer.SharedPreferences.MusicPreferences;
+import com.example.musicplayer.sharedPreferences.MusicPreferences;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.repository.AlbumRepository;
 import com.example.musicplayer.repository.ArtistRepository;
@@ -25,7 +25,7 @@ import com.example.musicplayer.repository.SongRepository;
 
 import java.util.List;
 
-import static com.example.musicplayer.Utils.Utils.setWindowFlag;
+import static com.example.musicplayer.utils.Utils.setWindowFlag;
 
 public class MainActivity extends AppCompatActivity implements SongRepository.ManageActivity {
 

@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.musicplayer.R;
-import com.example.musicplayer.SharedPreferences.MusicPreferences;
-import com.example.musicplayer.Utils.PictureUtils;
+import com.example.musicplayer.sharedPreferences.MusicPreferences;
+import com.example.musicplayer.utils.PictureUtils;
 import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;
 import com.example.musicplayer.model.Qualifier;

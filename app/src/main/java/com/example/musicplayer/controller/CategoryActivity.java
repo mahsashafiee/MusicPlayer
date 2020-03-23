@@ -14,7 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.example.musicplayer.R;
-import com.example.musicplayer.SharedPreferences.MusicPreferences;
+import com.example.musicplayer.sharedPreferences.MusicPreferences;
 import com.example.musicplayer.controller.adapter.ListPagerAdapter;
 import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
 import com.example.musicplayer.controller.adapter.ViewHolders;

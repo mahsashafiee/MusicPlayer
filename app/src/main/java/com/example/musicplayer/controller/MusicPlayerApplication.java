@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.IBinder;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.example.musicplayer.R;
 
@@ -39,11 +40,22 @@ public class MusicPlayerApplication extends Application {
     }
 
     private void CreateNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String id = getString(R.string.notification_channel_id);
-            String name = getString(R.string.notification_channel_name);
-            NotificationChannel notificationChannel = new NotificationChannel(id, name, NotificationManager.IMPORTANCE_HIGH);
-            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).createNotificationChannel(notificationChannel);
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+        if (notificationManagerCompat.getNotificationChannel(getString(R.string.notification_channel_id)) == null) {
+            NotificationChannel notificationChannel;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                notificationChannel = new NotificationChannel(getString(R.string.notification_channel_id),
+                        getString(R.string.notification_channel_name),
+                        NotificationManager.IMPORTANCE_LOW);
+
+                notificationChannel.setDescription(getString(R.string.app_name));
+
+                notificationChannel.enableLights(false);
+                notificationChannel.enableVibration(false);
+                notificationChannel.setShowBadge(false);
+
+                notificationManagerCompat.createNotificationChannel(notificationChannel);
+            }
         }
     }
 

@@ -19,6 +19,12 @@
     <string name="category_all">Songs</string>
     <string name="category_favourite">Favourites</string>
 
+    <!-- MusicPlayer notification titles -->
+    <string name="label_pause">Pause</string>
+    <string name="label_play">Play</string>
+    <string name="label_previous">Previous</string>
+    <string name="label_next">Next</string>
+
     <string name="search">Search…</string>
 
     <plurals name="total_songs">

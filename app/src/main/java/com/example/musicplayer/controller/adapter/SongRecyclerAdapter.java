@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
-import com.example.musicplayer.Utils.ID3Tags;
+import com.example.musicplayer.utils.ID3Tags;
 import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 

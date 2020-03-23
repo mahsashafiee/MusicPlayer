@@ -1,7 +1,5 @@
 package com.example.musicplayer.controller;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,19 +7,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
-import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.musicplayer.R;
-import com.example.musicplayer.SharedPreferences.MusicPreferences;
+import com.example.musicplayer.sharedPreferences.MusicPreferences;
 import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 
@@ -50,6 +45,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private Song mSong;
     private int mCurrentSongIndex;
     private int newPosition;
+    private MusicNotificationManager mNotificationManager;
 
     private MutableLiveData<Boolean> mListLoop = new MutableLiveData<>();
     private MutableLiveData<Boolean> mSingleLoop = new MutableLiveData<>();
@@ -76,6 +72,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         super.onCreate();
         setLiveDatas();
         initMediaPlayer();
+        mNotificationManager = new MusicNotificationManager(this);
     }
 
     public class LocalBinder extends Binder {
@@ -132,12 +129,13 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             mMediaPlayer.setOnCompletionListener(mCompletionListener);
         }
         Play((Song) intent.getParcelableExtra(SONG_EXTRA));
-        startForeground(1, getNotification());
+        startForeground(1, mNotificationManager.getNotification());
         return START_NOT_STICKY;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
+        mNotificationManager.registerNotificationActionsReceiver(true);
         return iBinder;
     }
 
@@ -329,6 +327,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         super.onDestroy();
         Release();
         unregisterReceiver(becomingNoisyReceiver);
+        mNotificationManager.registerNotificationActionsReceiver(false);
     }
 
     @Override
@@ -385,7 +384,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         return AudioManager.AUDIOFOCUS_REQUEST_GRANTED == mAudioManager.abandonAudioFocus(this);
     }
 
-    private Notification getNotification() {
+    /*private Notification getNotification() {
         return new NotificationCompat
                 .Builder(this, getString(R.string.notification_channel_id))
                 .setContentIntent(PendingIntent.getActivity(
@@ -393,5 +392,5 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
                         PENDING_INTENT_REQUEST_CODE,
                         SingleSongActivity.newIntent(this, mSong), PENDING_INTENT_FLAG))
                 .build();
-    }
+    }*/
 }

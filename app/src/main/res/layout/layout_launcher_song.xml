@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.example.musicplayer.Utils.SquareImage
+    <com.example.musicplayer.utils.SquareImage
         android:id="@+id/main_recent_song"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </com.example.musicplayer.Utils.SquareImage>
+    </com.example.musicplayer.utils.SquareImage>
 
     <View
         android:layout_width="match_parent"

@@ -17,9 +17,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
 import com.example.musicplayer.R;
-import com.example.musicplayer.SharedPreferences.MusicPreferences;
-import com.example.musicplayer.Utils.ID3Tags;
-import com.example.musicplayer.Utils.PictureUtils;
+import com.example.musicplayer.sharedPreferences.MusicPreferences;
+import com.example.musicplayer.utils.ID3Tags;
+import com.example.musicplayer.utils.PictureUtils;
 import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;

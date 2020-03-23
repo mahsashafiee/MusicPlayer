@@ -1,4 +1,4 @@
-package com.example.musicplayer.Utils;
+package com.example.musicplayer.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +18,7 @@ import androidx.palette.graphics.Palette;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.musicplayer.R;
-import com.example.musicplayer.SharedPreferences.MusicPreferences;
+import com.example.musicplayer.sharedPreferences.MusicPreferences;
 
 import java.util.ArrayList;
 import java.util.Collections;
