@@ -6,9 +6,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +18,24 @@ import android.view.ViewGroup;
 import com.example.musicplayer.R;
 import com.example.musicplayer.controller.adapter.MusicRecyclerAdapter;
 import com.example.musicplayer.controller.adapter.SongRecyclerAdapter;
+import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.repository.AlbumRepository;
 import com.example.musicplayer.repository.ArtistRepository;
+import com.example.musicplayer.repository.NetworkRepository;
+import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.repository.SongRepository;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class CategoryFragment extends Fragment {
 
-    private static final String SONG_QUALIFIER = "song_qualifier";
     private static final String TAG = "CategoryFragment";
+
+    private static final String SONG_QUALIFIER = "song_qualifier";
     private View mView;
     private RecyclerView mRecyclerView;
     private AlbumRepository mAlbumRepository;
@@ -115,8 +123,11 @@ public class CategoryFragment extends Fragment {
             mAlbumRepository.getLiveAlbum().observe(this, albums ->
                     mAdapter.setList(albums));
         else
-            mArtistRepository.getLiveArtist().observe(this, artists ->
-                    mAdapter.setList(artists));
+            mArtistRepository.getLiveArtist().observe(this, artists -> {
+                mAdapter.setList(artists);
+                for (Artist artist : artists)
+                    NetworkRepository.getInstance(getContext()).getArtistPics(artist.getName());
+            });
     }
 
     private void RecyclerScroll() {

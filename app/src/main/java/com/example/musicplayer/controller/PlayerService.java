@@ -129,7 +129,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             mMediaPlayer.setOnCompletionListener(mCompletionListener);
         }
         Play((Song) intent.getParcelableExtra(SONG_EXTRA));
-        startForeground(1, mNotificationManager.getNotification());
+        startForeground(1, mNotificationManager.createNotification());
+
         return START_NOT_STICKY;
     }
 
@@ -280,10 +281,12 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     public void goForward() {
         songPlayer(mPlayList.get((mCurrentSongIndex + 1) % mPlayList.size()));
+        mNotificationManager.updateNotification();
     }
 
     public void goBackward() {
         songPlayer(mPlayList.get((mCurrentSongIndex - 1 + mPlayList.size()) % mPlayList.size()));
+        mNotificationManager.updateNotification();
     }
 
     public LiveData<Boolean> isShuffle() {

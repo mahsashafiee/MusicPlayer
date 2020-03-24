@@ -2,13 +2,13 @@ package com.example.musicplayer.controller;
 
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.Spanned;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -18,6 +18,7 @@ import com.example.musicplayer.R;
 import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 import com.example.musicplayer.utils.ID3Tags;
+import com.example.musicplayer.utils.Utils;
 
 import org.jaudiotagger.tag.datatype.Artwork;
 
@@ -38,6 +39,7 @@ class MusicNotificationManager {
     private PlayerService mService;
     private NotificationManagerCompat mManagerCompat;
     private NotificationActionReceiver mNotificationActionReceiver;
+    private Notification mNotification;
 
     MusicNotificationManager(@NonNull final PlayerService service) {
         mService = service;
@@ -75,7 +77,7 @@ class MusicNotificationManager {
         return new NotificationCompat.Action.Builder(icon, label, playerAction(action)).build();
     }
 
-    Notification getNotification() {
+    Notification createNotification() {
         Song song = PlayList.getLiveSong().getValue();
         Intent openPlayerIntent = SingleSongActivity.newIntent(mService, song);
         openPlayerIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -83,10 +85,15 @@ class MusicNotificationManager {
         PendingIntent contentIntent = PendingIntent.getActivity(mService, REQUEST_CODE,
                 openPlayerIntent, 0);
 
-        Notification notification = new NotificationCompat.Builder(mService, mService.getString(R.string.notification_channel_id))
+        String artist = song.getArtist();
+        String songTitle = song.getTitle();
+
+        Spanned spanned = Utils.buildSpanned(mService.getString(R.string.playing_song, artist, songTitle));
+
+        mNotification = new NotificationCompat.Builder(mService, mService.getString(R.string.notification_channel_id))
                 .setSmallIcon(R.drawable.music_notification)
-                .setContentTitle(song.getTitle())
-                .setContentText(song.getArtist())
+                .setContentTitle(spanned)
+                .setContentText(song.getAlbum())
                 .setLargeIcon(getLargeIcon(song))
                 .setOnlyAlertOnce(true)
                 .setShowWhen(false)
@@ -96,11 +103,16 @@ class MusicNotificationManager {
                 .addAction(notificationAction(ACTION_PLAY_PAUSE))
                 .addAction(notificationAction(ACTION_NEXT))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2))
                 .build();
 
-        mManagerCompat.notify(1, notification);
+        mManagerCompat.notify(1, mNotification);
 
-        return notification;
+        return mNotification;
+    }
+
+    void updateNotification() {
+        mManagerCompat.notify(1, mNotification);
     }
 
     private Bitmap getLargeIcon(Song song) {

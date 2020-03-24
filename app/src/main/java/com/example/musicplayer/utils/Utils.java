@@ -1,11 +1,15 @@
 package com.example.musicplayer.utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.Window;
 import android.view.WindowManager;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
 
 public class Utils {
     public static Spanned buildSpanned(String res) {
@@ -23,5 +27,11 @@ public class Utils {
             winParams.flags &= ~bits;
         }
         win.setAttributes(winParams);
+    }
+
+    public static boolean isNetworkAvailableAndConected(Context context) {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
+        return manager.getActiveNetworkInfo() != null && manager.getActiveNetworkInfo().isConnected();
+
     }
 }

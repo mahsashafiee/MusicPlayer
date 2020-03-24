@@ -8,8 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayList {
+    public PlayList() {
+        mArtistURLs.setValue(new ArrayList<>());
+    }
 
     private static List<Song> songList;
+
+    private static MutableLiveData<List<String>> mArtistURLs = new MutableLiveData<>();
 
     private static MutableLiveData<Song> mSong = new MutableLiveData<>();
 
@@ -23,5 +28,9 @@ public class PlayList {
 
     public static MutableLiveData<Song> getLiveSong(){
         return mSong;
+    }
+
+    public static MutableLiveData<List<String>> getArtistURLs() {
+        return mArtistURLs;
     }
 }

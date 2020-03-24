@@ -1,10 +1,13 @@
 package com.example.musicplayer.controller.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -13,10 +16,16 @@ import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
+import com.example.musicplayer.repository.PlayList;
+
+import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewHolders {
+
+    private static final String TAG = "ViewHolders";
 
     private CallBacks callBacks;
     private Context mContext;
@@ -91,21 +100,28 @@ public class ViewHolders {
         private TextView mName;
         private Artist mArtist;
         private TextView mNumberOfSongs;
+        private List<String> mImageUrls;
 
         public ArtistItems(@NonNull View itemView) {
             super(itemView);
 
+            mImageUrls = PlayList.getArtistURLs().getValue();
             mName = itemView.findViewById(R.id.item_song_artist);
             mImage = itemView.findViewById(R.id.item_artist_art);
             mNumberOfSongs = itemView.findViewById(R.id.item_total_songs);
 
             itemView.setOnClickListener(view -> callBacks.SongList(mArtist.getName(), Qualifier.ARTIST));
-
-
         }
 
         @Override
         public void bindHolder(Artist artist) {
+            if (mImageUrls != null) {
+                for (String string : mImageUrls) {
+                    if (string.equalsIgnoreCase(artist.getName()))
+                        Glide.with(mContext).load(string).into(mImage);
+                    Log.d(TAG, "onChanged: " + string);
+                }
+            }
             mArtist = artist;
             mName.setText(artist.getName());
             String items = mContext.getResources()
