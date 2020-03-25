@@ -32,7 +32,7 @@
 
         <activity
             android:name=".controller.MainActivity"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,17 +41,17 @@
         </activity>
         <activity
             android:name=".controller.CategoryActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".controller.SingleSongActivity"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <category android:name="android.intent.category.APP_MUSIC" />
             </intent-filter>
         </activity>
         <activity
             android:name=".controller.SongListActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

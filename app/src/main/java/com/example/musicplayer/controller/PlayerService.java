@@ -30,8 +30,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
     private final IBinder iBinder = new LocalBinder();
 
-    private static int PENDING_INTENT_REQUEST_CODE = 0;
-    private static int PENDING_INTENT_FLAG = 0;
     private String TAG = "PlayerService";
     private static final String SONG_EXTRA = "song";
     private final int SKIP_TIME = 3000;
@@ -129,8 +127,6 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             mMediaPlayer.setOnCompletionListener(mCompletionListener);
         }
         Play((Song) intent.getParcelableExtra(SONG_EXTRA));
-        startForeground(1, mNotificationManager.createNotification());
-
         return START_NOT_STICKY;
     }
 
@@ -190,6 +186,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
         //observe in single song fragment
         PlayList.getLiveSong().setValue(song);
+
+        startForeground(1, mNotificationManager.createNotification());
     }
 
     private void MediaPlay(Song song) {
@@ -221,6 +219,8 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
             mMediaPlayer.start();
             isPaused.setValue(false);
         }
+
+        mNotificationManager.updateActions();
     }
 
     public void Stop() {
@@ -386,14 +386,4 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
     private boolean removeAudioFocus() {
         return AudioManager.AUDIOFOCUS_REQUEST_GRANTED == mAudioManager.abandonAudioFocus(this);
     }
-
-    /*private Notification getNotification() {
-        return new NotificationCompat
-                .Builder(this, getString(R.string.notification_channel_id))
-                .setContentIntent(PendingIntent.getActivity(
-                        this,
-                        PENDING_INTENT_REQUEST_CODE,
-                        SingleSongActivity.newIntent(this, mSong), PENDING_INTENT_FLAG))
-                .build();
-    }*/
 }

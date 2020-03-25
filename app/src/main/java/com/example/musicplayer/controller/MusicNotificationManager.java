@@ -39,7 +39,7 @@ class MusicNotificationManager {
     private PlayerService mService;
     private NotificationManagerCompat mManagerCompat;
     private NotificationActionReceiver mNotificationActionReceiver;
-    private Notification mNotification;
+    private NotificationCompat.Builder mNotification;
 
     MusicNotificationManager(@NonNull final PlayerService service) {
         mService = service;
@@ -103,16 +103,13 @@ class MusicNotificationManager {
                 .addAction(notificationAction(ACTION_PLAY_PAUSE))
                 .addAction(notificationAction(ACTION_NEXT))
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2))
-                .build();
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0, 1, 2));
 
-        mManagerCompat.notify(1, mNotification);
-
-        return mNotification;
+        return mNotification.build();
     }
 
     void updateNotification() {
-        mManagerCompat.notify(1, mNotification);
+        mManagerCompat.notify(1, mNotification.build());
     }
 
     private Bitmap getLargeIcon(Song song) {
@@ -164,7 +161,7 @@ class MusicNotificationManager {
             if (action != null)
                 switch (action) {
                     case ACTION_PLAY_PAUSE:
-                        if (mService.isPlaying()) mService.Pause();
+                        mService.Pause();
                         break;
                     case ACTION_NEXT:
                         mService.goForward();
@@ -176,4 +173,9 @@ class MusicNotificationManager {
         }
     }
 
+    void updateActions(){
+        mNotification.mActions.remove(1);
+        mNotification.mActions.add(1, notificationAction(ACTION_PLAY_PAUSE));
+        updateNotification();
+    }
 }

@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -15,11 +13,9 @@ import com.example.musicplayer.R;
 import com.example.musicplayer.model.Album;
 import com.example.musicplayer.model.Artist;
 import com.example.musicplayer.model.Qualifier;
-import com.example.musicplayer.model.Song;
 import com.example.musicplayer.repository.PlayList;
 
 import java.util.List;
-import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -37,8 +33,6 @@ public class ViewHolders {
 
     //Handle PlaySong and SongList fragment invoker;
     public interface CallBacks {
-        void PlaySong(Song song);
-
         void SongList(String albumOrArtist, Qualifier qualifier);
     }
 
