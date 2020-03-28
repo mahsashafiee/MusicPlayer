@@ -227,6 +227,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
         mMediaPlayer.stop();
         mMediaPlayer.reset();
         isStop = true;
+        mNotificationManager.updateActions();
     }
 
     public void Seek(int msec) {
@@ -342,6 +343,7 @@ public class PlayerService extends Service implements MediaPlayer.OnCompletionLi
 
                 else if (!mMediaPlayer.isPlaying() && pauseFocus) {
                     volume = 0f;
+                    mMediaPlayer.setVolume(volume, volume);
                     Pause();
                     pauseFocus = false;
                 }

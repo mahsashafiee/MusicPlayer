@@ -170,7 +170,7 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
             if(handler != null)
                 return;
             handler = new Handler();
-            handler.postDelayed(this::setImage, 2000);
+            handler.postDelayed(this::setImage, 1000);
         }
         for (CircleImageView iView : mImageMap.keySet()) {
             if(!iView.getDrawable().getConstantState().equals(mContext.getResources().getDrawable(R.drawable.song_placeholder).getConstantState()))

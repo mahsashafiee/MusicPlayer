@@ -3,6 +3,7 @@ package com.example.musicplayer.controller;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -95,25 +96,16 @@ public class SongListFragment extends Fragment {
         mAdapter.setSongs(PlayList.getSongList());
         songRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
         songRecycler.setAdapter(mAdapter);
+        mAdapter.setImage();
 
-        /*songRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        songRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
 
-                switch (newState) {
-                    case RecyclerView.SCROLL_STATE_IDLE:
-
-                        //System.out.println("The RecyclerView is not scrolling");
-                        break;
-                    case RecyclerView.SCROLL_STATE_DRAGGING:
-                        //System.out.println("Scrolling now");
-                        break;
-                    case RecyclerView.SCROLL_STATE_SETTLING:
-                        //System.out.println("Scroll Settling");
-                        break;
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && songRecycler.getAdapter() instanceof SongRecyclerAdapter) {
+                    mAdapter.setImage();
                 }
             }
-        });*/
+        });
     }
 }

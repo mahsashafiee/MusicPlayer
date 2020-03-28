@@ -15,7 +15,7 @@ import com.example.musicplayer.model.Qualifier;
 import com.example.musicplayer.model.Song;
 
 
-public class SongListActivity extends AppCompatActivity implements ViewHolders.CallBacks, SongRecyclerAdapter.CallBacks {
+public class SongListActivity extends AppCompatActivity implements  SongRecyclerAdapter.CallBacks {
 
     private SongListFragment mFragment;
 
@@ -56,11 +56,6 @@ public class SongListActivity extends AppCompatActivity implements ViewHolders.C
         MusicPreferences.setLastList(this, (Qualifier) getIntent().getSerializableExtra(EXTRA_QUALIFIER), getIntent().getStringExtra(EXTRA_STRING));
         startActivity(SingleSongActivity.newIntent(SongListActivity.this, song));
         startService(PlayerService.newIntent(this, song));
-    }
-
-    @Override
-    public void SongList(String albumOrArtist, Qualifier qualifier) {
-
     }
 
     @Override
