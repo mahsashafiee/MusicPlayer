@@ -35,9 +35,10 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
     private List<Song> mSongs = new ArrayList<>();
     private CallBacks mCallBack;
     private int mSelectedItem = -1;
-    private RecyclerView mRecyclerView;
     private Map<CircleImageView, String> mImageMap = new HashMap<>();
     private Handler handler;
+    private boolean isNotify = false;
+    private int mNotify ;
 
     public SongRecyclerAdapter(Context context) {
         mContext = context;
@@ -58,7 +59,6 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
 
-        mRecyclerView = recyclerView;
         recyclerView.setOnKeyListener((v, keyCode, event) -> {
             RecyclerView.LayoutManager lm = recyclerView.getLayoutManager();
 
@@ -108,7 +108,12 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
     @Override
     public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
         holder.itemView.setSelected(mSelectedItem == position);
-        holder.bindHolder(mSongs.get(position));
+        holder.bindHolder(position);
+        mNotify++;
+        if (mNotify == 3 && isNotify){
+            isNotify = false;
+            mNotify = 0;
+        }
     }
 
     @Override
@@ -133,23 +138,26 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
             mDuration = itemView.findViewById(R.id.item_song_duration);
 
             itemView.setOnClickListener(view -> {
+                isNotify = true;
+                mNotify = 0;
                 mCallBack.PlaySong(mSong);
-                notifyItemChanged(mSelectedItem);
-                mSelectedItem = mRecyclerView.getChildPosition(view);
                 notifyItemChanged(mSelectedItem);
             });
 
         }
 
 
-        void bindHolder(Song song) {
+        void bindHolder(int position) {
 
-            mSong = song;
+            mSong = mSongs.get(position);
 
             mTVMusicArtist.setText(mSong.getArtist());
             mTVMusicName.setText(mSong.getTitle());
             mDuration.setText(mSong.getDuration());
-            mIVMusicCover.setImageDrawable(mContext.getResources().getDrawable(R.drawable.song_placeholder));
+            if ((position == mSelectedItem || position == mSelectedItem + 1 || position == mSelectedItem - 1) && isNotify){
+            }
+            else
+                mIVMusicCover.setImageDrawable(mContext.getResources().getDrawable(R.drawable.song_placeholder));
 
             if (itemView.isSelected()) {
                 mEqualizer.setVisibility(View.VISIBLE);
@@ -166,14 +174,14 @@ public class SongRecyclerAdapter extends RecyclerView.Adapter<SongRecyclerAdapte
 
     public void setImage() {
 
-        if(mImageMap.size() == 0){
-            if(handler != null)
+        if (mImageMap.size() == 0) {
+            if (handler != null)
                 return;
             handler = new Handler();
             handler.postDelayed(this::setImage, 1000);
         }
         for (CircleImageView iView : mImageMap.keySet()) {
-            if(!iView.getDrawable().getConstantState().equals(mContext.getResources().getDrawable(R.drawable.song_placeholder).getConstantState()))
+            if (!iView.getDrawable().getConstantState().equals(mContext.getResources().getDrawable(R.drawable.song_placeholder).getConstantState()))
                 continue;
             SetArt art = new SetArt(iView);
             art.execute();
